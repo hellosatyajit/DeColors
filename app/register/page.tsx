@@ -2,11 +2,8 @@
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { headers } from "next/headers";
-import { createClient } from "@/utils/supabase/server";
-import { redirect } from "next/navigation";
+import { signUp } from "@/utils/auth";
 import GoBack from "@/components/GoBack";
-import { signIn } from "@/utils/auth";
 
 export default function Login({
   searchParams,
@@ -18,8 +15,19 @@ export default function Login({
   return (
     <div className="flex-1 flex flex-col w-full max-w-[1600px] p-5 sm:p-10 min-h-[calc(100vh-80px)] justify-center gap-2 relative">
       <GoBack />
-      <form action={signIn} className="animate-in flex-1 flex flex-col w-full max-w-96 m-auto mt-10 sm:mt-0 justify-center gap-3 text-foreground">
-        <p className="text-3xl font-bold text-center mb-4">Welcome Back!</p>
+      <form action={signUp} className="animate-in flex-1 flex flex-col w-full max-w-96 m-auto mt-10 sm:mt-0 justify-center gap-3 text-foreground">
+        <p className="text-3xl font-bold text-center mb-4">Create an Account</p>
+        <div>
+          <label htmlFor="name" hidden>Namee</label>
+          <input
+            type="text"
+            placeholder="Name"
+            name="name"
+            id="name"
+            required
+            className="bg-white p-4 rounded-lg transition-all w-full outline-none ring-0 border hover:border-gray-400 focus:border-rose-600"
+          />
+        </div>
         <div>
           <label htmlFor="email" hidden>Email</label>
           <input
@@ -57,8 +65,8 @@ export default function Login({
           />
         </div>
 
-        <button className="bg-rose-600  hover:bg-rose-700 text-white p-4 rounded-lg flex justify-center items-center gap-2 transition-all active:scale-95 group">
-          Log In
+        <button type="submit" className="bg-rose-600  hover:bg-rose-700 text-white p-4 rounded-lg flex justify-center items-center gap-2 transition-all active:scale-95 group">
+          Sign Up
         </button>
         <div className='relative py-4 flex justify-center'>
           <span className='absolute left-0 right-0 top-2/4 h-[1px] -z-10 bg-gray-200'></span>
@@ -68,9 +76,9 @@ export default function Login({
           <Image src={'/google.svg'} alt="google icon" width={24} height={24} /> Continue with Google
         </button>
         <p className="text-center text-sm mt-5">
-          Don't have an account?{" "}
-          <Link href="/register" className="font-medium hover:underline">
-            Sign Up
+          Already have an account?{" "}
+          <Link href="/login" className="font-medium hover:underline">
+            Log In
           </Link>
         </p>
       </form>
