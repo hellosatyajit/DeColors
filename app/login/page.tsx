@@ -2,11 +2,9 @@
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { headers } from "next/headers";
-import { createClient } from "@/utils/supabase/server";
-import { redirect } from "next/navigation";
 import GoBack from "@/components/GoBack";
-import { signIn } from "@/utils/auth";
+import { signIn, googleSignIn, getUser } from "@/utils/auth";
+import { useRouter } from 'next/router';
 
 export default function Login({
   searchParams,
@@ -20,6 +18,14 @@ export default function Login({
       <GoBack />
       <form action={signIn} className="animate-in flex-1 flex flex-col w-full max-w-96 m-auto mt-10 sm:mt-0 justify-center gap-3 text-foreground">
         <p className="text-3xl font-bold text-center mb-4">Welcome Back!</p>
+
+        <button onClick={() => googleSignIn()} type="button" className="border border-gray-300 bg-white hover:bg-gray-100 text-black p-4 rounded-lg flex justify-center items-center gap-2 transition-all active:scale-95 group">
+          <Image src={'/google.svg'} alt="google icon" width={24} height={24} /> Continue with Google
+        </button>
+        <div className='relative py-4 flex justify-center'>
+          <span className='absolute left-0 right-0 top-2/4 h-[1px] -z-10 bg-gray-200'></span>
+          <span className='text-gray-600 bg-white px-2 z-10 mx-auto inline-block'>OR</span>
+        </div>
         <div>
           <label htmlFor="email" hidden>Email</label>
           <input
@@ -56,18 +62,15 @@ export default function Login({
             className="bg-white p-4 rounded-lg transition-all w-full outline-none ring-0 border hover:border-gray-400 focus:border-rose-600"
           />
         </div>
-
         <button className="bg-rose-600  hover:bg-rose-700 text-white p-4 rounded-lg flex justify-center items-center gap-2 transition-all active:scale-95 group">
           Log In
         </button>
-        <div className='relative py-4 flex justify-center'>
-          <span className='absolute left-0 right-0 top-2/4 h-[1px] -z-10 bg-gray-200'></span>
-          <span className='text-gray-600 bg-white px-2 z-10 mx-auto inline-block'>OR</span>
-        </div>
-        <button type="button" className="border border-gray-300 bg-white hover:bg-gray-100 text-black p-4 rounded-lg flex justify-center items-center gap-2 transition-all active:scale-95 group">
-          <Image src={'/google.svg'} alt="google icon" width={24} height={24} /> Continue with Google
-        </button>
-        <p className="text-center text-sm mt-5">
+        <p className="text-center text-sm mt-2">
+          <Link href="/forgot-password" className="font-medium hover:underline">
+            Forgot Password?
+          </Link>
+        </p>
+        <p className="text-center text-sm">
           Don't have an account?{" "}
           <Link href="/register" className="font-medium hover:underline">
             Sign Up

@@ -44,3 +44,52 @@ export const signUp = async (formData: FormData) => {
         return redirect("/");
     }
 };
+
+export const googleSignIn = async () => {
+    const supabase = createClient();
+
+    const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+            redirectTo: 'http://localhost:3000/auth/callback'
+        }
+    })
+
+    console.log(data);
+
+    if (error) {
+        console.log("Register Error", error);
+    } else {
+        return redirect(data.url);
+    }
+};
+
+export const signOut = async () => {
+    const supabase = createClient();
+    await supabase.auth.signOut();
+    return redirect("/");
+}
+
+export const forgotPassword = async (formData: FormData) => {
+    const email = formData.get("email") as string;
+    const supabase = createClient();
+
+    const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: 'http://localhost:3000/auth/callback'
+    })
+};
+
+export const getUser = async () => {
+    const supabase = createClient();
+    const { data, error } = await supabase.auth.getUser();
+
+    if (error) {
+        console.log("Get User Error");
+    } else {
+        return {
+            email: data.user?.email,
+            username: data.user?.user_metadata.username || data.user?.user_metadata.name,
+            phone: data.user?.user_metadata.phone,
+        };
+    }
+}
