@@ -4,7 +4,7 @@ import { signOut, getUser } from "@/utils/auth";
 export default async function AuthButton() {
   const user = await getUser();
 
-  return <div className="absolute right-0 top-10 flex-col items-center gap-4 hidden group-hover:flex hover:flex">
+  return <div className="absolute right-0 top-10 flex-col items-center gap-4 hidden group-hover:flex hover:flex z-50">
     <div className="bg-white p-4 rounded-lg w-52 flex flex-col gap-2 mt-2">
       {user ? (
         <>

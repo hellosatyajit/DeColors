@@ -10,6 +10,7 @@
     "@supabase/supabase-js": "^2.39.7",
     "autoprefixer": "10.4.17",
     "geist": "^1.2.1",
+    "keen-slider": "^6.8.6",
     "next": "latest",
     "postcss": "8.4.33",
     "react": "18.2.0",
