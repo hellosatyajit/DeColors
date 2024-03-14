@@ -60,10 +60,11 @@ export default function BestSellers() {
             setLoaded(true)
         },
         slides: {
-            perView: 4,
+            perView: window.outerWidth > 426 ? window.outerWidth > 769 ? 4 : 2 : 1,
             spacing: 20,
         }
     });
+    
 
     return (
         <div className="w-ful">
