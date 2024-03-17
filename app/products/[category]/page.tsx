@@ -45,28 +45,38 @@ const products = [
     },
 ];
 
-const breadcrumb = [
-    {
-        label: 'Home',
-        link: '/'
-    },
-    {
-        label: 'Face',
-        link: '/'
-    },
-]
+function toCapitalize(text: string) {
+    const capitalizedText = text.split('-').map((word) => word.slice(0, 1).toUpperCase() + '' + word.slice(1, word.length)).join(' ')
 
-export default function Category() {
+    return capitalizedText;
+}
+
+export default function Category(router: any) {
+    const category = toCapitalize(router.params.category);
+
+    const breadcrumb = [
+        {
+            label: 'Home',
+            link: '/'
+        },
+        {
+            label: category,
+            link: '/'
+        },
+    ]
+
     return (
         <section className="w-full">
-            {/* <div className="relative">
-                <Image src={'https://juewdrvuynzvupklbxme.supabase.co/storage/v1/object/public/home/1.png'} alt={''} width={100} height={100} className="w-full h-full aspect-square xs:aspect-auto" />
-                <p className="absolute left-5 xl:left-10 bottom-5 xl:bottom-10 font-bold text-lg sm:text-3xl text-white">Chelsy</p>
-            </div> */}
-            <div className="max-w-7xl m-auto p-5 space-y-2">
-                <Breadcrumb links={breadcrumb} />
-                <p className="font-bold text-lg sm:text-3xl">Face</p>
-            </div>
+            {(category === 'De Coloress' || category === 'Chelsy' || category === 'Herbonica')
+                ? <div className="relative">
+                    <Image src={'https://juewdrvuynzvupklbxme.supabase.co/storage/v1/object/public/home/1.png'} alt={''} width={100} height={100} className="w-full h-full aspect-square xs:aspect-auto" />
+                    <p className="absolute left-5 xl:left-10 bottom-5 xl:bottom-10 font-bold text-lg sm:text-3xl text-white">{category}</p>
+                </div>
+                : <div className="max-w-7xl m-auto p-5 space-y-2">
+                    <Breadcrumb links={breadcrumb} />
+                    <p className="font-bold text-lg sm:text-3xl">{category}</p>
+                </div>
+            }
             <div className="max-w-7xl m-auto px-5 py-10 space-y-10">
                 <div className="space-y-2">
                     <div className="flex items-center justify-between">
@@ -75,9 +85,16 @@ export default function Category() {
                             <button className="px-4 py-1 rounded-full bg-rose-50 sm:bg-transparent hover:bg-rose-50 transition-all text-sm sm:text-base">
                                 Filter <span className="hidden sm:inline-block rotate-90">{'>'}</span>
                             </button>
-                            <button className="px-4 py-1 rounded-full bg-rose-50 sm:bg-transparent hover:bg-rose-50 transition-all text-sm sm:text-base">
-                                Sort <span className="hidden sm:inline-block">By: Best Selling</span> <span className="hidden sm:inline-block rotate-90">{'>'}</span>
-                            </button>
+                            <select name="sotby" id="sortby" className="px-4 py-1 rounded-full bg-rose-50 sm:bg-transparent hover:bg-rose-50 transition-all text-sm sm:text-base">
+                                {/* Sort <span className="hidden sm:inline-block">By: Best Selling</span> <span className="hidden sm:inline-block rotate-90">{'>'}</span> */}
+                                <option value="" disabled selected >Sort By</option>
+                                <option value="best-selling">Best Selling</option>
+                                <option value="newest">Newest</option>
+                                <option value="price-ascending">Price (Low - High)</option>
+                                <option value="price-descending">Price (High - Low)</option>
+                                <option value="alphabet-ascending">A - Z</option>
+                                <option value="alphabet-descending">Z - A</option>
+                            </select>
                         </div>
                     </div>
                     <div className="hidden sm:flex flex-wrap gap-2">

@@ -53,9 +53,9 @@ export default async function Index() {
       <Hero />
       <ShopByCategory />
       <ProductsSlider title="Best Sellers" viewAll="/best-seller" products={products} />
-      <ProductsSlider title="De Coloress" viewAll="/decoloress" products={products} />
-      <ProductsSlider title="Chelsy" viewAll="/chelsy" products={products} />
-      <ProductsSlider title="Herbonica" viewAll="/herbonica" products={products} />
+      <ProductsSlider title="De Coloress" viewAll="/products/de-coloress" products={products} />
+      <ProductsSlider title="Chelsy" viewAll="/products/chelsy" products={products} />
+      <ProductsSlider title="Herbonica" viewAll="/products/herbonica" products={products} />
       <HotDeals />
       <Newsletter />
     </div>

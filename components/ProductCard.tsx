@@ -17,7 +17,7 @@ export default function ProductCard({ name, description, price, discount, image,
     return (
         <div className={`bg-white rounded-lg ${style}`} key={key}>
             <div className={`flex justify-center ${space ? 'sm:p-3 sm:pb-0' : ''}`}>
-                <Link href={url} className="w-full">
+                <Link href={url} className="w-full relative">
                     <Image
                         width={300}
                         height={200}
@@ -25,6 +25,7 @@ export default function ProductCard({ name, description, price, discount, image,
                         src={image}
                         alt={name + " Image"}
                     />
+                    <span className="absolute left-2 top-2 text-[10px] sm:text-xs bg-white rounded-full p-1 sm:px-2">⭐ 4.5</span>
                 </Link>
             </div>
             <div className="p-3 pt-0 space-y-4 mt-2">
@@ -35,8 +36,8 @@ export default function ProductCard({ name, description, price, discount, image,
                     <p className="text-xs xs:text-sm text-rose-600">{description}</p>
                 </div>
                 <div className="flex justify-between flex-wrap gap-1 items-center">
-                    <p className="text-base xs:text-xl  font-semibold space-x-2"><span>{discount}₹</span><span className="text-sm xs:text-base line-through opacity-70">{price}₹</span></p>
-                    <button className="px-4 py-2 bg-slate-900 hover:bg-black hover:underline text-white text-xs font-semibold rounded-full w-full   ">
+                    <p className="text-base xs:text-xl font-semibold space-x-2"><span>{discount}₹</span><span className="text-sm xs:text-base line-through opacity-70">{price}₹</span></p>
+                    <button className="px-4 py-2 bg-slate-900 hover:bg-black hover:underline text-white text-xs font-semibold rounded-full w-full sm:w-auto">
                         Add to Cart
                     </button>
                 </div>

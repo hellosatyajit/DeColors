@@ -3,12 +3,12 @@ import AuthButton from "./AuthButton";
 import Hamburger from "./Hamburger";
 
 const links = [
-  { href: "/", label: "Best Sellers" },
-  { href: "/", label: "Categories" },
-  { href: "/", label: "Hot Deals" },
-  { href: "/", label: "De Coloress" },
-  { href: "/", label: "Chelsy" },
-  { href: "/", label: "Herbonica" },
+  { href: "/products", label: "Best Sellers" },
+  { href: "/#category", label: "Categories" },
+  { href: "/#hot-deals", label: "Hot Deals" },
+  { href: "/products/de-coloress", label: "De Colorss" },
+  { href: "/products/chelsy", label: "Chelsy" },
+  { href: "/products/herbonica", label: "Herbonica" },
 ]
 
 export default function Header() {
@@ -17,7 +17,7 @@ export default function Header() {
       <div className="max-w-[1600px] w-full m-auto p-5 flex justify-between items-center gap-5">
         <div className="flex items-center gap-10">
           <div className="">
-            <Link href="/" className="text-white text-lg sm:text-2xl font-bold leading-3">De Colors Lifestyle</Link>
+            <Link href="/" className="text-white text-lg sm:text-2xl font-bold leading-3">De Colores Lifestyle</Link>
           </div>
           <ul className="hidden lg:flex flex-1 gap-5">
             {links.map(({ href, label }, index) => (

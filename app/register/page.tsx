@@ -25,7 +25,7 @@ export default function Login({
           <span className='text-gray-600 bg-white px-2 z-10 mx-auto inline-block'>OR</span>
         </div>
         <div>
-          <label htmlFor="name" hidden>Namee</label>
+          <label htmlFor="name" hidden>Name</label>
           <input
             type="text"
             placeholder="Name"

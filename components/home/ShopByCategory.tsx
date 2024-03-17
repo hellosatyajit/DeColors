@@ -3,31 +3,31 @@ import Link from "next/link";
 const categories = [
     {
         label: "Nails",
-        url: `/category/nails`,
+        url: `/products/nails`,
         image: 'https://juewdrvuynzvupklbxme.supabase.co/storage/v1/object/public/home/1.png',
         alt: 'Nails'
     },
     {
         label: "Face",
-        url: `/category/face`,
+        url: `/products/face`,
         image: 'https://juewdrvuynzvupklbxme.supabase.co/storage/v1/object/public/home/2.png',
         alt: 'Face'
     },
     {
         label: "Hair",
-        url: `/category/hair`,
+        url: `/products/hair`,
         image: 'https://juewdrvuynzvupklbxme.supabase.co/storage/v1/object/public/home/3.png',
         alt: 'Hair'
     },
     {
         label: "Eye",
-        url: `/category/eye`,
+        url: `/products/eye`,
         image: 'https://juewdrvuynzvupklbxme.supabase.co/storage/v1/object/public/home/4.png',
         alt: 'Eye'
     },
     {
         label: "Body",
-        url: `/category/body`,
+        url: `/products/body`,
         image: 'https://juewdrvuynzvupklbxme.supabase.co/storage/v1/object/public/home/5.png',
         alt: 'Body'
     },
@@ -35,7 +35,7 @@ const categories = [
 
 export default function ShopByCategory() {
     return (
-        <div className="w-ful">
+        <div className="w-full" id="category">
             <div className="max-w-7xl m-auto px-5 py-10 flex flex-col gap-5 sm:gap-10  justify-center items-center">
                 <div className="space-y-1 sm:space-y-2">
                     <p className="font-bold text-3xl md:text-4xl w-full text-center">

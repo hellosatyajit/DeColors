@@ -28,7 +28,7 @@ const products = [
 export default function HotDeals() {
 
     return (
-        <div className="w-full">
+        <div className="w-full" id="hot-deals">
             <div className="max-w-7xl m-auto px-5 py-10 flex flex-col gap-5 sm:gap-10  justify-center items-center">
                 <div className="space-y-1 sm:space-y-2">
                     <p className="font-bold text-3xl md:text-4xl w-full text-center">
