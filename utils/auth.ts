@@ -47,11 +47,13 @@ export const signUp = async (formData: FormData) => {
 
 export const googleSignIn = async () => {
     const supabase = createClient();
-
+    
     const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-            redirectTo: 'http://localhost:3000/auth/callback'
+            redirectTo: process.env.VERCEL_URL
+                ? `https://${process.env.VERCEL_URL}`
+                : 'http://localhost:3000'
         }
     })
 
@@ -75,9 +77,13 @@ export const forgotPassword = async (formData: FormData) => {
     const supabase = createClient();
 
     const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: 'http://localhost:3000/auth/callback'
+        redirectTo: process.env.VERCEL_URL
+            ? `https://${process.env.VERCEL_URL}/auth/callback`
+            : 'http://localhost:3000/auth/callback'
     })
 };
+
+
 
 export const getUser = async () => {
     const supabase = createClient();
