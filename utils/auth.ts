@@ -14,7 +14,7 @@ export const signIn = async (formData: FormData) => {
     });
 
     if (error) {
-        console.log("Login Error", error);
+        return redirect(`/login?message=${error.message}`);
     } else {
         return redirect("/");
     }
@@ -39,7 +39,7 @@ export const signUp = async (formData: FormData) => {
     });
 
     if (error) {
-        console.log("Register Error", error);
+        return redirect(`/register?message=${error.message}`);
     } else {
         return redirect("/");
     }
@@ -56,8 +56,6 @@ export const googleSignIn = async () => {
                 : 'http://localhost:3000'
         }
     })
-
-    console.log(data);
 
     if (error) {
         console.log("Register Error", error);
@@ -82,8 +80,6 @@ export const forgotPassword = async (formData: FormData) => {
             : 'http://localhost:3000/auth/callback'
     })
 };
-
-
 
 export const getUser = async () => {
     const supabase = createClient();

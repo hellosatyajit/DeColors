@@ -1,10 +1,10 @@
 'use client';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import toast from "react-hot-toast";
 import GoBack from "@/components/GoBack";
-import { signIn, googleSignIn, getUser } from "@/utils/auth";
-import { useRouter } from 'next/router';
+import { signIn, googleSignIn } from "@/utils/auth";
 
 export default function Login({
   searchParams,
@@ -12,6 +12,12 @@ export default function Login({
   searchParams: { message: string };
 }) {
   const [passwordShow, setPasswordShow] = useState(false);
+
+  useEffect(() => {
+    if (searchParams.message) {
+      toast.error(searchParams.message);
+    }
+  }, [searchParams]);
 
   return (
     <div className="flex-1 flex flex-col w-full max-w-[1600px] p-5 sm:p-10 min-h-[calc(100vh-80px)] justify-center gap-2 relative">
