@@ -53,7 +53,7 @@ export default async function Index() {
       <div className="w-full">
         <Hero />
         <ShopByCategory />
-        <ProductsSlider title="Best Sellers" viewAll="/best-seller" products={products} />
+        <ProductsSlider title="Best Sellers" viewAll="/products" products={products} />
         <ProductsSlider title="De Coloress" viewAll="/products/de-coloress" products={products} />
         <ProductsSlider title="Chelsy" viewAll="/products/chelsy" products={products} />
         <ProductsSlider title="Herbonica" viewAll="/products/herbonica" products={products} />
