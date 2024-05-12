@@ -1,62 +1,28 @@
+// 'use client'
 import Hero from "@/components/home/Hero";
 import ShopByCategory from "@/components/home/ShopByCategory";
 import ProductsSlider from "@/components/home/ProductsSlider";
 import HotDeals from "@/components/home/HotDeals";
 import Newsletter from "@/components/home/Newsletter";
+import { getBestSellingProducts, getProductsByBrand } from "@/utils/store";
 
-const products = [
-  {
-    name: "Product Name",
-    description: "Product Description",
-    price: 99,
-    discount: 149,
-    image: "https://juewdrvuynzvupklbxme.supabase.co/storage/v1/object/public/home/1.png",
-    url: "/product/1"
-  },
-  {
-    name: "Product Name",
-    description: "Product Description",
-    price: 99,
-    discount: 149,
-    image: "https://juewdrvuynzvupklbxme.supabase.co/storage/v1/object/public/home/2.png",
-    url: "/product/2"
-  },
-  {
-    name: "Product Name",
-    description: "Product Description",
-    price: 99,
-    discount: 149,
-    image: "https://juewdrvuynzvupklbxme.supabase.co/storage/v1/object/public/home/3.png",
-    url: "/product/3"
-  },
-  {
-    name: "Product Name",
-    description: "Product Description",
-    price: 99,
-    discount: 149,
-    image: "https://juewdrvuynzvupklbxme.supabase.co/storage/v1/object/public/home/4.png",
-    url: "/product/4"
-  },
-  {
-    name: "Product Name",
-    description: "Product Description",
-    price: 99,
-    discount: 149,
-    image: "https://juewdrvuynzvupklbxme.supabase.co/storage/v1/object/public/home/5.png",
-    url: "/product/5"
-  },
-];
+const limitProducts = true;
 
 export default async function Index() {
+  const bestSellingProducts = await getBestSellingProducts(limitProducts);
+  const deColoressProducts = await getProductsByBrand("De Coloress", limitProducts);
+  const chelsyProducts = await getProductsByBrand("Chelsy", limitProducts);
+  const herbonicaProducts = await getProductsByBrand("Herbonica", limitProducts);
+  
   return (
     <>
       <div className="w-full">
         <Hero />
         <ShopByCategory />
-        <ProductsSlider title="Best Sellers" viewAll="/products" products={products} />
-        <ProductsSlider title="De Coloress" viewAll="/products/de-coloress" products={products} />
-        <ProductsSlider title="Chelsy" viewAll="/products/chelsy" products={products} />
-        <ProductsSlider title="Herbonica" viewAll="/products/herbonica" products={products} />
+        <ProductsSlider title="Best Sellers" viewAll="/products" products={bestSellingProducts} />
+        <ProductsSlider title="De Coloress" viewAll="/products/de-coloress" products={deColoressProducts} />
+        <ProductsSlider title="Chelsy" viewAll="/products/chelsy" products={chelsyProducts} />
+        <ProductsSlider title="Herbonica" viewAll="/products/herbonica" products={herbonicaProducts} />
         <HotDeals />
         <Newsletter />
       </div>

@@ -10,7 +10,7 @@ export default function ProductDetailsCarousel({ images }: { images: any }) {
         {images.map((item: any, index: number) => (
           <div hidden={index !== currentImg} key={index}>
             <Image
-              src={item.url}
+              src={item}
               alt={""}
               width={100}
               height={100}
@@ -24,7 +24,7 @@ export default function ProductDetailsCarousel({ images }: { images: any }) {
         {images.map((item: any, index: number) => (
           <div className={`w-fit cursor-pointer hover:brightness-90 transition-all ${index === currentImg ? 'brightness-75' : ''}`} key={index} onClick={() => setCurrentImg(index)}>
             <Image
-              src={item.url}
+              src={item}
               alt={""}
               width={60}
               height={60}

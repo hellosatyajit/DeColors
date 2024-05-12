@@ -67,7 +67,7 @@ export default function ProductsSlider({ title, viewAll, products = [] }: { titl
                     <div ref={sliderRef} className="keen-slider !mt-5 pb-5">
                         {products.map((product, index) => (
                             <div className="keen-slider__slide shadow-md rounded-lg border border-gray-100">
-                                <ProductCard key={index} {...product} />
+                                <ProductCard key={index} product={product} />
                             </div>
                         ))}
                     </div>

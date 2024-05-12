@@ -1,51 +1,11 @@
 import Image from "next/image";
 import ProductCard from "@/components/ProductCard";
 import Breadcrumb from "@/components/Breadcrumb";
+import { getBestSellingProducts } from "@/utils/store";
 
-const products = [
-    {
-        name: "Product Name",
-        description: "Product Description",
-        price: 99,
-        discount: 149,
-        image: "https://juewdrvuynzvupklbxme.supabase.co/storage/v1/object/public/home/1.png",
-        url: "/product/1"
-    },
-    {
-        name: "Product Name",
-        description: "Product Description",
-        price: 99,
-        discount: 149,
-        image: "https://juewdrvuynzvupklbxme.supabase.co/storage/v1/object/public/home/2.png",
-        url: "/product/2"
-    },
-    {
-        name: "Product Name",
-        description: "Product Description",
-        price: 99,
-        discount: 149,
-        image: "https://juewdrvuynzvupklbxme.supabase.co/storage/v1/object/public/home/3.png",
-        url: "/product/3"
-    },
-    {
-        name: "Product Name",
-        description: "Product Description",
-        price: 99,
-        discount: 149,
-        image: "https://juewdrvuynzvupklbxme.supabase.co/storage/v1/object/public/home/4.png",
-        url: "/product/4"
-    },
-    {
-        name: "Product Name",
-        description: "Product Description",
-        price: 99,
-        discount: 149,
-        image: "https://juewdrvuynzvupklbxme.supabase.co/storage/v1/object/public/home/5.png",
-        url: "/product/5"
-    },
-];
+export default async function Category() {
+    const products = await getBestSellingProducts(false);
 
-export default function Category() {
     return (
         <section className="w-full">
             <div className="max-w-7xl m-auto px-5 py-10 space-y-10">
@@ -82,7 +42,7 @@ export default function Category() {
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
                     {products.map((product, index) => (
-                        <ProductCard key={index} {...product} style="hover:shadow-md hover:shadow-gray-200 transition-all rounded-lg border border-gray-200" space={false} />
+                        <ProductCard key={index} product={product} style="hover:shadow-md hover:shadow-gray-200 transition-all rounded-lg border border-gray-200" space={false} />
                     ))}
                 </div>
             </div>

@@ -1,10 +1,13 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ProductDetailsCarousel from "@/components/ProductDetailsCarousel";
 // import RelatedProducts from "@/components/RelatedProducts";
 import { getDiscountedPricePercentage } from "@/utils/helper";
 import toast from "react-hot-toast";
 import ProductsSlider from "@/components/home/ProductsSlider";
+import { addToCart } from "@/utils/cart";
+import { getProductBySlug } from "@/utils/store";
+import { IProduct } from "@/types/product";
 
 const products = [
   {
@@ -72,28 +75,44 @@ const imageData = [
   },
 ];
 
-const ProductDetails = () => {
+const ProductDetails = (router: any) => {
   const [selectedSize, setSelectedColor] = useState("");
   const [showError, setShowError] = useState(false);
+  const [product, setProduct] = useState<IProduct | null>(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const product: any = await getProductBySlug(router.params.slug);
+console.log(product[0].images);
+
+      setProduct(product[0]);
+    }
+    fetchData();
+  }, [router.params.slug]);
 
   const notify = () => {
     toast.success("Success. Check your cart!");
   };
 
+  const doAddToCart = () => {
+    addToCart(product)
+    notify();
+  }
+
   return (
     <section className="w-full">
       <div className="max-w-7xl m-auto px-5 py-10 space-y-20">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-10 lg:gap-20">
-            <ProductDetailsCarousel images={imageData} />
+          <ProductDetailsCarousel images={product?.images || imageData} />
           <div className="flex-[1] py-3">
             <div className="text-[34px] font-semibold mb-2 leading-tight">
-              Product Name
+              {product?.name}
             </div>
 
-            <div className="text-lg font-semibold mb-5">Product Subtitle</div>
+            <div className="text-lg font-semibold mb-5">{product?.short_detail}</div>
 
             <div className="flex items-center">
-              <p className="mr-2 text-lg font-semibold">MRP : &#8377;{149}</p>
+              <p className="mr-2 text-lg font-semibold">MRP : &#8377;{product?.price}</p>
               {149 && (
                 <>
                   <p className="text-base  font-medium line-through">
@@ -123,9 +142,8 @@ const ProductDetails = () => {
                   (item: string, index: number) => (
                     <div
                       key={index}
-                      className={`border rounded-full text-center py-3 font-medium w-10 h-10 cursor-pointer ${
-                        selectedSize === item ? "border-black" : ""
-                      }`}
+                      className={`border rounded-full text-center py-3 font-medium w-10 h-10 cursor-pointer ${selectedSize === item ? "border-black" : ""
+                        }`}
                       style={{
                         backgroundColor: item,
                       }}
@@ -147,20 +165,15 @@ const ProductDetails = () => {
 
             <button
               className="w-full py-4 rounded-full bg-black text-white text-lg font-medium transition-transform active:scale-95 mb-10 hover:opacity-75"
-              onClick={notify}
+              onClick={doAddToCart}
             >
               Add to Cart
             </button>
 
             <div>
               <div className="text-lg font-bold mb-5">Product Details</div>
-              <div className="markdown text-md mb-5">
-                Lorem, ipsum dolor sit amet consectetur adipisicing elit. Saepe
-                voluptatum sint quam quisquam, exercitationem impedit iure
-                voluptatibus distinctio totam? Nisi aperiam fugiat quo dolores
-                nihil fuga esse hic explicabo illo nesciunt ex illum eius
-                praesentium tempore, odit ratione debitis iusto quod molestiae
-                neque. Molestias eius explicabo quaerat saepe quidem id!
+              <div className="markdown text-md mb-5" dangerouslySetInnerHTML={{__html: product?.description as string}}>
+                
               </div>
             </div>
           </div>

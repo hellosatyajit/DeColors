@@ -1,6 +1,9 @@
+'use client'
 import Image from "next/image";
 import ProductCard from "@/components/ProductCard";
 import Breadcrumb from "@/components/Breadcrumb";
+import { getProductsByBrand, getProductsByCategory } from "@/utils/store";
+import { IProduct } from "@/types/product";
 
 const products = [
     {
@@ -51,7 +54,7 @@ function toCapitalize(text: string) {
     return capitalizedText;
 }
 
-export default function Category(router: any) {
+export default async function Category(router: any) {
     const category = toCapitalize(router.params.category);
 
     const breadcrumb = [
@@ -64,6 +67,13 @@ export default function Category(router: any) {
             link: '/'
         },
     ]
+
+    let products = [];
+    if (category === 'De Coloress' || category === 'Chelsy' || category === 'Herbonica') {
+        products = await getProductsByBrand(category, false);
+    } else {
+        products = await getProductsByCategory(category, false);
+    }
 
     return (
         <section className="w-full">
@@ -110,8 +120,8 @@ export default function Category(router: any) {
                     </div>
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
-                    {products.map((product, index) => (
-                        <ProductCard key={index} {...product} style="hover:shadow-md hover:shadow-gray-200 transition-all rounded-lg border border-gray-200" space={false} />
+                    {products.map((product: IProduct, index: number) => (
+                        <ProductCard key={index} product={product} style="hover:shadow-md hover:shadow-gray-200 transition-all rounded-lg border border-gray-200" space={false} />
                     ))}
                 </div>
             </div>
