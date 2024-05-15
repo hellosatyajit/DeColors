@@ -8,9 +8,10 @@ const SendIcon = () => (
 )
 
 const links = [
-    { href: "/", label: "Privacy Policy" },
-    { href: "/", label: "Terms & Conditions" },
-    { href: "/", label: "Cancellation & Return Policy" },
+//     { href: "https://merchant.razorpay.com/policy/O9K2NHFk5U8VGR/terms", label: "Privacy Policy" },
+    { href: "https://merchant.razorpay.com/policy/O9K2NHFk5U8VGR/terms", label: "Terms & Conditions" },
+    { href: "https://merchant.razorpay.com/policy/O9K2NHFk5U8VGR/refund", label: "Cancellation & Return Policy" },
+    { href: "https://merchant.razorpay.com/policy/O9K2NHFk5U8VGR/shipping", label: "Shipping & Delivery Policy" },
 ]
 
 export default function Footer() {
@@ -79,7 +80,7 @@ export default function Footer() {
                         ))}
                     </ul>
                     <div className="text-black text-opacity-50 text-sm font-normal">
-                        @2024 De Colores Lifestyle <span className="hidden sm:inline-block">&nbsp; | &nbsp;</span> <br className="sm:hidden" />  All rights Reserved
+                        @2024 De Colores Lifestyle Private Limited <span className="hidden sm:inline-block">&nbsp; | &nbsp;</span> <br className="sm:hidden" />  All rights Reserved
                     </div>
                 </div>
             </div>
