@@ -58,7 +58,10 @@ export default function Footer() {
                             </div>
                             <div className="space-y-3">
                                 <p className="text-xl font-semibold">Address</p>
-                                <div className="text-black text-sm font-normal">0000-000-000</div>
+                                <div className="text-black text-sm font-normal"><p>A-702 Rajyash Riverium,<br />
+                                    B/H G.B.Shah College,<br />
+                                    South Vasna,<br />
+                                    Ahmedabad</p></div>
                             </div>
                         </div>
                     </div>
