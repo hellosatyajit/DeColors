@@ -8,7 +8,7 @@ const SendIcon = () => (
 )
 
 const links = [
-//     { href: "https://merchant.razorpay.com/policy/O9K2NHFk5U8VGR/terms", label: "Privacy Policy" },
+    { href: "https://pickle-larch-966.notion.site/Privacy-Policy-De-Colores-3ac5b4a19b2d4b4caf3fbb1f2558ce70", label: "Privacy Policy" },
     { href: "https://merchant.razorpay.com/policy/O9K2NHFk5U8VGR/terms", label: "Terms & Conditions" },
     { href: "https://merchant.razorpay.com/policy/O9K2NHFk5U8VGR/refund", label: "Cancellation & Return Policy" },
     { href: "https://merchant.razorpay.com/policy/O9K2NHFk5U8VGR/shipping", label: "Shipping & Delivery Policy" },
