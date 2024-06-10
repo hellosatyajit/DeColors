@@ -10,7 +10,7 @@ export default async function AuthButton() {
         <>
           <p className="text-black">Hey, {user.username}!</p>
           <Link
-            href="/profile"
+            href="/account/profile"
             className="py-2 px-4 rounded-md no-underline bg-gray-900 hover:bg-black text-white w-full text-center"
           >
             Account
