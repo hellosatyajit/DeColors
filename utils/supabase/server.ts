@@ -4,9 +4,9 @@ import { cookies } from "next/headers";
 let supabaseClient: any = null;
 
 export const createClient = () => {  
-  if (supabaseClient) {
-    return supabaseClient;
-  }
+  // if (supabaseClient) {
+  //   return supabaseClient;
+  // }
 
   const cookieStore = cookies();
 

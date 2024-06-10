@@ -55,7 +55,7 @@ export const googleSignIn = async () => {
                 ? `https://${process.env.VERCEL_URL}`
                 : 'http://localhost:3000'
         }
-    })
+    })    
 
     if (error) {
         console.log("Register Error", error);
@@ -86,7 +86,7 @@ export const getUser = async () => {
     const { data, error } = await supabase.auth.getUser();
 
     if (error) {
-        console.log("Get User Error");
+        console.log("Get User Error", error);
     } else {
         return {
             email: data.user?.email,

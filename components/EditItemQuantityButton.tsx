@@ -3,7 +3,8 @@
 import { MinusIcon, PlusIcon, DotSquareIcon } from 'lucide-react';
 import clsx from 'clsx';
 import { useFormState, useFormStatus } from 'react-dom';
-import { updateCartItemQuantity } from '@/utils/cart';
+import { removeFromCart, updateCartItemQuantity } from '@/utils/cart';
+import toast from 'react-hot-toast';
 
 function SubmitButton({ type }: { type: 'plus' | 'minus' }) {
     const { pending } = useFormStatus();
@@ -37,7 +38,16 @@ function SubmitButton({ type }: { type: 'plus' | 'minus' }) {
 
 export function EditItemQuantityButton({ item, type, fetchCart }: { item: any; type: 'plus' | 'minus', fetchCart: any }) {
     const actionWithVariant = () => {
-        updateCartItemQuantity(item.id, type === 'plus' ? item.quantity + 1 : item.quantity - 1);
+        if (item.quantity >= 20 && type === 'plus') {
+            toast.error('Please contact support to increase the quantity of this item.');
+            return;
+        }
+
+        if (item.quantity <= 1 && type === 'minus') {
+            removeFromCart(item.id);
+        } else {
+            updateCartItemQuantity(item.id, type === 'plus' ? item.quantity + 1 : item.quantity - 1);
+        }
         fetchCart();
     }
 
