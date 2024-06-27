@@ -33,7 +33,7 @@ function SubmitButton() {
 }
 
 export function DeleteItemButton({ item, fetchCart }: { item: any, fetchCart: any }) {
-    const actionWithVariant = () => { removeFromCart(item.id); fetchCart(); };
+    const actionWithVariant = () => { removeFromCart(item._id); fetchCart(); };
 
     return (
         <form action={actionWithVariant}>

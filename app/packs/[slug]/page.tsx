@@ -6,9 +6,9 @@ import { getDiscountedPricePercentage } from "@/utils/helper";
 import toast from "react-hot-toast";
 import ProductsSlider from "@/components/home/ProductsSlider";
 import { addToCart } from "@/utils/cart";
+import { getProductBySlug } from "@/utils/store";
 import { IProduct } from "@/types/product";
-import { fetchProductBySlug } from "@/server/actions/ProductActions";
-import { useRouter } from "next/navigation";
+import { fetchPackBySlug } from "@/server/actions/ProductActions";
 
 const products = [
   {
@@ -77,16 +77,12 @@ const imageData = [
 ];
 
 const ProductDetails = (router: any) => {
-  const routerLink = useRouter();
-
   const [selectedSize, setSelectedColor] = useState("");
-  const [showError, setShowError] = useState(false);
   const [product, setProduct] = useState<IProduct | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
-      const product: any = await fetchProductBySlug(router.params.slug);
-
+      const product: any = await fetchPackBySlug(router.params.slug);
       setProduct(product);
     }
     fetchData();
@@ -97,12 +93,8 @@ const ProductDetails = (router: any) => {
   };
 
   const doAddToCart = () => {
-    addToCart(product, selectedSize)
+    addToCart(product)
     notify();
-  }
-
-  const addQueryParam = (query: string) => {
-    routerLink.push(`${location.pathname}/?variant=${query}`, undefined, { shallow: true })
   }
 
   return (
@@ -143,7 +135,7 @@ const ProductDetails = (router: any) => {
                 Select Color
               </div>
 
-              <div id="sizesGrid" className="flex flex-wrap gap-2">
+              {/* <div id="sizesGrid" className="flex flex-wrap gap-2">
                 {product?.variants.map(
                   (item: any, index: number) => (
                     <button
@@ -161,13 +153,7 @@ const ProductDetails = (router: any) => {
                     ></button>
                   )
                 )}
-              </div>
-
-              {showError && (
-                <div className="text-red-600 mt-1">
-                  Color selection is required
-                </div>
-              )}
+              </div> */}
             </div>
 
             <button

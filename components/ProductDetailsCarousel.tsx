@@ -9,12 +9,13 @@ export default function ProductDetailsCarousel({ images }: { images: any }) {
       <div className="order-1 lg:order-2 flex-1">
         {images.map((item: any, index: number) => (
           <div hidden={index !== currentImg} key={index}>
-            <Image
+            <img
               src={item}
-              alt={""}
+              alt={item}
               width={100}
               height={100}
-              className="w-full aspect-square rounded-lg"
+              className="w-full aspect-square rounded-lg object-cover"
+              // quality={100}
             />
           </div>
         ))}
@@ -25,10 +26,10 @@ export default function ProductDetailsCarousel({ images }: { images: any }) {
           <div className={`w-fit cursor-pointer hover:brightness-90 transition-all ${index === currentImg ? 'brightness-75' : ''}`} key={index} onClick={() => setCurrentImg(index)}>
             <Image
               src={item}
-              alt={""}
+              alt={item}
               width={60}
               height={60}
-              className="aspect-square rounded-lg"
+              className="aspect-square rounded-lg object-cover"
             />
           </div>
         ))}

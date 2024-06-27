@@ -23,7 +23,7 @@ const breadcrumb = [
 export default function CartPage() {
     const [items, setItems] = useState([]);
     const [user, setUser] = useState<{ email: any; username: any; phone: any; } | undefined>(undefined);
-    const totalCost = items.reduce((acc, item: any) => acc + item.price * item.quantity, 0);
+    const totalCost = items.reduce((acc, item: any) => acc + (item.price.mrp - item.price.discount) * item.quantity, 0);
 
     const fetchCart = () => {
         const cartItems = getCartData();
@@ -69,26 +69,31 @@ export default function CartPage() {
                                             className="z-30 flex flex-row space-x-4"
                                         >
                                             <div className="relative h-16 w-16 cursor-pointer overflow-hidden rounded-md border border-neutral-300 bg-neutral-300">
-                                                <Image
+                                                <img
                                                     className="h-full w-full object-cover"
                                                     width={64}
                                                     height={64}
                                                     alt={
                                                         item.name
                                                     }
-                                                    src={item?.images ? item.images[0] : ''}
+                                                    src={item?.images ? item.images[0] : item?.variants.find(
+                                                        (i: any) => i.sku === item.sku
+                                                    ).image[0]}
                                                 />
                                             </div>
 
                                             <div className="flex flex-1 flex-col text-base">
-                                                <span className="leading-tight text-black">
+                                                <span className="leading-tight font-medium text-rose-600">
                                                     {item.name}
+                                                </span>
+                                                <span className="leading-tight text-black/50">
+                                                    {item.subheading}
                                                 </span>
                                             </div>
                                         </div>
                                         <div className="flex h-16 flex-col justify-between">
                                             <p className="flex justify-end space-y-2 text-right text-sm">
-                                                {item.price} ₹
+                                                {item.price.mrp - item.price.discount} ₹
                                             </p>
                                             <div className="ml-auto flex h-9 flex-row items-center rounded-full border border-neutral-200 dark:border-neutral-700">
                                                 <EditItemQuantityButton item={item} type="minus" fetchCart={fetchCart} />

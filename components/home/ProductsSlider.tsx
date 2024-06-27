@@ -22,7 +22,6 @@ export default function ProductsSlider({ title, viewAll, products = [] }: { titl
         }
     });
 
-
     return (
         <div className="w-full">
             <div className="max-w-7xl m-auto px-5 py-10 flex flex-col gap-5 sm:gap-10  justify-center items-center">

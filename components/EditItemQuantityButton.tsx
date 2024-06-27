@@ -44,9 +44,9 @@ export function EditItemQuantityButton({ item, type, fetchCart }: { item: any; t
         }
 
         if (item.quantity <= 1 && type === 'minus') {
-            removeFromCart(item.id);
+            removeFromCart(item._id);
         } else {
-            updateCartItemQuantity(item.id, type === 'plus' ? item.quantity + 1 : item.quantity - 1);
+            updateCartItemQuantity(item._id, type === 'plus' ? item.quantity + 1 : item.quantity - 1);
         }
         fetchCart();
     }

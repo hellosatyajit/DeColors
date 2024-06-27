@@ -52,11 +52,10 @@ export const googleSignIn = async () => {
     provider: "google",
     options: {
       redirectTo: process.env.VERCEL_URL
-        ? `https://${process.env.VERCEL_URL}`
-        : "http://localhost:3000",
+        ? `https://${process.env.VERCEL_URL}/auth/callback`
+        : "http://localhost:3000/auth/callback",
     },
   });
-  console.log(data.url);
   
   if (error) {
     console.log("Register Error", error);
@@ -85,7 +84,6 @@ export const forgotPassword = async (formData: FormData) => {
 export const getUser = async () => {
   const supabase = createClient();
   const { data, error } = await supabase.auth.getUser();
-    console.log(data);
     
   if (error) {
     console.log("Get User Error", error);
