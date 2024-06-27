@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export default function ProductCard({ product, style = '', space = true }: { product: any, style?: string, space?: boolean }) {
     const url = product?.isIndividual ? `/product/${product.slug}` : `/packs/${product.slug}`;
-    const rating = product.rating.reviews.reduce((acc, review) => acc + review.rating, 0) / product.rating.reviews.length;
+    const rating = product.rating.reviews.reduce((acc: any, review: any) => acc + review.rating, 0) / product.rating.reviews.length;
 
     return (
         <div className={`bg-white rounded-lg ${style}`}>
@@ -13,7 +13,7 @@ export default function ProductCard({ product, style = '', space = true }: { pro
                         width={300}
                         height={200}
                         className={`object-cover w-full aspect-square sm:aspect-[4/3] ${space ? 'sm:rounded-lg' : 'rounded-t-lg'}`}
-                        src={product?.images ? product.images[0] : ''}
+                        src={product?.images ? product.images[0] : product.variants[0].image}
                         alt={product.name + " Image"}
                     />
                     <span className="absolute left-2 top-2 text-[10px] sm:text-xs bg-white rounded-full p-1 sm:px-2">⭐ {rating}</span>

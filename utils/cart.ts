@@ -35,6 +35,9 @@ const updateCartData = (cartData: CartData) => {
 export const addToCart = (item: any, sku: string = "") => {
   item.quantity = item.quantity || 1;
   item.sku = sku;
+  if (sku) {
+    item._id = `${item._id}-${sku}`;
+  }
   const cartData = getCartData();
   const existingItemIndex = cartData.items.findIndex(
     (i: any) => i._id === item._id

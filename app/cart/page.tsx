@@ -78,7 +78,7 @@ export default function CartPage() {
                                                     }
                                                     src={item?.images ? item.images[0] : item?.variants.find(
                                                         (i: any) => i.sku === item.sku
-                                                    ).image[0]}
+                                                    ).image}
                                                 />
                                             </div>
 
@@ -86,6 +86,11 @@ export default function CartPage() {
                                                 <span className="leading-tight font-medium text-rose-600">
                                                     {item.name}
                                                 </span>
+                                                {
+                                                    item.sku && <span className="leading-tight text-black/50">
+                                                        Variant: {item.sku}
+                                                    </span>
+                                                }
                                                 <span className="leading-tight text-black/50">
                                                     {item.subheading}
                                                 </span>

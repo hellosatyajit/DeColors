@@ -1,5 +1,7 @@
 'use client';
 import Link from "next/link";
+import { useState } from "react";
+import toast from "react-hot-toast";
 
 const SendIcon = () => (
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" className="mr-2 h-4 w-4 transition-transform group-hover:translate-x-1">
@@ -15,10 +17,43 @@ const links = [
 ]
 
 export default function Footer() {
-    const handleFormSubmit = (e: any) => {
+    const [formData, setFormData] = useState({
+        name: "",
+        email: "",
+        message: ""
+    });
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        const { name, value } = e.target;
+        setFormData(prevState => ({
+            ...prevState,
+            [name]: value
+        }));
+    };
+
+    const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        console.log("Form Submitted");
-    }
+        try {
+            const formBody = `email=${encodeURIComponent(formData.email)}&&name=${encodeURIComponent(formData.name)}&&message=${encodeURIComponent(formData.message)}`;
+            const response = await fetch('https://app.loops.so/api/newsletter-form/clrovl21z00cat4onnwr44bus', {
+                method: 'POST',
+                body: formBody,
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                },
+            });
+
+            if (response.ok) {
+                toast.success("Form submitted successfully!");
+                setFormData({ name: "", email: "", message: "" }); // Reset form
+            } else {
+                throw new Error('Form submission failed');
+            }
+        } catch (error) {
+            console.error('Error submitting form:', error);
+            toast.error("Error submitting form. Please try again.");
+        }
+    };
 
     return (
         <footer className="w-full bg-pink-50">
@@ -29,13 +64,35 @@ export default function Footer() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-10 sm:gap-20">
                     <form onSubmit={handleFormSubmit} className="flex flex-col gap-3 col-span-1">
                         <p className="text-xl font-semibold">Contact Us</p>
-                        <input type="text" placeholder="Your Name" className="bg-white p-4 rounded-lg border border-transparent hover:border-gray-400 focus:outline-rose-600" />
-                        <input type="text" placeholder="Your Email" className="bg-white p-4 rounded-lg border border-transparent hover:border-gray-400 focus:outline-rose-600" />
-                        <textarea name="" id="" cols={5} placeholder="Your Message" className="bg-white p-4 rounded-lg border border-transparent hover:border-gray-400 focus:outline-rose-600"></textarea>
-                        <button type="submit" className="bg-slate-900  hover:bg-black text-white p-4 rounded-lg flex justify-center items-center gap-2 transition-all active:scale-95 group">
+                        <input
+                            type="text"
+                            name="name"
+                            value={formData.name}
+                            onChange={handleInputChange}
+                            placeholder="Your Name"
+                            className="bg-white p-4 rounded-lg border border-transparent hover:border-gray-400 focus:outline-rose-600"
+                        />
+                        <input
+                            type="email"
+                            name="email"
+                            value={formData.email}
+                            onChange={handleInputChange}
+                            placeholder="Your Email"
+                            className="bg-white p-4 rounded-lg border border-transparent hover:border-gray-400 focus:outline-rose-600"
+                        />
+                        <textarea
+                            name="message"
+                            value={formData.message}
+                            onChange={handleInputChange}
+                            cols={5}
+                            placeholder="Your Message"
+                            className="bg-white p-4 rounded-lg border border-transparent hover:border-gray-400 focus:outline-rose-600"
+                        ></textarea>
+                        <button type="submit" className="bg-slate-900 hover:bg-black text-white p-4 rounded-lg flex justify-center items-center gap-2 transition-all active:scale-95 group">
                             Send{" "}<SendIcon />
                         </button>
                     </form>
+
                     <div className="flex flex-col sm:flex-row gap-5 sm:gap-10 md:gap-20">
                         <div className="space-y-3">
                             <p className="text-xl font-semibold">Pages</p>
