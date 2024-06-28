@@ -9,6 +9,9 @@ export interface IProduct {
   url: string;
   slug: string;
   subheading: string;
+  brand: string;
+  category: string;
+  type: string;
   rating: {
     reviews: {
       name: string;
@@ -32,7 +35,10 @@ export interface IPacks {
   images: string;
   url: string;
   slug: string;
+  brand: string;
+  category: string;
   subheading: string;
+  type: string;
   rating: {
     reviews: {
       name: string;
