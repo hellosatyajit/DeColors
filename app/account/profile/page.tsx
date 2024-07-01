@@ -1,10 +1,11 @@
+'use client'
 import { Button } from "@/components/ui/button";
-import { getUser } from "@/utils/auth";
+import { useSession } from "next-auth/react";
 import { NameEdit, PhoneEdit } from "./EditField";
 
-export default async function ProfielPage() {
-    const user = await getUser();
-
+export default  function ProfielPage() {
+    const { data: session } = useSession();
+    const user = session?.user;
     return (
         <div className="space-y-5 flex-1">
             <p className="font-bold text-lg sm:text-3xl">Profile</p>
@@ -12,7 +13,7 @@ export default async function ProfielPage() {
                 <ul className="space-y-5 w-full">
                     <li>
                         <NameEdit user={user} />
-                    </li>
+                    </li>   
                     <hr />
                     <li className="flex justify-between">
                         <div>
@@ -28,7 +29,7 @@ export default async function ProfielPage() {
                     <li>
                         <div>
                             <p className="font-semibold">Address</p>
-                            <p>{user?.address || "Not added yet"}</p>
+                            <p>{ "Not added yet"}</p>
                         </div>
                         <Button variant={'default'}>Edit</Button>
                     </li>

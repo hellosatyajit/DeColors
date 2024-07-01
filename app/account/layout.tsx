@@ -1,17 +1,27 @@
-import { getUser, signOut } from "@/utils/auth";
-import Link from "next/link";
-import { redirect } from "next/navigation";
+'use client';
 
-export default async function AccountLayout({
+import { signOut, useSession } from "next-auth/react";
+import Link from "next/link";
+
+import { useEffect } from "react";
+import { redirect } from "next/navigation"; 
+
+export default function AccountLayout({
     children,
 }: {
     children: React.ReactNode;
 }) {
-    const user = await getUser();
-    if(!user) redirect("/login");
+    const { data: session, status } = useSession();
+    const user = session?.user;
 
-    // const fullUrl = headers().get('referer') || "";
-    // const pathname = new URL(fullUrl).pathname.split("/")[2];
+    useEffect(() => {
+        if (status === "loading") return; 
+        if (!session) {
+            redirect("/login"); 
+        }
+    }, [session, status]);
+
+    if (!user) return null; 
 
     return (
         <section className="max-w-7xl m-auto p-5 flex gap-5 md:mb-20">
@@ -29,17 +39,18 @@ export default async function AccountLayout({
                             </Link>
                         </li>
                         <li>
-                            <form action={signOut}>
-                                <button className="flex items-center p-1 text-gray-900 rounded-lg hover:text-rose-600 group">
-                                    <span className="ms-3">Logout</span>
-                                </button>
-                            </form>
+                            <button
+                                type="button"
+                                onClick={() => signOut()}
+                                className="flex items-center p-1 text-gray-900 rounded-lg hover:text-rose-600 group"
+                            >
+                                <span className="ms-3">Logout</span>
+                            </button>
                         </li>
                     </ul>
                 </div>
             </aside>
             {children}
         </section>
-
-    )
+    );
 }

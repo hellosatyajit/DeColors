@@ -3,15 +3,68 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 import GoBack from "@/components/GoBack";
-import { signIn, googleSignIn } from "@/utils/auth";
-
+import { signIn } from "next-auth/react";
 export default function Login({
   searchParams,
 }: {
   searchParams: { message: string };
 }) {
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [user, setUser] = useState({
+    email: "",
+    password: "",
+  });
+
   const [passwordShow, setPasswordShow] = useState(false);
+  const handleInputChange = (event: any) => {
+    const { name, value } = event.target;
+    setUser((prevInfo) => ({ ...prevInfo, [name]: value }));
+  };
+  const handleSubmit = async (e: any) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      if (!user.email || !user.password) {
+        setError("Please fill in all fields");
+        return;
+      }
+      const emailRegex = /^([a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})$/;
+      if (!emailRegex.test(user.email)) {
+        setError("Invalid email format");
+        return;
+      }
+
+      const res = await signIn("credentials", {
+        email: user.email,
+        password: user.password,
+        redirect: false,
+      });
+      console.log(res)
+
+      if (res?.error) {
+        console.log(res)
+        setError(res.error);
+        setLoading(false);
+        return;
+      }
+
+      setError("");
+      router.push("/");
+    } catch (error) {
+      console.error('Login error:', error);
+      setError("Error occurred during login");
+    } finally {
+      setLoading(false);
+      setUser({
+        email: "",
+        password: "",
+      });
+    }
+  };
 
 
 
@@ -24,10 +77,10 @@ export default function Login({
   return (
     <div className="flex-1 flex flex-col w-full max-w-[1600px] p-5 sm:p-10 min-h-[calc(100vh-80px)] justify-center gap-2 relative">
       <GoBack />
-      <form action={signIn} className="animate-in flex-1 flex flex-col w-full max-w-96 m-auto mt-10 sm:mt-0 justify-center gap-3 text-foreground">
+      <form onSubmit={handleSubmit} className="animate-in flex-1 flex flex-col w-full max-w-96 m-auto mt-10 sm:mt-0 justify-center gap-3 text-foreground">
         <p className="text-3xl font-bold text-center mb-4">Welcome Back!</p>
 
-        <button onClick={() => googleSignIn()} type="button" className="border border-gray-300 bg-white hover:bg-gray-100 text-black p-4 rounded-lg flex justify-center items-center gap-2 transition-all active:scale-95 group">
+        <button onClick={() => signIn("google",{ callbackUrl: "/" })} type="button" className="border border-gray-300 bg-white hover:bg-gray-100 text-black p-4 rounded-lg flex justify-center items-center gap-2 transition-all active:scale-95 group">
           <Image src={'/google.svg'} alt="google icon" width={24} height={24} /> Continue with Google
         </button>
         <div className='relative py-4 flex justify-center'>
@@ -41,6 +94,8 @@ export default function Login({
             placeholder="Email"
             name="email"
             id="email"
+            value={user.email}
+            onChange={handleInputChange}
             required
             className="bg-white p-4 rounded-lg transition-all w-full outline-none ring-0 border hover:border-gray-400 focus:border-rose-600"
           />
@@ -66,12 +121,15 @@ export default function Login({
             placeholder="Password"
             name="password"
             id="password"
+            value={user.password}
+            onChange={handleInputChange}
             required
             className="bg-white p-4 rounded-lg transition-all w-full outline-none ring-0 border hover:border-gray-400 focus:border-rose-600"
           />
         </div>
-        <button className="bg-rose-600  hover:bg-rose-700 text-white p-4 rounded-lg flex justify-center items-center gap-2 transition-all active:scale-95 group">
-          Log In
+        {error && <p className="py-6 text-lg">{error}</p>}
+        <button type="submit" className="bg-rose-600  hover:bg-rose-700 text-white p-4 rounded-lg flex justify-center items-center gap-2 transition-all active:scale-95 group">
+        {loading ? "Processing" : " Login"}
         </button>
         <p className="text-center text-sm mt-2">
           <Link href="/forgot-password" className="font-medium hover:underline">

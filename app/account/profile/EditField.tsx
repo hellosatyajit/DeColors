@@ -12,7 +12,7 @@ export function NameEdit({ user }: any) {
             <div className="flex justify-between">
                 <div>
                     <p className="font-semibold">Name</p>
-                    <p>{user?.username}</p>
+                    <p>{user?.name}</p>
                 </div>
                 <Button variant={'default'} onClick={() => setShow(!show)}>Edit</Button>
             </div>
@@ -32,7 +32,7 @@ export function PhoneEdit({ user }: any) {
             <div className="flex justify-between">
                 <div>
                     <p className="font-semibold">Phone</p>
-                    <p>{user?.address || "Not added yet"}</p>
+                    <p>{ "Not added yet"}</p>
                 </div>
                 <Button variant={'default'} onClick={() => setShow(!show)}>Edit</Button>
             </div>

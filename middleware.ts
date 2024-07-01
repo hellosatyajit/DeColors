@@ -1,20 +1,49 @@
-import { type NextRequest } from "next/server";
+import { getToken } from "next-auth/jwt";
+import { NextRequest, NextResponse } from "next/server";
 import { updateSession } from "@/utils/supabase/middleware";
 
-export async function middleware(request: NextRequest) {
-  return await updateSession(request);
+export async function middleware(req: NextRequest) {
+  
+  await updateSession(req);
+
+  const { pathname } = req.nextUrl;
+
+
+  const excludePaths = [
+    "/favicon.ico",
+    pathname.startsWith("/_next/static"),
+    pathname.startsWith("/_next/image"),
+    pathname.match(/\.(svg|png|jpg|jpeg|gif|webp)$/)
+  ];
+
+  if (excludePaths.some(exclude => exclude)) {
+    return NextResponse.next();
+  }
+
+  const token = await getToken({
+    req: req,
+    secret: process.env.NEXTAUTH_SECRET,
+  });
+
+  const publicPaths = ["/login", "/register"];
+  const isPublicPath = publicPaths.includes(pathname);
+
+  if (isPublicPath && token) {
+    return NextResponse.redirect(new URL("/account/profile", req.url));
+  }
+  if (!isPublicPath && !token) {
+    return NextResponse.redirect(new URL("/login", req.url));
+  }
+
+  
+  return NextResponse.next();
 }
 
 export const config = {
   matcher: [
-    /*
-     * Match all request paths except:
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     * - images - .svg, .png, .jpg, .jpeg, .gif, .webp
-     * Feel free to modify this pattern to include more paths.
-     */
-    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+    "/",               
+    "/login",          
+    "/register",       
+    "/account/profile" 
   ],
 };
