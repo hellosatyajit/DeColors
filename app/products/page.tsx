@@ -1,10 +1,10 @@
 import Image from "next/image";
 import ProductCard from "@/components/ProductCard";
 import Breadcrumb from "@/components/Breadcrumb";
-import { getBestSellingProducts } from "@/utils/store";
-
+import { fetchBestSellingProducts } from "@/server/actions/ProductActions";
+import { IProduct, IPacks } from "@/types/product";
 export default async function Category() {
-    const products = await getBestSellingProducts(false);
+    const { data: products }: { data: (IProduct | IPacks)[] }  = await fetchBestSellingProducts();
 
     return (
         <section className="w-full">
