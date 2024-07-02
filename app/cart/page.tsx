@@ -3,7 +3,7 @@ import Breadcrumb from "@/components/Breadcrumb";
 import { DeleteItemButton } from "@/components/DeleteItemButton";
 import { EditItemQuantityButton } from "@/components/EditItemQuantityButton";
 import { Button } from "@/components/ui/button";
-import { getUser } from "@/utils/auth";
+import { useSession } from "next-auth/react";
 import { getCartData } from "@/utils/cart";
 import Image from "next/image";
 import Link from "next/link";
@@ -22,17 +22,17 @@ const breadcrumb = [
 
 export default function CartPage() {
     const [items, setItems] = useState([]);
-    const [user, setUser] = useState<{ email: any; username: any; phone: any; } | undefined>(undefined);
+    const [user, setUser] = useState<{ id:string;email: string; name: string;  } | undefined>(undefined);
     const totalCost = items.reduce((acc, item: any) => acc + (item.price.mrp - item.price.discount) * item.quantity, 0);
-
+    const { data: session } = useSession();
+    const userinfo = session?.user;
     const fetchCart = () => {
         const cartItems = getCartData();
         setItems(cartItems.items);
     }
 
     const fetchUser = async () => {
-        const user = await getUser();
-        setUser(user);
+        setUser(userinfo);
     }
 
     useEffect(() => {

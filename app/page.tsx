@@ -1,3 +1,4 @@
+
 import Hero from "@/components/home/Hero";
 import ShopByCategory from "@/components/home/ShopByCategory";
 import ProductsSlider from "@/components/home/ProductsSlider";

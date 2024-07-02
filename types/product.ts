@@ -49,3 +49,9 @@ export interface IPacks {
   };
   soldCount: number;
 }
+
+export interface User {
+  id: string;
+  email: string;
+  name: string;
+}
