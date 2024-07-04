@@ -2,8 +2,8 @@
 import Image from "next/image";
 import ProductCard from "@/components/ProductCard";
 import Breadcrumb from "@/components/Breadcrumb";
-import { getProductsByBrand, getProductsByCategory } from "@/utils/store";
-import { IProduct } from "@/types/product";
+import { fetchProductsByBrand,fetchProductsByCategory } from "@/server/actions/ProductActions";
+import { IProduct,IPacks } from "@/types/product";
 
 const products = [
     {
@@ -68,11 +68,11 @@ export default async function Category(router: any) {
         },
     ]
 
-    let products = [];
+
     if (category === 'De Coloress' || category === 'Chelsy' || category === 'Herbonica') {
-        products = await getProductsByBrand(category, false);
+        const { data: products }: { data: (IProduct | IPacks)[] } = await fetchProductsByBrand(category)
     } else {
-        products = await getProductsByCategory(category, false);
+        const { data: products }: { data: (IProduct | IPacks)[] } = await fetchProductsByCategory(category);
     }
 
     return (
@@ -120,7 +120,7 @@ export default async function Category(router: any) {
                     </div>
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
-                    {products.map((product: IProduct, index: number) => (
+                {products.map((product, index) => (
                         <ProductCard key={index} product={product} style="hover:shadow-md hover:shadow-gray-200 transition-all rounded-lg border border-gray-200" space={false} />
                     ))}
                 </div>

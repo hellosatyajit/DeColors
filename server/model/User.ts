@@ -1,7 +1,6 @@
-"use server";
 
 import { ObjectId } from "mongodb";
-import clientPromise from "../lib/mongodb";
+import clientPromise from "../../lib/mongodb";
 
 export interface UserDocument {
   _id?: ObjectId;
@@ -10,8 +9,6 @@ export interface UserDocument {
   password?: string;
   resetToken?: string | null;
   resetTokenExpiry?: Date | null;
-  address?: string | null;
-  phoneNumber?: number | null;
 }
 
 async function getUserCollection() {

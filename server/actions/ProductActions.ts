@@ -36,7 +36,7 @@ export const fetchPackBySlug = async (slug: string, pageNumber: number = 1) => {
 
 export const fetchProductsByBrand = async (
   brandName: string,
-  pageNumber: number
+  pageNumber: number = 1
 ) => {
   const productService = new ProductService();
   const packsService = new PacksService();
@@ -57,8 +57,31 @@ export const fetchProductsByBrand = async (
     data: [...products.data, ...packs.data],
   };
 };
+export const fetchProductsByCategory = async (
+  categoryName: string,
+  pageNumber: number = 1
+) => {
+  const productService = new ProductService();
+  const packsService = new PacksService();
 
-export const fetchBestSellingProducts = async (pageNumber: number) => {
+  const products = await productService.searchProducts(
+    { category: categoryName },
+    pageNumber,
+    limit
+  );
+
+  const packs = await packsService.searchProducts(
+    { category: categoryName },
+    pageNumber,
+    limit
+  );
+
+  return {
+    data: [...products.data, ...packs.data],
+  };
+};
+
+export const fetchBestSellingProducts = async (pageNumber: number = 1) => {
   const productService = new ProductService();
   const packsService = new PacksService();
 

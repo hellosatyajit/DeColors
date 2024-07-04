@@ -3,15 +3,85 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import toast from "react-hot-toast";
-import { signUp, googleSignIn } from "@/utils/auth";
+import { signIn } from "next-auth/react";
 import GoBack from "@/components/GoBack";
-
+import axios from "axios";
+import { useRouter } from "next/navigation";
 export default function Login({
   searchParams,
 }: {
   searchParams: { message: string };
 }) {
   const [passwordShow, setPasswordShow] = useState(false);
+
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+  const [error, setError] = useState("");
+  const [user, setUser] = useState({
+    name: "",
+    email: "",
+    password: "",
+  });
+
+  const handleInputChange = (event: any) => {
+    const { name, value } = event.target;
+    return setUser((prevInfo) => ({ ...prevInfo, [name]: value }));
+  };
+
+  const handleSubmit = async (e: any) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      if (!user.name || !user.email || !user.password) {
+        setError("Please fill all the fields");
+        return;
+      }
+      const emailRegex = /^([a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})$/;
+      if (!emailRegex.test(user.email)) {
+        setError("Invalid email ID");
+        return;
+      }
+
+      const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+      if (!passwordRegex.test(user.password)) {
+        setError("Password must be at least 8 characters long, contain an uppercase letter, a lowercase letter, a digit, and a special character");
+        return;
+      }
+
+      const res = await axios.post("/api/register", user);
+      console.log(res.data);
+      if (res.status == 200 || res.status == 201) {
+        console.log("User added successfully");
+        setError(""); 
+        const signInRes = await signIn("credentials", {
+          redirect: false,
+          email: user.email,
+          password: user.password,
+        });
+
+        if (signInRes?.ok) {
+          router.push("/onboarding");
+        } else {
+          setError("Sign in after registration failed");
+        }
+      }
+    } catch (error:any) {
+      console.log(error);
+      if (error.response && error.response.status === 400) {
+        setError("User email already in use");
+      } else {
+        setError("An error occurred");
+      }
+    } finally {
+      setLoading(false);
+
+      setUser({
+        name: "",
+        email: "",
+        password: "",
+      });
+    }
+  };
 
   useEffect(() => {
     if (searchParams.message) {
@@ -22,9 +92,9 @@ export default function Login({
   return (
     <div className="flex-1 flex flex-col w-full max-w-[1600px] p-5 sm:p-10 min-h-[calc(100vh-80px)] justify-center gap-2 relative">
       <GoBack />
-      <form action={signUp} className="animate-in flex-1 flex flex-col w-full max-w-96 m-auto mt-10 sm:mt-0 justify-center gap-3 text-foreground">
+      <form onSubmit={handleSubmit} className="animate-in flex-1 flex flex-col w-full max-w-96 m-auto mt-10 sm:mt-0 justify-center gap-3 text-foreground">
         <p className="text-3xl font-bold text-center mb-4">Create an Account</p>
-        <button onClick={googleSignIn} type="button" className="border border-gray-300 bg-white hover:bg-gray-100 text-black p-4 rounded-lg flex justify-center items-center gap-2 transition-all active:scale-95 group">
+        <button onClick={() => signIn("google",{ callbackUrl: "/onboarding" })} type="button" className="border border-gray-300 bg-white hover:bg-gray-100 text-black p-4 rounded-lg flex justify-center items-center gap-2 transition-all active:scale-95 group">
           <Image src={'/google.svg'} alt="google icon" width={24} height={24} /> Continue with Google
         </button>
         <div className='relative py-4 flex justify-center'>
@@ -38,6 +108,8 @@ export default function Login({
             placeholder="Name"
             name="name"
             id="name"
+            value={user.name}
+            onChange={handleInputChange}
             required
             className="bg-white p-4 rounded-lg transition-all w-full outline-none ring-0 border hover:border-gray-400 focus:border-rose-600"
           />
@@ -49,6 +121,8 @@ export default function Login({
             placeholder="Email"
             name="email"
             id="email"
+            value={user.email}
+            onChange={handleInputChange}
             required
             className="bg-white p-4 rounded-lg transition-all w-full outline-none ring-0 border hover:border-gray-400 focus:border-rose-600"
           />
@@ -74,13 +148,15 @@ export default function Login({
             placeholder="Password"
             name="password"
             id="password"
+            value={user.password}
+            onChange={handleInputChange}
             required
             className="bg-white p-4 rounded-lg transition-all w-full outline-none ring-0 border hover:border-gray-400 focus:border-rose-600"
           />
         </div>
-
+        {error && <p className="py-6 text-lg">{error}</p>}
         <button type="submit" className="bg-rose-600  hover:bg-rose-700 text-white p-4 rounded-lg flex justify-center items-center gap-2 transition-all active:scale-95 group">
-          Sign Up
+        {loading ? "Processing" : " Register"}
         </button>
         <p className="text-center text- mt-2">
           Already have an account?{" "}

@@ -57,7 +57,7 @@ export async function getBestSellingProducts(limit: boolean) {
   const { data, error } = await supabase
     .from("products")
     .select("*")
-    .order('sold_count', { ascending: true })
+    .order('soldCount', { ascending: true })
     .limit(limit ? 10 : 1000);
 
   if (error) {

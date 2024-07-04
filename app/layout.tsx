@@ -4,6 +4,7 @@ import Script from 'next/script';
 import { Toaster } from "react-hot-toast";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import AuthProvider from "@/components/Provider";
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
@@ -23,17 +24,19 @@ export default function RootLayout({
   return (
     <html lang="en" className={GeistSans.className}>
       <body>
-        <Header />
-        {children}
-        <Footer />
-        <Toaster
-          position="top-center"
-          reverseOrder={false}
-        />
-        <Script
-          id="razorpay-checkout-js"
-          src="https://checkout.razorpay.com/v1/checkout.js"
-        />
+        <AuthProvider>
+          <Header />
+          {children}
+          <Footer />
+          <Toaster
+            position="top-center"
+            reverseOrder={false}
+          />
+          <Script
+            id="razorpay-checkout-js"
+            src="https://checkout.razorpay.com/v1/checkout.js"
+          />
+        </AuthProvider>
       </body>
     </html>
   );
