@@ -125,7 +125,7 @@ export function AddressEdit({ user }: any) {
       country: user?.address?.country || "India"
     });
   
-    const handleInputChange = (event: any) => {
+    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
       const { name, value } = event.target;
       setDetails((prevDetails) => ({ ...prevDetails, [name]: value }));
     };
