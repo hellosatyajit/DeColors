@@ -9,7 +9,8 @@ export async function POST(request: NextRequest) {
   try {
     const { email } = await request.json();
     const resetToken = crypto.randomBytes(20).toString("hex");
-    const resetUrl = `${process.env.NEXTAUTH_URL}/reset-password/${resetToken}`;
+    const baseUrl = `${request.nextUrl.protocol}//${request.nextUrl.host}`;
+    const resetUrl = `${baseUrl}/reset-password/${resetToken}`;
     const emailBody = `Please click on this link to reset your password: <a href="${resetUrl}">Reset Password</a>`;
 
     const user = await findUserByEmail(email);
