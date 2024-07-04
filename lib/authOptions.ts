@@ -29,14 +29,13 @@ export const authOptions: NextAuthOptions = {
           if (!passwordsMatch) {
             throw new Error("Incorrect password");
           }
-          // Map your user document to the User type
           const userForAuth: UserType = {
-            id: user._id.toString(), 
+            id: user._id.toString(),
             email: user.email,
             name: user.name,
           };
           return userForAuth;
-        } catch (error:any) {
+        } catch (error: any) {
           throw new Error(error.message);
         }
       },
@@ -74,11 +73,14 @@ export const authOptions: NextAuthOptions = {
       }
       return true;
     },
-    async jwt({ token, user }) {
+    async jwt({ token, trigger,user,session}) {
+      if (trigger === "update" && session) {
+        return { ...token, ...session?.user };
+      }
       if (user) {
         token.email = user.email || "no-email@example.com";
         token.name = user.name || "Anonymous";
-        token.id = user.id; 
+        token.id = user.id;
       }
       return token;
     },
@@ -86,7 +88,7 @@ export const authOptions: NextAuthOptions = {
       if (session.user) {
         session.user.email = token.email || "no-email@example.com";
         session.user.name = token.name || "Anonymous";
-        session.user.id = token.id; 
+        session.user.id = token.id;
       }
       return session;
     },

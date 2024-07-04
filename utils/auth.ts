@@ -10,6 +10,8 @@ export interface UserDocument {
   password?: string;
   resetToken?: string | null;
   resetTokenExpiry?: Date | null;
+  address?: string | null;
+  phoneNumber?: number | null;
 }
 
 async function getUserCollection() {

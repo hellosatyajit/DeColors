@@ -60,7 +60,7 @@ export default function Login({
         });
 
         if (signInRes?.ok) {
-          router.push("/");
+          router.push("/onboarding");
         } else {
           setError("Sign in after registration failed");
         }
@@ -94,7 +94,7 @@ export default function Login({
       <GoBack />
       <form onSubmit={handleSubmit} className="animate-in flex-1 flex flex-col w-full max-w-96 m-auto mt-10 sm:mt-0 justify-center gap-3 text-foreground">
         <p className="text-3xl font-bold text-center mb-4">Create an Account</p>
-        <button onClick={() => signIn("google",{ callbackUrl: "/" })} type="button" className="border border-gray-300 bg-white hover:bg-gray-100 text-black p-4 rounded-lg flex justify-center items-center gap-2 transition-all active:scale-95 group">
+        <button onClick={() => signIn("google",{ callbackUrl: "/onboarding" })} type="button" className="border border-gray-300 bg-white hover:bg-gray-100 text-black p-4 rounded-lg flex justify-center items-center gap-2 transition-all active:scale-95 group">
           <Image src={'/google.svg'} alt="google icon" width={24} height={24} /> Continue with Google
         </button>
         <div className='relative py-4 flex justify-center'>
