@@ -3,10 +3,20 @@ import { updateUser } from "../../../utils/auth";
 
 export async function POST(request: NextRequest) {
   try {
-    const { email, address, phoneNumber, name } = await request.json();
+    const { email, address, city, country, state, pinCode, phoneNumber, name } = await request.json();
 
     const updateFields: any = {};
-    if (address) updateFields.address = address;
+
+    if (address || city || state || pinCode || country) {
+      updateFields.address = {
+        address: address || "",
+        city: city || "",
+        state: state || "",
+        pinCode: pinCode || "",
+        country: country || ""
+      };
+    }
+    
     if (phoneNumber) updateFields.phoneNumber = phoneNumber;
     if (name) updateFields.name = name;
 

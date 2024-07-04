@@ -116,51 +116,100 @@ export function PhoneEdit({ user }: any) {
 }
 export function AddressEdit({ user }: any) {
     const [show, setShow] = useState(false);
-    const [displayAddress, setDisplayAddress] = useState(user?.address || "Not added yet");
-    const [inputAddress, setInputAddress] = useState(displayAddress === "Not added yet" ? "" : displayAddress);
     const [loading, setLoading] = useState(false);
-
-    const handleSave = async () => {
-        setLoading(true);
-        try {
-            const response = await axios.post('/api/updatedetails', { email: user.email, address: inputAddress });
-            if (response.data.success) {
-                toast.success("Address updated successfully");
-                setShow(false);
-                setDisplayAddress(inputAddress);
-            } else {
-                toast.error("Failed to update address");
-            }
-        } catch (error) {
-            toast.error("Failed to update address");
-        } finally {
-            setLoading(false);
-        }
+    const [details, setDetails] = useState({
+      address: user?.address?.address || "",
+      city: user?.address?.city || "",
+      state: user?.address?.state || "",
+      pinCode: user?.address?.pinCode || "",
+      country: user?.address?.country || "India"
+    });
+  
+    const handleInputChange = (event: any) => {
+      const { name, value } = event.target;
+      setDetails((prevDetails) => ({ ...prevDetails, [name]: value }));
     };
-
+  
+    const handleSave = async () => {
+      setLoading(true);
+      try {
+        const response = await axios.post('/api/updatedetails', { email: user.email, ...details });
+        if (response.data.success) {
+          toast.success("Address updated successfully");
+          setShow(false);
+        } else {
+          toast.error("Failed to update address");
+        }
+      } catch (error) {
+        toast.error("Failed to update address");
+      } finally {
+        setLoading(false);
+      }
+    };
+  
     return (
-        <div className="space-y-5">
-            <div className="flex justify-between">
-                <div>
-                    <p className="font-semibold">Address</p>
-                    <p>{displayAddress}</p>
-                </div>
-                <Button variant={'default'} onClick={() => setShow(!show)}>Edit</Button>
-            </div>
-            {show && (
-                <div className="flex justify-between">
-                    <Input 
-                        type="text" 
-                        placeholder="Your New Address" 
-                        className="max-w-96 ring-pink-500" 
-                        value={inputAddress}
-                        onChange={(e) => setInputAddress(e.target.value)} 
-                    />
-                    <Button variant={'default'} onClick={handleSave} disabled={loading}>
-                        {loading ? "Saving..." : "Save"}
-                    </Button>
-                </div>
-            )}
+      <div className="space-y-5">
+        <div className="flex justify-between">
+          <div>
+            <p className="font-semibold">Address</p>
+            <p>
+              {details.address}, {details.city}, {details.state}, {details.pinCode}, {details.country}
+            </p>
+          </div>
+          <Button variant={'default'} onClick={() => setShow(!show)}>Edit</Button>
         </div>
+        {show && (
+          <div className="space-y-3">
+            <Input 
+              type="text" 
+              placeholder="Address" 
+              name="address"
+              className="max-w-96 ring-pink-500" 
+              value={details.address}
+              onChange={handleInputChange} 
+            />
+            <Input 
+              type="text" 
+              placeholder="City" 
+              name="city"
+              className="max-w-96 ring-pink-500" 
+              value={details.city}
+              onChange={handleInputChange} 
+            />
+            <Input 
+              type="text" 
+              placeholder="State" 
+              name="state"
+              className="max-w-96 ring-pink-500" 
+              value={details.state}
+              onChange={handleInputChange} 
+            />
+            <Input 
+              type="text" 
+              placeholder="Pin Code" 
+              name="pinCode"
+              className="max-w-96 ring-pink-500" 
+              value={details.pinCode}
+              onChange={handleInputChange} 
+              minLength={6}
+              maxLength={6}
+              pattern="[0-9]{6}"
+              title="Please enter a valid 6-digit pin code"
+            />
+            <Input 
+              type="text" 
+              placeholder="Country" 
+              name="country"
+              className="max-w-96 ring-pink-500" 
+              value={details.country}
+              disabled={true}
+              onChange={handleInputChange} 
+            />
+            <Button variant={'default'} onClick={handleSave} disabled={loading}>
+              {loading ? "Saving..." : "Save"}
+            </Button>
+          </div>
+        )}
+      </div>
     );
-}
+  }
