@@ -156,7 +156,7 @@ export function AddressEdit({ user }: any) {
               {details.address}, {details.city}, {details.state}, {details.pinCode}, {details.country}
             </p>
           </div>
-          <Button variant={'default'} onClick={() => setShow(!show)}>Edit</Button>
+          <Button variant="default" onClick={() => setShow(!show)}>Edit</Button>
         </div>
         {show && (
           <div className="space-y-3">
@@ -205,7 +205,7 @@ export function AddressEdit({ user }: any) {
               disabled={true}
               onChange={handleInputChange} 
             />
-            <Button variant={'default'} onClick={handleSave} disabled={loading}>
+            <Button variant="default" onClick={handleSave} disabled={loading}>
               {loading ? "Saving..." : "Save"}
             </Button>
           </div>
