@@ -1,10 +1,10 @@
 'use client';
-import { useRouter } from "next/router";
+import { redirect } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useEffect } from "react";
 
 const AuthCallback = () => {
-  const router = useRouter();
+
   const { data: session, status } = useSession();
 
   useEffect(() => {
@@ -12,12 +12,12 @@ const AuthCallback = () => {
     if (status === "authenticated") {
         
       if (session.user.isFirstTimeUser) {
-        router.push("/onboarding");
+        redirect("/onboarding");
       } else {
-        router.push("/");
+        redirect("/");
       }
     }
-  }, [session, status, router]);
+  }, [session, status]);
 
   return <div>Loading...</div>;
 };
