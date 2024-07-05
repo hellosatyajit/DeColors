@@ -1,10 +1,10 @@
 import Image from "next/image";
 import ProductCard from "@/components/ProductCard";
 import Breadcrumb from "@/components/Breadcrumb";
-import { fetchBestSellingProducts } from "@/server/actions/ProductActions";
+import { fetchProducts } from "@/server/actions/ProductActions";
 import { IProduct, IPacks } from "@/types/product";
 export default async function Category() {
-    const { data: products }: { data: (IProduct | IPacks)[] }  = await fetchBestSellingProducts();
+    const { data: products }: { data: (IProduct | IPacks)[] }  = await fetchProducts();
 
     return (
         <section className="w-full">

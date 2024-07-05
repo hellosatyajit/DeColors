@@ -7,13 +7,14 @@ import { signIn } from "next-auth/react";
 import GoBack from "@/components/GoBack";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-export default function Login({
+import { useSession } from "next-auth/react";
+export default function SignUp({
   searchParams,
 }: {
   searchParams: { message: string };
 }) {
   const [passwordShow, setPasswordShow] = useState(false);
-
+  const {data:session,status} = useSession();
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const [error, setError] = useState("");
@@ -27,7 +28,17 @@ export default function Login({
     const { name, value } = event.target;
     return setUser((prevInfo) => ({ ...prevInfo, [name]: value }));
   };
-
+  const handleGoogleSignIn = async (e: any) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      await signIn("google");
+      router.push('/auth/callback');
+    } catch (error: any) {
+      console.error("Google sign-in failed:", error);
+      setLoading(false);
+    }
+  };
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     setLoading(true);
@@ -94,7 +105,7 @@ export default function Login({
       <GoBack />
       <form onSubmit={handleSubmit} className="animate-in flex-1 flex flex-col w-full max-w-96 m-auto mt-10 sm:mt-0 justify-center gap-3 text-foreground">
         <p className="text-3xl font-bold text-center mb-4">Create an Account</p>
-        <button onClick={() => signIn("google",{ callbackUrl: "/onboarding" })} type="button" className="border border-gray-300 bg-white hover:bg-gray-100 text-black p-4 rounded-lg flex justify-center items-center gap-2 transition-all active:scale-95 group">
+        <button onClick={handleGoogleSignIn} type="button" className="border border-gray-300 bg-white hover:bg-gray-100 text-black p-4 rounded-lg flex justify-center items-center gap-2 transition-all active:scale-95 group">
           <Image src={'/google.svg'} alt="google icon" width={24} height={24} /> Continue with Google
         </button>
         <div className='relative py-4 flex justify-center'>

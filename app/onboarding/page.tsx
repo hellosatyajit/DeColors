@@ -64,6 +64,18 @@ export default function RegisterDetails() {
       setError("Same details or error occurred during update");
       setLoading(false);
     }
+    finally {
+      setLoading(false);
+      setDetails({
+        email: session?.user?.email || "",
+        address: "",
+        state: "",
+        city: "",
+        pinCode: "",
+        phoneNumber: "",
+        country: "India"
+      });
+    }
   };
 
   const handleSkip = () => {

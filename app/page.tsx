@@ -4,11 +4,11 @@ import ShopByCategory from "@/components/home/ShopByCategory";
 import ProductsSlider from "@/components/home/ProductsSlider";
 import HotDeals from "@/components/home/HotDeals";
 import Newsletter from "@/components/home/Newsletter";
-import { fetchBestSellingProducts, fetchProductsByBrand } from "@/server/actions/ProductActions";
+import { fetchProductsByBrand, fetchSortedProducts } from "@/server/actions/ProductActions";
 
 export default async function Index() {
   const pageNumber = 1;
-  const { data: bestSellingProducts } = await fetchBestSellingProducts(pageNumber);
+  const { data: bestSellingProducts } = await fetchSortedProducts('best-selling','None','None',pageNumber);
   const { data: deColoressProducts } = await fetchProductsByBrand("De Coloress", pageNumber);
   const { data: chelsyProducts } = await fetchProductsByBrand("Chelsy", pageNumber);
   const { data: herbonicaProducts } = await fetchProductsByBrand("Herbonica", pageNumber);
