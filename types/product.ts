@@ -23,6 +23,8 @@ export interface IProduct {
   soldCount: number;
   isIndividual: boolean;
   variants: [any];
+  createdAt: Date;
+  updatedAt: Date; 
 }
 
 export interface IPacks {
@@ -48,6 +50,8 @@ export interface IPacks {
     }[];
   };
   soldCount: number;
+  createdAt: Date; 
+  updatedAt: Date; 
 }
 
 export interface User {
