@@ -10,6 +10,7 @@ export default function ProductCard({ product, style = '', space = true }: { pro
     //   }else{
     //     rating = product.rating.reviews.reduce((acc: any, review: any) => acc + review.rating, 0) / product.rating.reviews.length;
     //   }
+    console.log(product);
     return (
         <div className={`bg-white rounded-lg ${style}`}>
             <div className={`flex justify-center ${space ? 'sm:p-3 sm:pb-0' : ''}`}>
