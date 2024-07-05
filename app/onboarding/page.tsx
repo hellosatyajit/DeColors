@@ -62,6 +62,7 @@ export default function RegisterDetails() {
     } catch (error) {
       console.error('Update error:', error);
       setError("Same details or error occurred during update");
+     
       setLoading(false);
     }
   };

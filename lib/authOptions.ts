@@ -61,8 +61,10 @@ export const authOptions: NextAuthOptions = {
             if (!existingUser) {
               const newUser = await createUser({ name: name, email });
               user.id = newUser.insertedId.toString();
+              user.isFirstTimeUser = true;
             } else {
               user.id = existingUser._id.toString();
+              user.isFirstTimeUser = false;
             }
           }
           return true;
@@ -81,6 +83,7 @@ export const authOptions: NextAuthOptions = {
         token.email = user.email || "no-email@example.com";
         token.name = user.name || "Anonymous";
         token.id = user.id;
+        token.isFirstTimeUser = user.isFirstTimeUser;
       }
       return token;
     },
@@ -89,6 +92,7 @@ export const authOptions: NextAuthOptions = {
         session.user.email = token.email || "no-email@example.com";
         session.user.name = token.name || "Anonymous";
         session.user.id = token.id;
+        session.user.isFirstTimeUser = token.isFirstTimeUser;
       }
       return session;
     },

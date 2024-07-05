@@ -114,6 +114,7 @@ export function PhoneEdit({ user }: any) {
         </div>
     );
 }
+
 export function AddressEdit({ user }: any) {
     const [show, setShow] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -124,7 +125,9 @@ export function AddressEdit({ user }: any) {
       pinCode: user?.address?.pinCode || "",
       country: user?.address?.country || "India"
     });
-  
+
+    const isEmptyAddress = !details.address && !details.city && !details.state && !details.pinCode ;
+
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
       const { name, value } = event.target;
       setDetails((prevDetails) => ({ ...prevDetails, [name]: value }));
@@ -153,7 +156,9 @@ export function AddressEdit({ user }: any) {
           <div>
             <p className="font-semibold">Address</p>
             <p>
-              {details.address}, {details.city}, {details.state}, {details.pinCode}, {details.country}
+              {isEmptyAddress
+                ? "Not added yet"
+                : `${details.address}, ${details.city}, ${details.state}, ${details.pinCode}, ${details.country}`}
             </p>
           </div>
           <Button variant="default" onClick={() => setShow(!show)}>Edit</Button>
@@ -212,4 +217,4 @@ export function AddressEdit({ user }: any) {
         )}
       </div>
     );
-  }
+}

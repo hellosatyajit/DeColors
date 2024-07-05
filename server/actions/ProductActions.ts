@@ -5,9 +5,14 @@ import { PacksService } from "../service/packs/PacksService";
 
 const limit = 1000;
 
-export const fetchProducts = async (pageNumber: number) => {
+export const fetchProducts = async (pageNumber: number=1) => {
   const productService = new ProductService();
-  return await productService.searchProducts({}, pageNumber, limit);
+  const packsService = new PacksService();
+  const products = await productService.searchProducts({}, pageNumber, limit);
+  const packs = await packsService.searchProducts({},pageNumber,limit)
+  return {
+    data: [...products.data, ...packs.data],
+  };
 };
 
 export const fetchProductBySlug = async (slug: string, pageNumber: number = 1) => {
@@ -80,24 +85,47 @@ export const fetchProductsByCategory = async (
     data: [...products.data, ...packs.data],
   };
 };
-
-export const fetchBestSellingProducts = async (pageNumber: number = 1) => {
+export const fetchSortedProducts = async (
+  sortingOption: string,
+  categoryOrBrand: string = "None",
+  field: 'category' | 'brand' | 'None' = "None",
+  pageNumber: number = 1
+) => {
   const productService = new ProductService();
   const packsService = new PacksService();
 
+  const searchOptions = field === "None" ? {} : { [field]: categoryOrBrand };
+
   const products = await productService.searchProducts(
-    {},
+    searchOptions,
     pageNumber,
     limit
   );
 
   const packs = await packsService.searchProducts(
-    {},
+    searchOptions,
     pageNumber,
     limit
-  );  
+  );
 
-  return {
-    data: [...products.data, ...packs.data].sort((a, b) => a.soldCount - b.soldCount)
-  };
+  const allProducts = [...products.data, ...packs.data];
+
+  switch (sortingOption) {
+    case "best-selling":
+      return {data: allProducts.sort((a, b) => b.soldCount - a.soldCount)};
+    case "newest":
+      // return allProducts.sort((a, b) => b.timestamp - a.timestamp);
+      return {data: allProducts};
+    case "price-ascending":
+      return {data: allProducts.sort((a, b) => a.price.mrp - b.price.mrp)};
+    case "price-descending":
+      return {data: allProducts.sort((a, b) => b.price.mrp - a.price.mrp)};
+    case "alphabet-ascending":
+      return {data: allProducts.sort((a, b) => a.name.localeCompare(b.name))};
+    case "alphabet-descending":
+      return {data: allProducts.sort((a, b) => b.name.localeCompare(a.name))};
+    default:
+      // If an invalid sorting option is provided, return unsorted data
+      return {data:allProducts};
+  }
 };
