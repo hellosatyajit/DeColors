@@ -9,8 +9,9 @@ export interface UserDocument {
   password?: string;
   resetToken?: string | null;
   resetTokenExpiry?: Date | null;
+  createdAt?: Date; 
+  updatedAt?: Date; 
 }
-
 async function getUserCollection() {
   const client = await clientPromise;
   return client.db().collection<UserDocument>("users");

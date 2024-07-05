@@ -32,8 +32,7 @@ export default function SignUp({
     e.preventDefault();
     setLoading(true);
     try {
-      await signIn("google");
-      router.push('/auth');
+      await signIn("google",{callbackUrl:'/auth'});
     } catch (error: any) {
       console.error("Google sign-in failed:", error);
       setLoading(false);

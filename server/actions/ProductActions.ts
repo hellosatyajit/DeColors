@@ -1,7 +1,7 @@
 "use server";
 
-import { ProductService } from "../service/product/ProductService";
 import { PacksService } from "../service/packs/PacksService";
+import { ProductService } from "../service/product/ProductService";
 
 const limit = 1000;
 
@@ -114,8 +114,7 @@ export const fetchSortedProducts = async (
     case "best-selling":
       return {data: allProducts.sort((a, b) => b.soldCount - a.soldCount)};
     case "newest":
-      // return allProducts.sort((a, b) => b.timestamp - a.timestamp);
-      return {data: allProducts};
+      return {data:allProducts.sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime())};
     case "price-ascending":
       return {data: allProducts.sort((a, b) => a.price.mrp - b.price.mrp)};
     case "price-descending":
