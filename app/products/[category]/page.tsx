@@ -1,11 +1,11 @@
 'use client';
-import { useEffect, useState } from 'react';
-import Image from 'next/image';
-import ProductCard from '@/components/ProductCard';
 import Breadcrumb from '@/components/Breadcrumb';
-import { fetchProductsByBrand, fetchProductsByCategory , fetchSortedProducts} from '@/server/actions/ProductActions';
-import { IProduct, IPacks } from '@/types/product';
+import ProductCard from '@/components/ProductCard';
+import { fetchProductsByBrand, fetchProductsByCategory, fetchSortedProducts } from '@/server/actions/ProductActions';
+import { IPacks, IProduct } from '@/types/product';
+import Image from 'next/image';
 import { useParams, useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 function toCapitalize(text: string) {
   return text.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
@@ -94,7 +94,7 @@ export default function Category() {
                 Filter <span className="hidden sm:inline-block rotate-90">{'>'}</span>
               </button>
               <select name="sortby" id="sortby" value={selectedValue}onChange={handleSelectChange}className="px-4 py-1 rounded-full bg-rose-50 sm:bg-transparent hover:bg-rose-50 transition-all text-sm sm:text-base">
-                <option value="" disabled selected>Sort By</option>
+                <option value="" disabled >Sort By</option>
                 <option value="best-selling">Best Selling</option>
                 <option value="newest">Newest</option>
                 <option value="price-ascending">Price (Low - High)</option>
