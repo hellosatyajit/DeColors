@@ -4,12 +4,13 @@ import Link from "next/link";
 export default function ProductCard({ product, style = '', space = true }: { product: any, style?: string, space?: boolean }) {
     const url = product?.isIndividual ? `/product/${product.slug}` : `/packs/${product.slug}`;
     let rating:number=0;
-    // if (!product.rating?.reviews?.length) {
-    //     // If there are no reviews, return a default value, e.g., 0
-    //     rating = 0
-    //   }else{
-    //     rating = product.rating.reviews.reduce((acc: any, review: any) => acc + review.rating, 0) / product.rating.reviews.length;
-    //   }
+    if (!product.rating?.reviews?.length) {
+        // If there are no reviews, return a default value, e.g., 0
+        rating = 0
+      }else{
+        rating = product.rating?.reviews?.reduce((acc: any, review: any) => acc + review.rating, 0) 
+        rating = rating / product.rating?.reviews?.length;
+      }
     return (
         <div className={`bg-white rounded-lg ${style}`}>
             <div className={`flex justify-center ${space ? 'sm:p-3 sm:pb-0' : ''}`}>
