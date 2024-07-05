@@ -8,6 +8,7 @@ export default function ProductCard({ product, style = '', space = true }: { pro
         // If there are no reviews, return a default value, e.g., 0
         rating = 0
       }else{
+        console.log(product)
         rating = product.rating.reviews.reduce((acc: any, review: any) => acc + review.rating, 0) / product.rating.reviews.length;
       }
     return (
