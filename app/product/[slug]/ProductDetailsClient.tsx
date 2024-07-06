@@ -1,25 +1,24 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import ProductDetailsCarousel from "@/components/ProductDetailsCarousel";
 import { getDiscountedPricePercentage } from "@/utils/helper";
 import toast from "react-hot-toast";
 import { addToCart } from "@/utils/cart";
 import { IProduct } from "@/types/product";
-import { isURL } from "@/lib/utils";
+import { getSession } from "next-auth/react";
+import { FaStar } from "react-icons/fa";
+import { addReviewToProductOrPack } from "@/server/actions/ProductActions";
+import { format } from 'date-fns';
 
 const ProductDetailsClient = ({ product }: { product: IProduct }) => {
     const router = useRouter();
     const [selectedSize, setSelectedColor] = useState("");
     const [showError, setShowError] = useState(false);
-
-    useEffect(() => {
-        const query = location.search.split('=')[1];
-        console.log(query);
-        
-        setSelectedColor(query);
-    }, [])
+    const [reviewText, setReviewText] = useState("");
+    const [reviewRating, setReviewRating] = useState(5);
+    const [feedbacks, setFeedbacks] = useState(product.rating.reviews || []);
 
     const notify = () => {
         toast.success("Success. Check your cart!");
@@ -39,7 +38,41 @@ const ProductDetailsClient = ({ product }: { product: IProduct }) => {
         router.push(`${location.pathname}/?variant=${query}`, undefined);
     };
 
+    const isURL = (str: string): boolean => {
+        try {
+            new URL(str);
+            return true;
+        } catch {
+            return false;
+        }
+    };
+
     const images = product?.variants.slice(0, 5).map((item: any) => item.image);
+
+    const handleReviewSubmit = async () => {
+        const session = await getSession();
+        const reviewerName = session?.user?.name || "Anonymous";
+
+        const newReview = {
+            name: reviewerName,
+            rating: reviewRating,
+            review: reviewText,
+            date: new Date(),
+        };
+
+
+        setFeedbacks([...feedbacks, newReview]);
+
+
+        setReviewText("");
+        setReviewRating(5);
+
+        const response = await addReviewToProductOrPack(product.name, newReview);
+    };
+
+    const formatDate = (date: Date | string, formatStr: string = 'MM/dd/yyyy') => {
+        return format(new Date(date), formatStr);
+    };
 
     return (
         <section className="w-full">
@@ -130,6 +163,64 @@ const ProductDetailsClient = ({ product }: { product: IProduct }) => {
                                     <p key={index}>{item}</p>
                                 ))}
                             </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-10">
+                    <div>
+                        <h2 className="text-xl font-bold mb-4">Leave a Review</h2>
+                        <div className="mb-4">
+                            <label className="block text-gray-700">Rating:</label>
+                            <div className="flex">
+                                {[1, 2, 3, 4, 5].map((rating) => (
+                                    <FaStar
+                                        key={rating}
+                                        size={24}
+                                        className={`cursor-pointer ${reviewRating >= rating ? "text-yellow-500" : "text-gray-300"
+                                            }`}
+                                        onClick={() => setReviewRating(rating)}
+                                    />
+                                ))}
+                            </div>
+                        </div>
+                        <div className="mb-4">
+                            <label className="block text-gray-700">Review:</label>
+                            <textarea
+                                className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+                                rows={4}
+                                value={reviewText}
+                                onChange={(e) => setReviewText(e.target.value)}
+                            ></textarea>
+                        </div>
+                        <button
+                            className="py-2 px-4 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+                            onClick={handleReviewSubmit}
+                        >
+                            Submit Review
+                        </button>
+                    </div>
+                    <div>
+                        <h2 className="text-xl font-bold mb-4">Customer Reviews</h2>
+                        <div className="h-64 overflow-y-auto border p-4 rounded-md">
+                            {feedbacks.length > 0 ? (
+                                feedbacks.map((feedback, index) => (
+                                    <div key={index} className="mb-5 border-b pb-3">
+                                        <div className="flex items-center mb-1">
+                                            <div className="font-semibold">{feedback.name}</div>
+                                            <div className="ml-3 text-sm text-yellow-500">
+                                                {"★".repeat(feedback.rating) + "☆".repeat(5 - feedback.rating)}
+                                            </div>
+                                        </div>
+                                        <div className="text-gray-600">{feedback.review}</div>
+                                        <div className="text-sm text-gray-400">
+                                            {formatDate(feedback.date, 'MM/dd/yyyy')}
+                                        </div>
+                                    </div>
+                                ))
+                            ) : (
+                                <div className="text-gray-500">No reviews yet.</div>
+                            )}
                         </div>
                     </div>
                 </div>

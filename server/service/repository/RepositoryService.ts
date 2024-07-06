@@ -1,5 +1,11 @@
 import clientPromise from "@/lib/mongodb";
-import { MongoClient } from "mongodb";
+import { MongoClient, ObjectId } from "mongodb";
+
+function createUpdateObject<U>(field: string, value: U): Record<string, U> {
+  const updateObject: Record<string, U> = {};
+  updateObject[field] = value;
+  return updateObject;
+}
 
 export class Repository<T> implements IRepository<T> {
   private collection: string;
@@ -8,7 +14,6 @@ export class Repository<T> implements IRepository<T> {
     this.collection = collection;
   }
 
-  // Asynchronously find documents in the collection
   async find(
     filter: Partial<T>,
     page: number = 1,
@@ -16,21 +21,10 @@ export class Repository<T> implements IRepository<T> {
     projection?: Partial<Record<keyof T, 1 | 0>>
   ): Promise<{ data: T[]; totalCount: number }> {
     try {
-      // Await the client promise to get an instance of MongoClient
       const client: MongoClient = await clientPromise;
-
-      // Calculate how many documents to skip
       const skip = (page - 1) * limit;
-
-      // Access the database and the collection
       const collection = client.db().collection(this.collection);
-
-      // Get the total count of all items
       const totalCount = await collection.countDocuments(filter);
-
-      // Access the database and the collection, then find documents matching the filter
-      // If a projection is provided, apply it to the query
-      // Convert the result to an array and return it
       const data = await collection
         .find(filter, { projection })
         .skip(skip)
@@ -39,7 +33,6 @@ export class Repository<T> implements IRepository<T> {
 
       return { data: data as unknown as T[], totalCount };
     } catch (error: unknown) {
-      // Catch and log any connection errors
       if (error instanceof Error) {
         if (error.message.includes("ECONNREFUSED")) {
           console.error("Failed to connect to MongoDB. Connection refused.");
@@ -50,4 +43,69 @@ export class Repository<T> implements IRepository<T> {
       return { data: [], totalCount: 0 };
     }
   }
+
+  async update(id: string, update: Partial<T>): Promise<void> {
+    try {
+      const client: MongoClient = await clientPromise;
+      const collection = client.db().collection(this.collection);
+      await collection.updateOne({ _id: new ObjectId(id) }, { $set: update });
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error("An error occurred:", error.message);
+      }
+    }
+  }
+
+  async updateArray<U>(id: string, field: string, value: U): Promise<void> {
+    try {
+      const client: MongoClient = await clientPromise;
+      const collection = client.db().collection(this.collection);
+      const updateObject = createUpdateObject(field, value);
+      await collection.updateOne({ _id: new ObjectId(id) }, { $set: updateObject });
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error("An error occurred:", error.message);
+      }
+    }
+  }
+
+  async findById(id: string): Promise<T | null> {
+    try {
+      const client: MongoClient = await clientPromise;
+      const collection = client.db().collection(this.collection);
+      const item = await collection.findOne({ _id: new ObjectId(id) });
+      return item as unknown as T | null;
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error("An error occurred:", error.message);
+      }
+      return null;
+    }
+  }
+  async findByName(name: string): Promise<T | null> {
+    try {
+      const client: MongoClient = await clientPromise;
+      const collection = client.db().collection(this.collection);
+      const item = await collection.findOne({ name: name });
+      return item as unknown as T | null;
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error("An error occurred:", error.message);
+      }
+      return null;
+    }
+  }
+
+  async updateByName(name: string, update: Partial<T>): Promise<void> {
+    try {
+      const client: MongoClient = await clientPromise;
+      const collection = client.db().collection(this.collection);
+      await collection.updateOne({ name: name }, { $set: update });
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error("An error occurred:", error.message);
+      }
+    }
+  }
+  
 }

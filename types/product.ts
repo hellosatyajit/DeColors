@@ -17,7 +17,7 @@ export interface IProduct {
       name: string;
       rating: number;
       review: string;
-      date: string;
+      date: Date;
     }[];
   };
   soldCount: number;
@@ -46,7 +46,7 @@ export interface IPacks {
       name: string;
       rating: number;
       review: string;
-      date: string;
+      date: Date;
     }[];
   };
   soldCount: number;
@@ -58,4 +58,10 @@ export interface User {
   id: string;
   email: string;
   name: string;
+}
+export interface Review {
+  name: string;
+  rating: number;
+  review: string;
+  date: Date;
 }

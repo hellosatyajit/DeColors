@@ -124,7 +124,24 @@ export const fetchSortedProducts = async (
     case "alphabet-descending":
       return {data: allProducts.sort((a, b) => b.name.localeCompare(a.name))};
     default:
-      // If an invalid sorting option is provided, return unsorted data
       return {data:allProducts};
+  }
+};
+export const addReviewToProductOrPack = async (
+  name: string,
+  review: {
+    name: string;
+    rating: number;
+    review: string;
+    date: Date;
+  },
+  isProduct: boolean = true
+) => {
+  if (isProduct) {
+    const productService = new ProductService();
+    return await productService.addReview(name, review);
+  } else {
+    const packsService = new PacksService();
+    return await packsService.addReview(name, review);
   }
 };
