@@ -6,7 +6,7 @@ import Cart from "./Cart";
 const links = [
   { href: "/products", label: "Best Sellers" },
   { href: "/#category", label: "Categories" },
-  { href: "/#hot-deals", label: "Hot Deals" },
+  // { href: "/#hot-deals", label: "Hot Deals" }, 
   { href: "/products/de-coloress", label: "De Colorss" },
   { href: "/products/chelsy", label: "Chelsy" },
   { href: "/products/herbonica", label: "Herbonica" },
