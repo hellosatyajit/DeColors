@@ -1,22 +1,29 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import ProductDetailsCarousel from "@/components/ProductDetailsCarousel";
 import { getDiscountedPricePercentage } from "@/utils/helper";
 import toast from "react-hot-toast";
 import { addToCart } from "@/utils/cart";
 import { IPacks } from "@/types/product";
-import { getSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import { FaStar } from "react-icons/fa";
 import { addReviewToProductOrPack } from "@/server/actions/ProductActions";
 import { format } from "date-fns";
 
 const ProductDetailsClient = ({ product }: { product: IPacks }) => {
     const router = useRouter();
+    const { data: session, status } = useSession();
     const [reviewText, setReviewText] = useState("");
     const [reviewRating, setReviewRating] = useState(5);
     const [feedbacks, setFeedbacks] = useState(product.rating.reviews || []);
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+    useEffect(() => {
+        console.log(session)
+        setIsAuthenticated(status === "authenticated");
+    }, [status]);
 
     const notify = () => {
         toast.success("Success. Check your cart!");
@@ -28,7 +35,6 @@ const ProductDetailsClient = ({ product }: { product: IPacks }) => {
     };
 
     const handleReviewSubmit = async () => {
-        const session = await getSession();
         const reviewerName = session?.user?.name || "Anonymous";
 
         const newReview = {
@@ -38,14 +44,12 @@ const ProductDetailsClient = ({ product }: { product: IPacks }) => {
             date: new Date(),
         };
 
-        
         setFeedbacks([...feedbacks, newReview]);
 
-        
         setReviewText("");
         setReviewRating(5);
 
-        await addReviewToProductOrPack(product.name, newReview,false);
+        await addReviewToProductOrPack(product.name, newReview, false);
     };
 
     return (
@@ -103,35 +107,49 @@ const ProductDetailsClient = ({ product }: { product: IPacks }) => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-10">
                     <div>
                         <h2 className="text-xl font-bold mb-4">Leave a Review</h2>
-                        <div className="mb-4">
-                            <label className="block text-gray-700">Rating:</label>
-                            <div className="flex">
-                                {[1, 2, 3, 4, 5].map((rating) => (
-                                    <FaStar
-                                        key={rating}
-                                        size={24}
-                                        className={`cursor-pointer ${reviewRating >= rating ? "text-yellow-500" : "text-gray-300"
-                                            }`}
-                                        onClick={() => setReviewRating(rating)}
-                                    />
-                                ))}
+                        {isAuthenticated ? (
+                            <>
+                                <div className="mb-4">
+                                    <label className="block text-gray-700">Rating:</label>
+                                    <div className="flex">
+                                        {[1, 2, 3, 4, 5].map((rating) => (
+                                            <FaStar
+                                                key={rating}
+                                                size={24}
+                                                className={`cursor-pointer ${reviewRating >= rating ? "text-yellow-500" : "text-gray-300"
+                                                    }`}
+                                                onClick={() => setReviewRating(rating)}
+                                            />
+                                        ))}
+                                    </div>
+                                </div>
+                                <div className="mb-4">
+                                    <label className="block text-gray-700">Review:</label>
+                                    <textarea
+                                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+                                        rows={4}
+                                        value={reviewText}
+                                        onChange={(e) => setReviewText(e.target.value)}
+                                    ></textarea>
+                                </div>
+                                <button
+                                    className="ml-2 py-2 px-4 rounded-full bg-black text-white text-lg font-medium transition-transform rounded-md hover:opacity-75"
+                                    onClick={handleReviewSubmit}
+                                >
+                                    Submit Review
+                                </button>
+                            </>
+                        ) : (
+                            <div className="text-gray-700">
+                                You must be signed in to leave a review.
+                                <button
+                                    className="ml-2 py-2 px-4 rounded-full bg-black text-white text-lg font-medium transition-transform rounded-md hover:opacity-75"
+                                    onClick={() => router.push("/login")}
+                                >
+                                    Sign In
+                                </button>
                             </div>
-                        </div>
-                        <div className="mb-4">
-                            <label className="block text-gray-700">Review:</label>
-                            <textarea
-                                className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-                                rows={4}
-                                value={reviewText}
-                                onChange={(e) => setReviewText(e.target.value)}
-                            ></textarea>
-                        </div>
-                        <button
-                            className="py-2 px-4 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-                            onClick={handleReviewSubmit}
-                        >
-                            Submit Review
-                        </button>
+                        )}
                     </div>
                     <div>
                         <h2 className="text-xl font-bold mb-4">Customer Reviews</h2>

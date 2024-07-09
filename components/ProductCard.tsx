@@ -9,7 +9,7 @@ export default function ProductCard({ product, style = '', space = true }: { pro
         rating = 0
       }else{
         rating = product.rating?.reviews?.reduce((acc: any, review: any) => acc + review.rating, 0) 
-        rating = rating / product.rating?.reviews?.length;
+        rating = parseFloat((rating / product.rating.reviews.length).toFixed(1));
       }
     return (
         <div className={`bg-white rounded-lg ${style}`}>

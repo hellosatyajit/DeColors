@@ -16,13 +16,13 @@ export default async function Index() {
   return (
     <>
       <div className="w-full">
-        <Hero />
+        {/* <Hero /> */}
         <ShopByCategory />
         <ProductsSlider title="Best Sellers" viewAll="/products" products={JSON.parse(JSON.stringify(bestSellingProducts))} />
         <ProductsSlider title="De Coloress" viewAll="/products/de-coloress" products={JSON.parse(JSON.stringify(deColoressProducts))} />
         <ProductsSlider title="Herbonica" viewAll="/products/herbonica" products={JSON.parse(JSON.stringify(herbonicaProducts))} />
         <ProductsSlider title="Chelsy" viewAll="/products/chelsy" products={JSON.parse(JSON.stringify(chelsyProducts))} />
-        <HotDeals />
+        {/* <HotDeals /> */}
         <Newsletter />
       </div>
     </>
