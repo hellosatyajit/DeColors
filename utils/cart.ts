@@ -63,3 +63,7 @@ export const updateCartItemQuantity = (itemId: string, newQuantity: number) => {
     updateCartData(cartData);
   }
 };
+export const emptyCart = () => {
+  const cartData: CartData = { items: [] };
+  updateCartData(cartData);
+};

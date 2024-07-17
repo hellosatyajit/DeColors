@@ -1,5 +1,5 @@
 import { NextResponse, NextRequest } from "next/server";
-import { updateUser } from "../../../utils/auth";
+import { updateUser } from "@/server/model/User";
 
 export async function POST(request: NextRequest) {
   try {

@@ -1,3 +1,4 @@
+"use server";
 
 import { ObjectId } from "mongodb";
 import clientPromise from "../../lib/mongodb";
@@ -9,9 +10,16 @@ export interface UserDocument {
   password?: string;
   resetToken?: string | null;
   resetTokenExpiry?: Date | null;
-  createdAt?: Date; 
-  updatedAt?: Date; 
+  address?: {
+    address?: string |null;
+    city?: string | null;
+    state?: string | null;
+    country?: string | null;
+    pinCode?: number | null ;
+  };
+  phoneNumber?: number | null;
 }
+
 async function getUserCollection() {
   const client = await clientPromise;
   return client.db().collection<UserDocument>("users");

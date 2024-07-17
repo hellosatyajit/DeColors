@@ -1,6 +1,6 @@
 // app/api/validate-reset-token/route.ts
 import { NextResponse, NextRequest } from "next/server";
-import { findUserByResetToken } from "../../../utils/auth";
+import { findUserByResetToken } from "@/server/model/User";
 
 export async function POST(request: NextRequest) {
   try {

@@ -1,6 +1,6 @@
 // app/api/register/route.ts
 import { NextResponse, NextRequest } from "next/server";
-import { createUser, findUserByEmail } from "../../../utils/auth";
+import { createUser, findUserByEmail } from "@/server/model/User";
 import bcryptjs from "bcryptjs";
 
 export async function POST(request: NextRequest) {

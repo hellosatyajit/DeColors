@@ -1,6 +1,6 @@
 // app/api/reset-password/route.ts
 import { NextResponse, NextRequest } from "next/server";
-import { findUserByEmail, updateUser } from "../../../utils/auth";
+import { findUserByEmail, updateUser } from "@/server/model/User";
 import bcryptjs from "bcryptjs";
 import crypto from "crypto";
 import { TransactionalEmailsApi, TransactionalEmailsApiApiKeys } from "@sendinblue/client";
