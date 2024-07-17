@@ -8,6 +8,7 @@ import { getCartData } from "@/utils/cart";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { createOrder } from "@/server/actions/checkout";
 
 const breadcrumb = [
     {
@@ -22,7 +23,7 @@ const breadcrumb = [
 
 export default function CartPage() {
     const [items, setItems] = useState([]);
-    const [user, setUser] = useState<{ id:string;email: string; name: string;  } | undefined>(undefined);
+    const [user, setUser] = useState<{ id: string; email: string; name: string; } | undefined>(undefined);
     const totalCost = items.reduce((acc, item: any) => acc + (item.price.mrp - item.price.discount) * item.quantity, 0);
     const { data: session } = useSession();
     const userinfo = session?.user;
@@ -38,7 +39,73 @@ export default function CartPage() {
     useEffect(() => {
         fetchUser();
         fetchCart();
-    }, [])
+    }, []);
+
+    const handleCheckout = async () => {
+        const order = await createOrder(totalCost);
+        displayRazorpay(totalCost * 100, order.id)
+    }
+
+    function loadScript(src: any) {
+        return new Promise((resolve) => {
+            const script = document.createElement("script");
+            script.src = src;
+            script.onload = () => {
+                resolve(true);
+            };
+            script.onerror = () => {
+                resolve(false);
+            };
+            document.body.appendChild(script);
+        });
+    }
+
+    async function displayRazorpay(amount: number, order_id: string) {
+        const res = await loadScript(
+            "https://checkout.razorpay.com/v1/checkout.js"
+        );
+
+        if (!res) {
+            alert("Razorpay SDK failed to load. Are you online?");
+            return;
+        }
+
+        const options = {
+            key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+            amount: amount.toString(),
+            currency: "INR",
+            name: "Decolores Lifestyle",
+            description: "Test Transaction",
+            order_id: order_id,
+            handler: async function (response: any) {
+                const data = {
+                    orderCreationId: order_id,
+                    razorpayPaymentId: response.razorpay_payment_id,
+                    razorpayOrderId: response.razorpay_order_id,
+                    razorpaySignature: response.razorpay_signature,
+                };
+
+                console.log(data);
+            },
+            // get this data from the db
+            prefill: {
+                name: "Soumya Dey",
+                email: "SoumyaDey@example.com",
+                contact: "9999999999",
+            },
+            // get this data from the db
+            notes: {
+                address: "Soumya Dey Corporate Office",
+            },
+            theme: {
+                color: "#61dafb",
+            },
+        };
+
+        // @ts-ignore
+        const paymentObject = new window.Razorpay(options);
+        paymentObject.open();
+    }
 
     return (
         <section className="max-w-7xl m-auto p-5">
@@ -119,7 +186,11 @@ export default function CartPage() {
                         <p className="flex justify-between">Total: <strong>{totalCost} ₹</strong></p>
                         {
                             user
-                                ? <Button variant={'secondary'} type="submit" className="w-fit self-end md:w-full bg-rose-600 rounded-full text-white">Proceed to Checkout</Button>
+                                ? <Button
+                                    variant={'secondary'}
+                                    type="submit"
+                                    className="w-fit self-end md:w-full bg-rose-600 rounded-full text-white"
+                                    onClick={handleCheckout}>Proceed to Checkout</Button>
                                 : <Link href="/login" className="w-fit self-end md:w-full px-4 py-2 text-center bg-rose-600 rounded-full text-white">Login first to proceed to checkout</Link>
                         }
                     </div>
