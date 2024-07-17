@@ -50,13 +50,13 @@ export default function CartPage() {
     const handleCheckout = async () => {
         const order = await createOrder(totalCost);
         if (!userinfo){
-            toast.error('please signup first')
+            toast.error('Please Signup First')
             router.push("/register")
             return;
         }
         const Userdata = await findUserByEmail(userinfo?.email)
         if (!Userdata?.address){
-            toast.error('please address and phonenumber first')
+            toast.error('Please add address and phonenumber first')
             router.push("/onboarding")
             return;
         }
