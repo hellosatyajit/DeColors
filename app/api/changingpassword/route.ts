@@ -1,6 +1,6 @@
 // app/api/change-password/route.ts
 import { NextResponse, NextRequest } from "next/server";
-import { updateUserByResetToken } from "../../../utils/auth";
+import { updateUserByResetToken } from "@/server/model/User";
 import bcryptjs from "bcryptjs";
 
 export async function POST(request: NextRequest) {

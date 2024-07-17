@@ -4,11 +4,16 @@ import { DeleteItemButton } from "@/components/DeleteItemButton";
 import { EditItemQuantityButton } from "@/components/EditItemQuantityButton";
 import { Button } from "@/components/ui/button";
 import { useSession } from "next-auth/react";
-import { getCartData } from "@/utils/cart";
+import { getCartData,emptyCart } from "@/utils/cart";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { createOrder } from "@/server/actions/checkout";
+import { findUserByEmail } from "@/server/model/User";
+import toast from "react-hot-toast";
+import { redirect } from "next/navigation";
+import { useRouter } from 'next/navigation';
+import axios from 'axios';
 
 const breadcrumb = [
     {
@@ -26,6 +31,7 @@ export default function CartPage() {
     const [user, setUser] = useState<{ id: string; email: string; name: string; } | undefined>(undefined);
     const totalCost = items.reduce((acc, item: any) => acc + (item.price.mrp - item.price.discount) * item.quantity, 0);
     const { data: session } = useSession();
+    const router = useRouter();
     const userinfo = session?.user;
     const fetchCart = () => {
         const cartItems = getCartData();
@@ -43,7 +49,20 @@ export default function CartPage() {
 
     const handleCheckout = async () => {
         const order = await createOrder(totalCost);
-        displayRazorpay(totalCost * 100, order.id)
+        if (!userinfo){
+            toast.error('please signup first')
+            router.push("/register")
+            return;
+        }
+        const Userdata = await findUserByEmail(userinfo?.email)
+        if (!Userdata?.address){
+            toast.error('please address and phonenumber first')
+            router.push("/onboarding")
+            return;
+        }
+        else{
+        displayRazorpay(totalCost * 100, order.id,Userdata)
+        }
     }
 
     function loadScript(src: any) {
@@ -60,7 +79,7 @@ export default function CartPage() {
         });
     }
 
-    async function displayRazorpay(amount: number, order_id: string) {
+    async function displayRazorpay(amount: number, order_id: string,Userdata:any) {
         const res = await loadScript(
             "https://checkout.razorpay.com/v1/checkout.js"
         );
@@ -71,41 +90,63 @@ export default function CartPage() {
         }
 
         const options = {
-            key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+            key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID!,
             amount: amount.toString(),
             currency: "INR",
             name: "Decolores Lifestyle",
             description: "Test Transaction",
             order_id: order_id,
             handler: async function (response: any) {
-                const data = {
+                const paymentData = {
+                    email: userinfo?.email,
+                    totalCost:totalCost,
                     orderCreationId: order_id,
                     razorpayPaymentId: response.razorpay_payment_id,
                     razorpayOrderId: response.razorpay_order_id,
                     razorpaySignature: response.razorpay_signature,
+                    cartdetails: items
                 };
 
-                console.log(data);
+                try {
+                    const result = await axios.post('/api/verify-payment', paymentData);
+
+                    const data = result.data;
+
+                    if (data.success) {
+                        toast.success('Payment successful!');
+                        emptyCart(); // Clear the cart
+                        setItems([]); // Update the state to reflect the cleared cart
+                        router.push("/"); // Redirect to home or any other page
+                    } else {
+                        toast.error('Payment verification failed. Please try again.');
+                    }
+                } catch (error:any) {
+                    toast.error('Payment verification failed. Please try again.');
+                    console.log(error)
+                }
             },
-            // get this data from the db
             prefill: {
-                name: "Soumya Dey",
-                email: "SoumyaDey@example.com",
-                contact: "9999999999",
+                name: Userdata.name,
+                email: Userdata.email,
+                contact: Userdata.phoneNumber
             },
-            // get this data from the db
             notes: {
-                address: "Soumya Dey Corporate Office",
+                address: `${Userdata.address?.address}, ${Userdata.address?.city}, ${Userdata.address?.state}, ${Userdata.address?.pinCode}, ${Userdata.address?.country}`,
             },
             theme: {
                 color: "#61dafb",
             },
+            modal: {
+                ondismiss: function () {
+                    toast.error('Payment was unsuccessful. Please try again.');
+                }
+            }
         };
 
-        // @ts-ignore
-        const paymentObject = new window.Razorpay(options);
+        const paymentObject = new (window as any).Razorpay(options);
         paymentObject.open();
     }
+
 
     return (
         <section className="max-w-7xl m-auto p-5">
@@ -116,7 +157,7 @@ export default function CartPage() {
             <div className="flex flex-col md:flex-row gap-10">
                 {items.length === 0
                     ? <div className="mt-10 flex flex-col items-center gap-5 m-auto mb-20">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" className="lucide lucide-shopping-cart w-20 h-20"><circle cx="8" cy="21" r="1" /><circle cx="19" cy="21" r="1" /><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12" /></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-shopping-cart w-20 h-20"><circle cx="8" cy="21" r="1" /><circle cx="19" cy="21" r="1" /><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12" /></svg>
                         <p className="font-bold text-2xl">Your cart is empty!</p>
                     </div>
                     : <ul className="flex-grow py-4 flex-1">

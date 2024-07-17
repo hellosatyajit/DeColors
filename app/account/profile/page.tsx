@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useSession } from "next-auth/react";
 import { NameEdit, PhoneEdit,AddressEdit } from "./EditField";
-import { findUserByEmail } from "@/utils/auth";
+import { findUserByEmail } from "@/server/model/User";
 
 export default function ProfielPage() {
     const { data: session, status } = useSession();
