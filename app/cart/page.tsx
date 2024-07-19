@@ -55,7 +55,7 @@ export default function CartPage() {
             return;
         }
         const Userdata = await findUserByEmail(userinfo?.email)
-        if (!Userdata?.address){
+        if (!Userdata?.address || !Userdata?.phoneNumber){
             toast.error('Please add address and phonenumber first')
             router.push("/onboarding")
             return;
@@ -111,12 +111,12 @@ export default function CartPage() {
                     const result = await axios.post('/api/verify-payment', paymentData);
 
                     const data = result.data;
-
+                    console.log(data)
                     if (data.success) {
                         toast.success('Payment successful!');
-                        emptyCart(); // Clear the cart
-                        setItems([]); // Update the state to reflect the cleared cart
-                        router.push("/"); // Redirect to home or any other page
+                        emptyCart(); 
+                        setItems([]); 
+                        router.push("/account/orders"); 
                     } else {
                         toast.error('Payment verification failed. Please try again.');
                     }

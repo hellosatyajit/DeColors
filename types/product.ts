@@ -37,6 +37,7 @@ export interface IPacks {
   images: string;
   url: string;
   slug: string;
+  sku:string;
   brand: string;
   category: string;
   subheading: string;
