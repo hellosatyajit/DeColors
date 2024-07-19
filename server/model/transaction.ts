@@ -1,15 +1,15 @@
 "use server";
 
-import { ObjectId } from "mongodb";
-import clientPromise from "../../lib/mongodb";
+import { ObjectId, Collection, InsertOneResult } from 'mongodb';
+import clientPromise from '../../lib/mongodb';
 
 export interface ICartItem {
     productId: string;
     name: string;
     quantity: number;
     price: {
-      mrp: number;
-      discount: number;
+        mrp: number;
+        discount: number;
     };
     images: string;
     url: string;
@@ -18,9 +18,9 @@ export interface ICartItem {
     brand: string;
     category: string;
     type: string;
-  }
-  
-  export interface ITransaction {
+}
+
+export interface ITransaction {
     userId: ObjectId | undefined;
     orderCreationId: string;
     razorpayPaymentId: string;
@@ -30,12 +30,24 @@ export interface ICartItem {
     cart: ICartItem[];
     status: string;
     createdAt: Date;
-  }
-  async function getUserCollection() {
+}
+
+let transactions: Collection<ITransaction>;
+
+async function getTransactionCollection() {
     const client = await clientPromise;
-    return client.db().collection<ITransaction>("transaction");
-  }
-  export async function createTransaction(transaction: ITransaction) {
-    const transactions = await getUserCollection();
-    return transactions.insertOne(transaction);
-  }
+    transactions = client.db().collection<ITransaction>('transaction');
+    return transactions;
+}
+
+export async function createTransaction(transaction: ITransaction) {
+    if (!transactions) {
+        await getTransactionCollection();
+    }
+    const result: InsertOneResult<ITransaction> = await transactions.insertOne(transaction);
+    if (!result.insertedId) {
+        throw new Error('Failed to insert transaction');
+    }
+    const insertedTransaction = await transactions.findOne({ _id: result.insertedId });
+    return insertedTransaction;
+}

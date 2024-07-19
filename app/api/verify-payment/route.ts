@@ -5,6 +5,8 @@ import { ITransaction, createTransaction } from "@/server/model/transaction";
 import { findUserByEmail } from "@/server/model/User";
 import axios from "axios";
 import { format } from "date-fns";
+  
+import { createOrder,IOrder } from "@/server/model/order";
 
 export async function POST(request: NextRequest) {
   try {
@@ -18,11 +20,9 @@ export async function POST(request: NextRequest) {
       cartdetails,
       totalCost,
     } = body;
-
-    console.log(1);
-
+ 
     const secret = process.env.RAZORPAY_SECRET;
-    console.log(2);
+  
 
     if (!secret) {
       return NextResponse.json(
@@ -30,12 +30,12 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
-    console.log(3);
+
 
     const shasum = crypto.createHmac("sha256", secret);
     shasum.update(`${orderCreationId}|${razorpayPaymentId}`);
     const digest = shasum.digest("hex");
-    console.log(4);
+
 
     const user = await findUserByEmail(email);
     const id = user?._id;
@@ -59,11 +59,11 @@ export async function POST(request: NextRequest) {
         status: "success",
         createdAt: new Date(),
       };
-      console.log(5);
 
-      await createTransaction(transaction);
 
-      console.log(6);
+      const transactionDb = await createTransaction(transaction);
+
+
       // Shiprocket API credentials
       const shiprocketAuthResponse = await axios.post(
         "https://apiv2.shiprocket.in/v1/external/auth/login",
@@ -72,13 +72,10 @@ export async function POST(request: NextRequest) {
           password: process.env.SHIPROCKET_PASSWORD,
         }
       );
-      console.log(7);
 
       const { token } = shiprocketAuthResponse.data;
 
-      console.log(8);
-
-      // Create a shipment
+  
       const createShipmentResponse = await axios.post(
         "https://apiv2.shiprocket.in/v1/external/orders/create/adhoc",
         {
@@ -129,10 +126,10 @@ export async function POST(request: NextRequest) {
           transaction_charges: 0,
           total_discount: 0,
           sub_total: totalCost,
-          length: 10, // Update with dimensions if available
-          breadth: 15, // Update with dimensions if available
-          height: 20, // Update with dimensions if available
-          weight: 2.5, // Update with weight if available
+          length: 10, 
+          breadth: 15, 
+          height: 20, 
+          weight: 2.5, 
         },
         {
           headers: {
@@ -140,18 +137,43 @@ export async function POST(request: NextRequest) {
             "Content-Type": "application/json",
           },
         }
-      );
-      console.log(9);
+      );;
+      
+      const { shipment_id, order_id } = createShipmentResponse.data;
+      const createawbResponse = await axios.post(
+        "https://apiv2.shiprocket.in/v1/external/courier/assign/awb",
+        {
+          shipment_id: shipment_id
+        }, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
+        console.log(createawbResponse.data.response.data)
+        const {awb_code} =  createawbResponse.data.response.data
+      console.log(createShipmentResponse.data )
+      const order: IOrder = {
+        userId: id,
+        OrderId:order_id,
+        transactionId: transactionDb?._id,
+        amount: totalCost,
+        cart: cartdetails,
+        trackingInfo: {
+          shipment_id: shipment_id,
+          awb_number: awb_code,
+          tracking_url: `https://www.shiprocket.in/shipment-tracking/${awb_code}`,
+        },
+        createdAt: new Date(),
+      };
+      await createOrder(order);
 
-      const { shipment_id, awb_number } = createShipmentResponse.data;
 
-      console.log(10);
-      // Respond with the success status and Shiprocket tracking URL
       return NextResponse.json(
         {
           success: true,
           message: "Payment successful and shipment created!",
-          tracking_url: `https://www.shiprocket.in/shipment-tracking/${awb_number}`,
+          tracking_url: `https://www.shiprocket.in/shipment-tracking/${awb_code}`,
         },
         { status: 200 }
       );
@@ -162,9 +184,9 @@ export async function POST(request: NextRequest) {
       );
     }
   } catch (error: any) {
-    console.error(error);
+    console.error(error.response.data);
     return NextResponse.json(
-      { success: false, message: "Internal Server Error" },
+      { success: false, message: "Internal Server Error" ,error},
       { status: 500 }
     );
   }

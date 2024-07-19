@@ -30,7 +30,7 @@ const ProductDetailsClient = ({ product }: { product: IPacks }) => {
     };
 
     const doAddToCart = () => {
-        addToCart(product);
+        addToCart(product,product.slug);    
         notify();
     };
 
