@@ -18,7 +18,7 @@ import Image from "next/image";
 import { DeleteItemButton } from "./DeleteItemButton";
 
 export default function Cart() {
-    const [items, setItems] = useState([]);
+    const [items, setItems] = useState<any[]>([]);
     const totalCost = items.reduce((acc, item: any) => acc + item.price * item.quantity, 0);
 
     const fetchCart = () => {
@@ -88,7 +88,7 @@ export default function Cart() {
                                                     alt={
                                                         item.name
                                                     }
-                                                    src={item?.images ? item.images[0] : ''}
+                                                    src={item.image}
                                                 />
                                             </div>
 

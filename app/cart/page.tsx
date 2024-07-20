@@ -27,9 +27,9 @@ const breadcrumb = [
 ]
 
 export default function CartPage() {
-    const [items, setItems] = useState([]);
+    const [items, setItems] = useState<any[]>([]);
     const [user, setUser] = useState<{ id: string; email: string; name: string; } | undefined>(undefined);
-    const totalCost = items.reduce((acc, item: any) => acc + (item.price.mrp - item.price.discount) * item.quantity, 0);
+    const totalCost = items.reduce((acc, item: any) => acc + item.price * item.quantity, 0);
     const { data: session } = useSession();
     const router = useRouter();
     const userinfo = session?.user;
@@ -184,9 +184,7 @@ export default function CartPage() {
                                                     alt={
                                                         item.name
                                                     }
-                                                    src={item?.images ? item.images[0] : item?.variants.find(
-                                                        (i: any) => i.sku === item.sku
-                                                    ).image[0]}
+                                                    src={item.image}
                                                 />
                                             </div>
 
@@ -199,14 +197,11 @@ export default function CartPage() {
                                                         Variant: {item.sku}
                                                     </span>
                                                 }
-                                                <span className="leading-tight text-black/50">
-                                                    {item.subheading}
-                                                </span>
                                             </div>
                                         </div>
                                         <div className="flex h-16 flex-col justify-between">
                                             <p className="flex justify-end space-y-2 text-right text-sm">
-                                                {item.price.mrp - item.price.discount} ₹
+                                                {item.price} ₹
                                             </p>
                                             <div className="ml-auto flex h-9 flex-row items-center rounded-full border border-neutral-200 dark:border-neutral-700">
                                                 <EditItemQuantityButton item={item} type="minus" fetchCart={fetchCart} />
