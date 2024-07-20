@@ -39,12 +39,20 @@ const getItemImage = (item: any, sku: string): string => {
 };
 
 export const addToCart = (item: any, sku: string = "") => {
+
+  const price = item.price.mrp - item.price.discount;
+
+
+  if (typeof price !== 'number' || isNaN(price)) {
+    throw new Error('Invalid price');
+  }
+
   const cartItem: CartItem = {
     id: sku ? `${item._id}-${sku}` : item._id,
     name: item.name,
     image: getItemImage(item, sku),
     sku: sku || undefined,
-    price: item.price.mrp - item.price.discount,
+    price: price,
     quantity: item.quantity || 1,
   };
 
