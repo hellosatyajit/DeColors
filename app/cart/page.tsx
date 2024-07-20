@@ -1,38 +1,32 @@
 'use client';
+
 import Breadcrumb from "@/components/Breadcrumb";
 import { DeleteItemButton } from "@/components/DeleteItemButton";
 import { EditItemQuantityButton } from "@/components/EditItemQuantityButton";
 import { Button } from "@/components/ui/button";
 import { useSession } from "next-auth/react";
-import { getCartData,emptyCart } from "@/utils/cart";
+import { getCartData, emptyCart } from "@/utils/cart";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { createOrder } from "@/server/actions/checkout";
 import { findUserByEmail } from "@/server/model/User";
 import toast from "react-hot-toast";
-import { redirect } from "next/navigation";
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
 
 const breadcrumb = [
-    {
-        label: 'Home',
-        link: '/'
-    },
-    {
-        label: 'Cart',
-        link: '/cart'
-    },
-]
+    { label: 'Home', link: '/' },
+    { label: 'Cart', link: '/cart' },
+];
 
 export default function CartPage() {
     const [items, setItems] = useState<any[]>([]);
     const [user, setUser] = useState<{ id: string; email: string; name: string; } | undefined>(undefined);
-    const totalCost = items.reduce((acc, item: any) => acc + item.price * item.quantity, 0);
     const { data: session } = useSession();
     const router = useRouter();
     const userinfo = session?.user;
+
     const fetchCart = () => {
         const cartItems = getCartData();
         setItems(cartItems.items);
@@ -47,22 +41,22 @@ export default function CartPage() {
         fetchCart();
     }, []);
 
+    const totalCost = items.reduce((acc, item: any) => acc + (item.price * item.quantity), 0);
+
     const handleCheckout = async () => {
         const order = await createOrder(totalCost);
-        if (!userinfo){
-            toast.error('Please Signup First')
-            router.push("/register")
+        if (!userinfo) {
+            toast.error('Please Signup First');
+            router.push("/register");
             return;
         }
-        const Userdata = await findUserByEmail(userinfo?.email)
-        if (!Userdata?.address || !Userdata?.phoneNumber){
-            toast.error('Please add address and phonenumber first')
-            router.push("/onboarding")
+        const Userdata = await findUserByEmail(userinfo?.email);
+        if (!Userdata?.address || !Userdata?.phoneNumber) {
+            toast.error('Please add address and phone number first');
+            router.push("/onboarding");
             return;
         }
-        else{
-        displayRazorpay(totalCost * 100, order.id,Userdata)
-        }
+        displayRazorpay(totalCost * 100, order.id, Userdata);
     }
 
     function loadScript(src: any) {
@@ -79,10 +73,8 @@ export default function CartPage() {
         });
     }
 
-    async function displayRazorpay(amount: number, order_id: string,Userdata:any) {
-        const res = await loadScript(
-            "https://checkout.razorpay.com/v1/checkout.js"
-        );
+    async function displayRazorpay(amount: number, order_id: string, Userdata: any) {
+        const res = await loadScript("https://checkout.razorpay.com/v1/checkout.js");
 
         if (!res) {
             alert("Razorpay SDK failed to load. Are you online?");
@@ -99,7 +91,7 @@ export default function CartPage() {
             handler: async function (response: any) {
                 const paymentData = {
                     email: userinfo?.email,
-                    totalCost:totalCost,
+                    totalCost: totalCost,
                     orderCreationId: order_id,
                     razorpayPaymentId: response.razorpay_payment_id,
                     razorpayOrderId: response.razorpay_order_id,
@@ -109,20 +101,18 @@ export default function CartPage() {
 
                 try {
                     const result = await axios.post('/api/verify-payment', paymentData);
-
                     const data = result.data;
-                    console.log(data)
                     if (data.success) {
                         toast.success('Payment successful!');
-                        emptyCart(); 
-                        setItems([]); 
-                        router.push("/account/orders"); 
+                        emptyCart();
+                        setItems([]);
+                        router.push("/account/orders");
                     } else {
                         toast.error('Payment verification failed. Please try again.');
                     }
-                } catch (error:any) {
+                } catch (error: any) {
                     toast.error('Payment verification failed. Please try again.');
-                    console.log(error)
+                    console.log(error);
                 }
             },
             prefill: {
@@ -147,7 +137,6 @@ export default function CartPage() {
         paymentObject.open();
     }
 
-
     return (
         <section className="max-w-7xl m-auto p-5">
             <div className="space-y-2">
@@ -171,32 +160,21 @@ export default function CartPage() {
                                         <div className="absolute z-40 -mt-2 ml-[55px]">
                                             <DeleteItemButton item={item} fetchCart={fetchCart} />
                                         </div>
-                                        <div
-                                            //   href={merchandiseUrl}
-                                            //   onClick={closeCart}
-                                            className="z-30 flex flex-row space-x-4"
-                                        >
+                                        <div className="z-30 flex flex-row space-x-4">
                                             <div className="relative h-16 w-16 cursor-pointer overflow-hidden rounded-md border border-neutral-300 bg-neutral-300">
-                                                <img
+                                                <Image
                                                     className="h-full w-full object-cover"
                                                     width={64}
                                                     height={64}
-                                                    alt={
-                                                        item.name
-                                                    }
+                                                    alt={item.name}
                                                     src={item.image}
                                                 />
                                             </div>
-
                                             <div className="flex flex-1 flex-col text-base">
                                                 <span className="leading-tight font-medium text-rose-600">
                                                     {item.name}
                                                 </span>
-                                                {
-                                                    item.sku && <span className="leading-tight text-black/50">
-                                                        Variant: {item.sku}
-                                                    </span>
-                                                }
+                                                {item.sku && <span className="leading-tight text-black/50">Variant: {item.sku}</span>}
                                             </div>
                                         </div>
                                         <div className="flex h-16 flex-col justify-between">
@@ -216,22 +194,27 @@ export default function CartPage() {
                             );
                         })}
                     </ul>}
-                {items.length !== 0
-                    && <div className="w-full md:w-80 h-min p-4 flex flex-col gap-4 sticky md:top-0">
+                {items.length !== 0 && (
+                    <div className="w-full md:w-80 h-min p-4 flex flex-col gap-4 sticky md:top-0">
                         <p className="font-bold text-lg sm:text-3xl">Summary</p>
                         <p className="flex justify-between">Total: <strong>{totalCost} ₹</strong></p>
-                        {
-                            user
-                                ? <Button
-                                    variant={'secondary'}
-                                    type="submit"
-                                    className="w-fit self-end md:w-full bg-rose-600 rounded-full text-white"
-                                    onClick={handleCheckout}>Proceed to Checkout</Button>
-                                : <Link href="/login" className="w-fit self-end md:w-full px-4 py-2 text-center bg-rose-600 rounded-full text-white">Login first to proceed to checkout</Link>
-                        }
+                        {user ? (
+                            <Button
+                                variant={'secondary'}
+                                type="submit"
+                                className="w-fit self-end md:w-full bg-rose-600 rounded-full text-white"
+                                onClick={handleCheckout}
+                            >
+                                Proceed to Checkout
+                            </Button>
+                        ) : (
+                            <Link href="/login" className="w-fit self-end md:w-full px-4 py-2 text-center bg-rose-600 rounded-full text-white">
+                                Login first to proceed to checkout
+                            </Link>
+                        )}
                     </div>
-                }
+                )}
             </div>
         </section>
-    )
+    );
 }
