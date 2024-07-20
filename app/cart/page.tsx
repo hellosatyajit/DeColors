@@ -23,6 +23,8 @@ const breadcrumb = [
 export default function CartPage() {
     const [items, setItems] = useState<any[]>([]);
     const [user, setUser] = useState<{ id: string; email: string; name: string; } | undefined>(undefined);
+
+    const totalCost = items.reduce((acc, item: any) => acc + item.price * item.quantity, 0);
     const { data: session } = useSession();
     const router = useRouter();
     const userinfo = session?.user;
@@ -166,6 +168,7 @@ export default function CartPage() {
                                                     className="h-full w-full object-cover"
                                                     width={64}
                                                     height={64}
+
                                                     alt={item.name}
                                                     src={item.image}
                                                 />
@@ -174,7 +177,11 @@ export default function CartPage() {
                                                 <span className="leading-tight font-medium text-rose-600">
                                                     {item.name}
                                                 </span>
-                                                {item.sku && <span className="leading-tight text-black/50">Variant: {item.sku}</span>}
+                                                {
+                                                    item.sku && <span className="leading-tight text-black/50">
+                                                        Variant: {item.sku}
+                                                    </span>
+                                                }
                                             </div>
                                         </div>
                                         <div className="flex h-16 flex-col justify-between">
