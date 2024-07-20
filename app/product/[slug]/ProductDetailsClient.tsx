@@ -16,21 +16,12 @@ const ProductDetailsClient = ({ product }: { product: IProduct }) => {
     const router = useRouter();
 
     const { data: session, status: isAuthenticated } = useSession();
-
     const [selectedSize, setSelectedColor] = useState("");
     const [showError, setShowError] = useState(false);
     const [reviewText, setReviewText] = useState("");
     const [reviewRating, setReviewRating] = useState(5);
     const [feedbacks, setFeedbacks] = useState(product.rating.reviews || []);
-
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [images, setImages] = useState(product?.variants.flatMap((item: any) => item.image).slice(0, 5));
-
-    useEffect(() => {
-        console.log(session);
-        setIsAuthenticated(status === "authenticated");
-    }, [status]);
-
 
     const notify = () => {
         toast.success("Success. Check your cart!");
