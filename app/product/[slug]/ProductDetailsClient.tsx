@@ -1,6 +1,6 @@
 "use client";
 
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import ProductDetailsCarousel from "@/components/ProductDetailsCarousel";
 import { getDiscountedPricePercentage } from "@/utils/helper";
@@ -14,16 +14,17 @@ import { format } from 'date-fns';
 
 const ProductDetailsClient = ({ product }: { product: IProduct }) => {
     const router = useRouter();
-    const {data:session,status} = useSession();
+    const { data: session, status } = useSession();
     const [selectedSize, setSelectedColor] = useState("");
     const [showError, setShowError] = useState(false);
     const [reviewText, setReviewText] = useState("");
     const [reviewRating, setReviewRating] = useState(5);
     const [feedbacks, setFeedbacks] = useState(product.rating.reviews || []);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [images, setImages] = useState(product?.variants.flatMap((item: any) => item.image).slice(0, 5));
 
     useEffect(() => {
-        console.log(session)
+        console.log(session);
         setIsAuthenticated(status === "authenticated");
     }, [status]);
 
@@ -34,6 +35,7 @@ const ProductDetailsClient = ({ product }: { product: IProduct }) => {
     const doAddToCart = () => {
         if (selectedSize === "") {
             setShowError(true);
+            toast.error("Please select a color.");
             return;
         } else {
             addToCart(product, selectedSize);
@@ -54,8 +56,6 @@ const ProductDetailsClient = ({ product }: { product: IProduct }) => {
         }
     };
 
-    const images = product?.variants.slice(0, 5).map((item: any) => item.image);
-
     const handleReviewSubmit = async () => {
         const reviewerName = session?.user?.name || "Anonymous";
 
@@ -66,10 +66,7 @@ const ProductDetailsClient = ({ product }: { product: IProduct }) => {
             date: new Date(),
         };
 
-
         setFeedbacks([...feedbacks, newReview]);
-
-
         setReviewText("");
         setReviewRating(5);
 
@@ -78,6 +75,14 @@ const ProductDetailsClient = ({ product }: { product: IProduct }) => {
 
     const formatDate = (date: Date | string, formatStr: string = 'MM/dd/yyyy') => {
         return format(new Date(date), formatStr);
+    };
+
+    const handleColorSelection = (variant: any) => {
+        setSelectedColor(variant.sku);
+        addQueryParam(variant.sku);
+        setShowError(false);
+        console.log(variant.image)
+        setImages(variant.image); // Update carousel images to only show the selected variant image
     };
 
     return (
@@ -139,11 +144,7 @@ const ProductDetailsClient = ({ product }: { product: IProduct }) => {
                                                 : "",
                                             backgroundSize: "cover",
                                         }}
-                                        onClick={() => {
-                                            setSelectedColor(item.sku);
-                                            addQueryParam(item.sku);
-                                            setShowError(false);
-                                        }}
+                                        onClick={() => handleColorSelection(item)}
                                     ></button>
                                 ))}
                             </div>

@@ -186,7 +186,7 @@ export default function CartPage() {
                                                     }
                                                     src={item?.images ? item.images[0] : item?.variants.find(
                                                         (i: any) => i.sku === item.sku
-                                                    ).image}
+                                                    ).image[0]}
                                                 />
                                             </div>
 
