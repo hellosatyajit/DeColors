@@ -12,8 +12,7 @@ export default function Login({
   searchParams: { message: string };
 }) {
   const router = useRouter();
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false)
   const [user, setUser] = useState({
     email: "",
     password: "",
@@ -28,9 +27,10 @@ export default function Login({
     e.preventDefault();
     setLoading(true);
     try {
-      await signIn("google",{callbackUrl:'/auth'});
+      await signIn("google", { callbackUrl: '/auth' });
     } catch (error: any) {
       console.error("Google sign-in failed:", error);
+      toast.error("Google sign-in failed");
       setLoading(false);
     }
   };
@@ -39,12 +39,12 @@ export default function Login({
     setLoading(true);
     try {
       if (!user.email || !user.password) {
-        setError("Please fill in all fields");
+        toast.error("Please fill in all fields");
         return;
       }
       const emailRegex = /^([a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})$/;
       if (!emailRegex.test(user.email)) {
-        setError("Invalid email format");
+        toast.error("Invalid email format");
         return;
       }
 
@@ -57,16 +57,14 @@ export default function Login({
 
       if (res?.error) {
         console.log(res)
-        setError(res.error);
+        toast.error(res.error);
         setLoading(false);
         return;
       }
-
-      setError("");
       router.push("/");
     } catch (error) {
       console.error('Login error:', error);
-      setError("Error occurred during login");
+      toast.error("Error occurred during login");
     } finally {
       setLoading(false);
       setUser({
@@ -137,9 +135,9 @@ export default function Login({
             className="bg-white p-4 rounded-lg transition-all w-full outline-none ring-0 border hover:border-gray-400 focus:border-rose-600"
           />
         </div>
-        {error && <p className="py-6 text-lg">{error}</p>}
+        {/* {error && <p className="py-6 text-lg">{error}</p>} */}
         <button type="submit" className="bg-rose-600  hover:bg-rose-700 text-white p-4 rounded-lg flex justify-center items-center gap-2 transition-all active:scale-95 group">
-        {loading ? "Processing" : " Login"}
+          {loading ? "Processing" : " Login"}
         </button>
         <p className="text-center text-sm mt-2">
           <Link href="/forgot-password" className="font-medium hover:underline">

@@ -3,13 +3,12 @@ import clientPromise from "../../lib/mongodb";
 
 export interface IOrder {
   userId: ObjectId | undefined;
-  OrderId: string;
+  orderId: string;
   transactionId: ObjectId | undefined;
   amount: number;
   cart: any[];
   trackingInfo: {
-    shipment_id: number;
-    awb_number: number;
+    shipment_id: string;
     tracking_url: string;
   };
   createdAt: Date;
@@ -20,15 +19,18 @@ async function getOrderCollection() {
   return client.db().collection<IOrder>("orders");
 }
 
-export async function createOrder(order:IOrder) {
+export async function createOrder(order: IOrder) {
   const orders = await getOrderCollection();
   return orders.insertOne(order);
 }
-export async function updateOrder(transactionId: ObjectId, updateFields: Partial<IOrder>) {
+export async function updateOrder(
+  transactionId: ObjectId,
+  updateFields: Partial<IOrder>
+) {
   const orders = await getOrderCollection();
   return orders.updateOne({ transactionId }, { $set: updateFields });
 }
-export async function findOrdersByUserId(userId:ObjectId){
+export async function findOrdersByUserId(userId: ObjectId) {
   const orders = await getOrderCollection();
-  return orders.find({ userId }).toArray();
+  return orders.find({ userId }).sort({ createdAt: -1 }).toArray();
 }
