@@ -14,13 +14,23 @@ import { format } from 'date-fns';
 
 const ProductDetailsClient = ({ product }: { product: IProduct }) => {
     const router = useRouter();
+
     const { data: session, status: isAuthenticated } = useSession();
+
     const [selectedSize, setSelectedColor] = useState("");
     const [showError, setShowError] = useState(false);
     const [reviewText, setReviewText] = useState("");
     const [reviewRating, setReviewRating] = useState(5);
     const [feedbacks, setFeedbacks] = useState(product.rating.reviews || []);
-    const [images, setImages] = useState(product?.variants.slice(0, 5).map((item: any) => item.image));
+
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [images, setImages] = useState(product?.variants.flatMap((item: any) => item.image).slice(0, 5));
+
+    useEffect(() => {
+        console.log(session);
+        setIsAuthenticated(status === "authenticated");
+    }, [status]);
+
 
     const notify = () => {
         toast.success("Success. Check your cart!");
@@ -80,7 +90,9 @@ const ProductDetailsClient = ({ product }: { product: IProduct }) => {
         setSelectedColor(variant.sku);
         addQueryParam(variant.sku);
         setShowError(false);
-        setImages([variant.image]);
+
+        console.log(variant.image)
+        setImages(variant.image); 
     };
 
     return (

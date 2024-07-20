@@ -19,7 +19,7 @@ export default function ProductCard({ product, style = '', space = true }: { pro
                         width={300}
                         height={200}
                         className={`object-cover w-full aspect-square sm:aspect-[4/3] ${space ? 'sm:rounded-lg' : 'rounded-t-lg'}`}
-                        src={product?.images ? product.images[0] : product.variants[0].image}
+                        src={product?.images ? product.images[0] : product.variants[0].image[0]}
                         alt={product.name + " Image"}
                     />
                     <span className="absolute left-2 top-2 text-[10px] sm:text-xs bg-white rounded-full p-1 sm:px-2">⭐ {rating}</span>
