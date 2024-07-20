@@ -16,7 +16,7 @@ export default async function Index() {
   return (
     <>
       <div className="w-full">
-        {/* <Hero /> */}
+        <Hero />
         <ShopByCategory />
         <ProductsSlider title="Best Sellers" viewAll="/products" products={JSON.parse(JSON.stringify(bestSellingProducts))} />
         <ProductsSlider title="De Coloress" viewAll="/products/de-coloress" products={JSON.parse(JSON.stringify(deColoressProducts))} />

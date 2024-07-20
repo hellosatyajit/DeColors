@@ -12,7 +12,7 @@ export default function ProductCard({ product, style = '', space = true }: { pro
         rating = parseFloat((rating / product.rating.reviews.length).toFixed(1));
       }
     return (
-        <div className={`bg-white rounded-lg ${style}`}>
+        <div className={`bg-white rounded-lg h-full ${style} flex flex-col`}>
             <div className={`flex justify-center ${space ? 'sm:p-3 sm:pb-0' : ''}`}>
                 <Link href={url} className="w-full relative">
                     <Image
@@ -25,7 +25,7 @@ export default function ProductCard({ product, style = '', space = true }: { pro
                     <span className="absolute left-2 top-2 text-[10px] sm:text-xs bg-white rounded-full p-1 sm:px-2">⭐ {rating}</span>
                 </Link>
             </div>
-            <div className="p-3 pt-0 space-y-4 mt-2">
+            <div className="p-3 pt-0 mt-2 flex flex-col gap-4 justify-between flex-1">
                 <div>
                     <Link href={url}>
                         <p className="text-sm xs:text-lg font-semibold leading-tight hover:underline">{product.name}</p>

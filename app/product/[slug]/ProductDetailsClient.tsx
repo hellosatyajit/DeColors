@@ -14,12 +14,15 @@ import { format } from 'date-fns';
 
 const ProductDetailsClient = ({ product }: { product: IProduct }) => {
     const router = useRouter();
-    const { data: session, status } = useSession();
+
+    const { data: session, status: isAuthenticated } = useSession();
+
     const [selectedSize, setSelectedColor] = useState("");
     const [showError, setShowError] = useState(false);
     const [reviewText, setReviewText] = useState("");
     const [reviewRating, setReviewRating] = useState(5);
     const [feedbacks, setFeedbacks] = useState(product.rating.reviews || []);
+
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [images, setImages] = useState(product?.variants.flatMap((item: any) => item.image).slice(0, 5));
 
@@ -27,6 +30,7 @@ const ProductDetailsClient = ({ product }: { product: IProduct }) => {
         console.log(session);
         setIsAuthenticated(status === "authenticated");
     }, [status]);
+
 
     const notify = () => {
         toast.success("Success. Check your cart!");
@@ -59,6 +63,11 @@ const ProductDetailsClient = ({ product }: { product: IProduct }) => {
     const handleReviewSubmit = async () => {
         const reviewerName = session?.user?.name || "Anonymous";
 
+        if (reviewText.trim() === "") {
+            toast.error("Review text is required.");
+            return;
+        }
+
         const newReview = {
             name: reviewerName,
             rating: reviewRating,
@@ -81,8 +90,9 @@ const ProductDetailsClient = ({ product }: { product: IProduct }) => {
         setSelectedColor(variant.sku);
         addQueryParam(variant.sku);
         setShowError(false);
+
         console.log(variant.image)
-        setImages(variant.image); // Update carousel images to only show the selected variant image
+        setImages(variant.image); 
     };
 
     return (
@@ -178,7 +188,7 @@ const ProductDetailsClient = ({ product }: { product: IProduct }) => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-10">
                     <div>
                         <h2 className="text-xl font-bold mb-4">Leave a Review</h2>
-                        {isAuthenticated ? (
+                        {isAuthenticated === 'authenticated' && (
                             <>
                                 <div className="mb-4">
                                     <label className="block text-gray-700">Rating:</label>
@@ -204,30 +214,32 @@ const ProductDetailsClient = ({ product }: { product: IProduct }) => {
                                     ></textarea>
                                 </div>
                                 <button
-                                    className="ml-2 py-2 px-4 rounded-full bg-black text-white text-lg font-medium transition-transform rounded-md hover:opacity-75"
+                                    className="py-2 px-4 rounded-full bg-black text-white text-lg font-medium transition-transform hover:opacity-75"
                                     onClick={handleReviewSubmit}
                                 >
                                     Submit Review
                                 </button>
                             </>
-                        ) : (
+                        )}
+
+                        {isAuthenticated === 'unauthenticated' &&
                             <div className="text-gray-700">
                                 You must be signed in to leave a review.
                                 <button
-                                    className="ml-2 py-2 px-4 rounded-full bg-black text-white text-lg font-medium transition-transform rounded-md hover:opacity-75"
+                                    className="py-2 px-4 rounded-full bg-black text-white text-lg font-medium transition-transform hover:opacity-75"
                                     onClick={() => router.push("/login")}
                                 >
                                     Sign In
                                 </button>
                             </div>
-                        )}
+                        }
                     </div>
                     <div>
                         <h2 className="text-xl font-bold mb-4">Customer Reviews</h2>
-                        <div className="h-64 overflow-y-auto border p-4 rounded-md">
+                        <div className="max-h-[512px] overflow-y-auto border rounded-md">
                             {feedbacks.length > 0 ? (
                                 feedbacks.map((feedback, index) => (
-                                    <div key={index} className="mb-5 border-b pb-3">
+                                    <div key={index} className={`p-4 ${feedbacks.length - 1 !== index ? 'border-b' : ''}`}>
                                         <div className="flex items-center mb-1">
                                             <div className="font-semibold">{feedback.name}</div>
                                             <div className="ml-3 text-sm text-yellow-500">
