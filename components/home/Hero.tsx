@@ -1,20 +1,10 @@
 "use client";
-import Image from "next/image";
 import { useState } from "react";
 import { useKeenSlider } from "keen-slider/react"
 import "keen-slider/keen-slider.min.css"
 
-{/* <Image src={'https://d32baadbbpueqt.cloudfront.net/Homepage/de88d1b9-e164-4b36-a0bd-f3c78e7f7ec5.jpg'} alt={''} width={100} height={100} className="w-full h-full hidden xs:block" />
-<Image src={'https://d32baadbbpueqt.cloudfront.net/Homepage/de88d1b9-e164-4b36-a0bd-f3c78e7f7ec5.jpg'} alt={''} width={100} height={100} className="w-full h-full block xs:hidden aspect-square" /> */}
-// 1440x400
-
 const ImageUrl = [
-    'https://juewdrvuynzvupklbxme.supabase.co/storage/v1/object/public/home/1.png',
-    'https://juewdrvuynzvupklbxme.supabase.co/storage/v1/object/public/home/2.png',
-    'https://juewdrvuynzvupklbxme.supabase.co/storage/v1/object/public/home/3.png',
-    'https://juewdrvuynzvupklbxme.supabase.co/storage/v1/object/public/home/4.png',
-    'https://juewdrvuynzvupklbxme.supabase.co/storage/v1/object/public/home/5.png',
-    'https://juewdrvuynzvupklbxme.supabase.co/storage/v1/object/public/home/6.png',
+    '/1.jpg',
 ]
 
 export default function Hero() {
@@ -64,24 +54,13 @@ export default function Hero() {
         <>
             <div className="navigation-wrapper relative">
                 <div ref={sliderRef} className="keen-slider">
-                    <div className="keen-slider__slide">
-                        <Image src={ImageUrl[0]} alt={''} width={100} height={100} className="w-full h-full aspect-square xs:aspect-auto" />
-                    </div>
-                    <div className="keen-slider__slide">
-                        <Image src={ImageUrl[1]} alt={''} width={100} height={100} className="w-full h-full aspect-square xs:aspect-auto" />
-                    </div>
-                    <div className="keen-slider__slide">
-                        <Image src={ImageUrl[2]} alt={''} width={100} height={100} className="w-full h-full aspect-square xs:aspect-auto" />
-                    </div>
-                    <div className="keen-slider__slide">
-                        <Image src={ImageUrl[3]} alt={''} width={100} height={100} className="w-full h-full aspect-square xs:aspect-auto" />
-                    </div>
-                    <div className="keen-slider__slide">
-                        <Image src={ImageUrl[4]} alt={''} width={100} height={100} className="w-full h-full aspect-square xs:aspect-auto" />
-                    </div>
-                    <div className="keen-slider__slide">
-                        <Image src={ImageUrl[5]} alt={''} width={100} height={100} className="w-full h-full aspect-square xs:aspect-auto" />
-                    </div>
+                    {
+                        ImageUrl.map((url, index) => (
+                            <div key={index} className="keen-slider__slide">
+                                <img src={url} alt={''} className="w-full" />
+                            </div>
+                        ))
+                    }
                 </div>
                 {loaded && instanceRef.current && (
                     <>
