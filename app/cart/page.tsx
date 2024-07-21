@@ -43,7 +43,7 @@ export default function CartPage() {
         fetchCart();
     }, []);
 
-    const totalCost = items.reduce((acc, item: any) => acc + (item.price * item.quantity), 0);
+
 
     const handleCheckout = async () => {
         const order = await createOrder(totalCost);
