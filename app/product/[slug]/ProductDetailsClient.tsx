@@ -26,7 +26,13 @@ const ProductDetailsClient = ({ product }: { product: IProduct }) => {
     const notify = () => {
         toast.success("Success. Check your cart!");
     };
-
+    let productname = ''
+    if (selectedSize === ""){
+         productname = product?.name + " - "  + product.brand 
+    }
+    else {
+         productname = product?.name + " - "  + selectedSize
+    }
     const doAddToCart = () => {
         if (selectedSize === "") {
             setShowError(true);
@@ -81,8 +87,6 @@ const ProductDetailsClient = ({ product }: { product: IProduct }) => {
         setSelectedColor(variant.sku);
         addQueryParam(variant.sku);
         setShowError(false);
-
-        console.log(variant.image)
         setImages(variant.image); 
     };
 
@@ -93,7 +97,7 @@ const ProductDetailsClient = ({ product }: { product: IProduct }) => {
                     <ProductDetailsCarousel images={images} />
                     <div className="flex-[1] py-3">
                         <div className="text-[34px] font-semibold mb-2 leading-tight">
-                            {product?.name}
+                            {productname}
                         </div>
 
                         <div className="text-lg font-semibold mb-5">{product?.subheading}</div>

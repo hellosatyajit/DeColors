@@ -28,7 +28,7 @@ export default function ProductCard({ product, style = '', space = true }: { pro
             <div className="p-3 pt-0 mt-2 flex flex-col gap-4 justify-between flex-1">
                 <div>
                     <Link href={url}>
-                        <p className="text-sm xs:text-lg font-semibold leading-tight hover:underline">{product.name}</p>
+                        <p className="text-sm xs:text-lg font-semibold leading-tight hover:underline">{product.name + " - " + product.brand}</p>
                     </Link>
                     <p className="text-xs xs:text-sm text-rose-600">{product.subheading}</p>
                 </div>
