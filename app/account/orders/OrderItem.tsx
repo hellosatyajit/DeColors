@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/accordion"
 import { SquareArrowOutUpRight } from 'lucide-react';
 import { IOrder } from '@/server/model/order';
+import Image from 'next/image';
 
 interface ShipmentTrackActivity {
   date: string;
@@ -52,11 +53,12 @@ export function OrderItem({ order }: { order: IOrder }) {
         <AccordionTrigger className='items-start'>
           <div className='text-left'>
             <p>Order ID: {order.orderId}</p>
-            <p>Amount: {order.amount} ₹</p>
+            <p>Amount: {order.amount.total} ₹</p>
             <p>Status: {trackingDetails ? trackingDetails.tracking_data?.shipment_track[0].current_status || 'Pending' : 'Fetching status...'}</p>
           </div>
         </AccordionTrigger>
         <AccordionContent>
+          <p>Shipping Charges: {order.amount.shipping} ₹</p>
           <ul className="flex-grow flex-1">
             {order.cart.map((item: any, index: number) => {
               return (
@@ -64,24 +66,18 @@ export function OrderItem({ order }: { order: IOrder }) {
                   key={index}
                   className="flex w-full max-w-full flex-col"
                 >
-                  <div className="relative flex w-full flex-row justify-between pb-4">
-                    <div
-                      className="z-30 flex flex-row space-x-4"
-                    >
+                  <div className="relative flex w-full flex-row justify-between px-1 py-4">
+                    <div className="z-30 flex flex-row space-x-4">
                       <div className="relative h-16 w-16 cursor-pointer overflow-hidden rounded-md border border-neutral-300 bg-neutral-300">
-                        <img
+                        <Image
                           className="h-full w-full object-cover"
                           width={64}
                           height={64}
-                          alt={
-                            item.name
-                          }
-                          src={item?.images ? item.images[0] : item?.variants.find(
-                            (i: any) => i.sku === item.sku
-                          ).image[0]}
+
+                          alt={item.name}
+                          src={item.image}
                         />
                       </div>
-
                       <div className="flex flex-1 flex-col text-base">
                         <span className="leading-tight font-medium text-rose-600">
                           {item.name}
@@ -91,9 +87,6 @@ export function OrderItem({ order }: { order: IOrder }) {
                             Variant: {item.sku}
                           </span>
                         }
-                        <span className="leading-tight text-black/50">
-                          {item.subheading}
-                        </span>
                       </div>
                     </div>
                     <div className="flex h-16 flex-col justify-between">

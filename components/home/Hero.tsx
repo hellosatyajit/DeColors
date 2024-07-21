@@ -4,7 +4,15 @@ import { useKeenSlider } from "keen-slider/react"
 import "keen-slider/keen-slider.min.css"
 
 const ImageUrl = [
-    '/1.jpg',
+    'https://utfs.io/f/52ca5768-dccf-4e60-ae04-76a51c5ecae1-a31zqe.jpg',
+    'https://utfs.io/f/46e3b7e1-8f07-411a-9120-835cb1fdaeb7-8yqmbu.jpg',
+    'https://utfs.io/f/bc16bcde-5abc-4be8-a15c-2e5daaf94ec9-w4fl6j.jpg',
+    'https://utfs.io/f/9900eeb9-9b23-4ced-b0a4-88a49c519f9e-ngx3l4.jpg',
+    'https://utfs.io/f/5d7f69a6-f559-4fa5-85b2-cd8e385a11bf-b3lb6x.jpg',
+    'https://utfs.io/f/82a6aaa1-537b-4a6e-b362-cec80fec8eb9-iqkhbt.jpg',
+    'https://utfs.io/f/ae58caea-bc0f-4c3f-a988-4dd776f53e6b-6fhxg.jpg',
+    'https://utfs.io/f/06f44988-106d-4bf3-bfb2-7bc489f714a8-5cpdh3.jpg',
+    'https://utfs.io/f/34971199-d1c9-475f-80d9-1b25fef466c7-3at44c.jpg',
 ]
 
 export default function Hero() {
