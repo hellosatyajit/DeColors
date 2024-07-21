@@ -19,6 +19,9 @@ export async function POST(request: NextRequest) {
       razorpaySignature,
       cartdetails,
       totalCost,
+      totalDiscount,
+      shippingCharges,
+      subTotal,
     } = body;
 
     const secret = process.env.RAZORPAY_SECRET;
@@ -51,7 +54,8 @@ export async function POST(request: NextRequest) {
         razorpayPaymentId,
         razorpayOrderId,
         razorpaySignature,
-        amount: totalCost,
+        amount: subTotal,
+        discount: totalDiscount,
         cart: cartdetails,
         status: "success",
         createdAt: new Date(),
@@ -109,21 +113,21 @@ export async function POST(request: NextRequest) {
               name: item.name,
               sku: item.sku,
               units: item.quantity,
-              selling_price: (item.price.mrp - item.price.discount).toString(),
+              selling_price: item.price.mrp.toString(),
               discount: item.price.discount.toString(),
               hsn: 3304,
             })
           ),
           payment_method: "Prepaid",
-          shipping_charges: 0,
+          shipping_charges: shippingCharges,
           giftwrap_charges: 0,
           transaction_charges: 0,
-          total_discount: 0,
+          total_discount: totalDiscount,
           sub_total: totalCost,
           length: 10,
           breadth: 15,
           height: 20,
-          weight: 2.5,
+          weight: 0.5,
         },
         {
           headers: {
@@ -138,7 +142,11 @@ export async function POST(request: NextRequest) {
         userId: id,
         orderId: order_id,
         transactionId: transactionDb?._id,
-        amount: totalCost,
+        amount: {
+          total: subTotal,
+          discount: totalDiscount,
+          shipping: shippingCharges,
+        },
         cart: cartdetails,
         trackingInfo: {
           shipment_id: orderCreationId,

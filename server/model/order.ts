@@ -5,7 +5,11 @@ export interface IOrder {
   userId: ObjectId | undefined;
   orderId: string;
   transactionId: ObjectId | undefined;
-  amount: number;
+  amount: {
+    total: number;
+    discount: number;
+    shipping: number;
+  };
   cart: any[];
   trackingInfo: {
     shipment_id: string;

@@ -5,7 +5,7 @@ import { DeleteItemButton } from "@/components/DeleteItemButton";
 import { EditItemQuantityButton } from "@/components/EditItemQuantityButton";
 import { Button } from "@/components/ui/button";
 import { useSession } from "next-auth/react";
-import { getCartData, emptyCart } from "@/utils/cart";
+import { getCartData, emptyCart, CartItem } from "@/utils/cart";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -21,10 +21,13 @@ const breadcrumb = [
 ];
 
 export default function CartPage() {
-    const [items, setItems] = useState<any[]>([]);
+    const [items, setItems] = useState<CartItem[]>([]);
     const [user, setUser] = useState<{ id: string; email: string; name: string; } | undefined>(undefined);
 
-    const totalCost = items.reduce((acc, item: any) => acc + item.price * item.quantity, 0);
+    const totalCost = items.reduce((acc, item: CartItem) => acc + item.price.mrp * item.quantity, 0);
+    const totalDiscount = items.reduce((acc, item: CartItem) => acc + item.price.discount * item.quantity, 0);
+    const shippingCharges = (totalCost - totalDiscount) > 149 ? 0 : 50;
+    const subTotal = (totalCost - totalDiscount) + shippingCharges;
     const { data: session } = useSession();
     const router = useRouter();
     const userinfo = session?.user;
@@ -43,10 +46,8 @@ export default function CartPage() {
         fetchCart();
     }, []);
 
-
-
     const handleCheckout = async () => {
-        const order = await createOrder(totalCost);
+        const order = await createOrder(subTotal);
         if (!userinfo) {
             toast.error('Please Signup First');
             router.push("/register");
@@ -58,7 +59,7 @@ export default function CartPage() {
             router.push("/onboarding");
             return;
         }
-        displayRazorpay(totalCost * 100, order.id, Userdata);
+        displayRazorpay(subTotal * 100, order.id, Userdata);
     }
 
     function loadScript(src: any) {
@@ -94,6 +95,9 @@ export default function CartPage() {
                 const paymentData = {
                     email: userinfo?.email,
                     totalCost: totalCost,
+                    totalDiscount: totalDiscount,
+                    shippingCharges: shippingCharges,
+                    subTotal: subTotal,
                     orderCreationId: order_id,
                     razorpayPaymentId: response.razorpay_payment_id,
                     razorpayOrderId: response.razorpay_order_id,
@@ -152,11 +156,11 @@ export default function CartPage() {
                         <p className="font-bold text-2xl">Your cart is empty!</p>
                     </div>
                     : <ul className="flex-grow py-4 flex-1">
-                        {items.map((item: any, i) => {
+                        {items.map((item: CartItem, i) => {
                             return (
                                 <li
                                     key={i}
-                                    className="flex w-full max-w-full flex-col border-b border-neutral-300 dark:border-neutral-700"
+                                    className="flex w-full max-w-full flex-col border-b border-neutral-300"
                                 >
                                     <div className="relative flex w-full flex-row justify-between px-1 py-4">
                                         <div className="absolute z-40 -mt-2 ml-[55px]">
@@ -186,7 +190,7 @@ export default function CartPage() {
                                         </div>
                                         <div className="flex h-16 flex-col justify-between">
                                             <p className="flex justify-end space-y-2 text-right text-sm">
-                                                {item.price} ₹
+                                                {item.price.mrp - item.price.discount} ₹
                                             </p>
                                             <div className="ml-auto flex h-9 flex-row items-center rounded-full border border-neutral-200 dark:border-neutral-700">
                                                 <EditItemQuantityButton item={item} type="minus" fetchCart={fetchCart} />
@@ -204,7 +208,14 @@ export default function CartPage() {
                 {items.length !== 0 && (
                     <div className="w-full md:w-80 h-min p-4 flex flex-col gap-4 sticky md:top-0">
                         <p className="font-bold text-lg sm:text-3xl">Summary</p>
-                        <p className="flex justify-between">Total: <strong>{totalCost} ₹</strong></p>
+                        <div>
+                            <p className="flex justify-between">Total: <strong>{totalCost} ₹</strong></p>
+                            <p className="flex justify-between">Shipping Charges: <strong>{shippingCharges} ₹</strong></p>
+                            {shippingCharges > 0 && <p className="text-xs opacity-70">Free shipping on orders over 149.</p>}
+                            <p className="flex justify-between">Discount: <strong>{totalDiscount} ₹</strong></p>
+                        </div>
+                        <hr />
+                        <p className="flex justify-between">Subtotal: <strong>{subTotal} ₹</strong></p>
                         {user ? (
                             <Button
                                 variant={'secondary'}

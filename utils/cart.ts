@@ -1,12 +1,15 @@
 "use client";
 
-interface CartItem {
+export interface CartItem {
   id: string;
   name: string;
   image: string;
   sku?: string;
-  price: number;
   quantity: number;
+  price: {
+    mrp: number;
+    discount: number;
+  };
 }
 
 interface CartData {
@@ -35,16 +38,14 @@ const getItemImage = (item: any, sku: string): string => {
       return variant.image[0];
     }
   }
-  return ""; 
+  return "";
 };
 
 export const addToCart = (item: any, sku: string = "") => {
-
   const price = item.price.mrp - item.price.discount;
 
-
-  if (typeof price !== 'number' || isNaN(price)) {
-    throw new Error('Invalid price');
+  if (typeof price !== "number" || isNaN(price)) {
+    throw new Error("Invalid price");
   }
 
   const cartItem: CartItem = {
@@ -52,8 +53,11 @@ export const addToCart = (item: any, sku: string = "") => {
     name: item.name,
     image: getItemImage(item, sku),
     sku: sku || undefined,
-    price: price,
     quantity: item.quantity || 1,
+    price: {
+      mrp: item.price.mrp,
+      discount: item.price.discount,
+    },
   };
 
   const cartData = getCartData();
@@ -72,13 +76,17 @@ export const addToCart = (item: any, sku: string = "") => {
 
 export const removeFromCart = (itemId: string) => {
   const cartData = getCartData();
-  cartData.items = cartData.items.filter((item: CartItem) => item.id !== itemId);
+  cartData.items = cartData.items.filter(
+    (item: CartItem) => item.id !== itemId
+  );
   updateCartData(cartData);
 };
 
 export const updateCartItemQuantity = (itemId: string, newQuantity: number) => {
   const cartData = getCartData();
-  const itemToUpdate = cartData.items.find((item: CartItem) => item.id === itemId);
+  const itemToUpdate = cartData.items.find(
+    (item: CartItem) => item.id === itemId
+  );
   if (itemToUpdate) {
     itemToUpdate.quantity = newQuantity;
     updateCartData(cartData);
