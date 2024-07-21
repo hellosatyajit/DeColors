@@ -17,10 +17,10 @@ export class PacksService implements IPacksService {
     return this.repository.find(filter, page, limit);
   }
   async addReview(
-    packName: string,
+    id: string,
     review: { name: string, rating: number, review: string, date: Date }
   ): Promise<IPacks> {
-    const pack = await this.repository.findByName(packName);
+    const pack = await this.repository.findById(id);
     if (!pack) {
       throw new Error("Pack not found");
     }
@@ -29,12 +29,15 @@ export class PacksService implements IPacksService {
       pack.rating = { reviews: [] };
     }
 
-    await this.repository.updateByName(packName, {
+    await this.repository.updateById(id, {
       rating: {
         reviews: [...(pack.rating.reviews || []), review],
       },
     });
 
-    return this.repository.findByName(packName) as Promise<IPacks>;
+    return this.repository.findById(id) as Promise<IPacks>;
+  }
+  async incrementSoldCount(id: any,packSoldCount:number, quantity: number): Promise<void> {
+    await this.repository.update(id, { soldCount: packSoldCount  + quantity });
   }
 }

@@ -18,10 +18,10 @@ export class ProductService implements IProductService {
   }
 
   async addReview(
-    productName: string,
+    id: string,
     review: { name: string, rating: number, review: string, date: Date }
   ): Promise<IProduct> {
-    const product = await this.repository.findByName(productName);
+    const product = await this.repository.findById(id);
     if (!product) {
       throw new Error("Product not found");
     }
@@ -30,12 +30,15 @@ export class ProductService implements IProductService {
       product.rating = { reviews: [] };
     }
 
-    await this.repository.updateByName(productName, {
+    await this.repository.updateById(id, {
       rating: {
         reviews: [...(product.rating.reviews || []), review],
       },
     });
 
-    return this.repository.findByName(productName) as Promise<IProduct>;
+    return this.repository.findById(id) as Promise<IProduct>;
+  }
+  async incrementSoldCount(id: any,productSoldCount:number, quantity: number): Promise<void> {
+    await this.repository.update(id, { soldCount: productSoldCount  + quantity });
   }
 }

@@ -7,6 +7,7 @@ import axios from "axios";
 import { format } from "date-fns";
 
 import { createOrder, IOrder } from "@/server/model/order";
+import { incrementSoldCount } from "@/server/actions/ProductActions";
 
 export async function POST(request: NextRequest) {
   try {
@@ -155,7 +156,7 @@ export async function POST(request: NextRequest) {
         createdAt: new Date(),
       };
       await createOrder(order);
-
+      await incrementSoldCount(cartdetails)
       return NextResponse.json(
         {
           success: true,
