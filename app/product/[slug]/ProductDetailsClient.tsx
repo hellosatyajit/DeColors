@@ -76,7 +76,7 @@ const ProductDetailsClient = ({ product }: { product: IProduct }) => {
         setReviewText("");
         setReviewRating(5);
 
-        await addReviewToProductOrPack(product.name, newReview);
+        await addReviewToProductOrPack(product._id, newReview);
     };
 
     const formatDate = (date: Date | string, formatStr: string = 'MM/dd/yyyy') => {

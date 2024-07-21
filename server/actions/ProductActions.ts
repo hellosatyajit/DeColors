@@ -1,5 +1,7 @@
 "use server";
 
+import { ObjectId } from "mongodb";
+import { ICartItem } from "../model/transaction";
 import { PacksService } from "../service/packs/PacksService";
 import { ProductService } from "../service/product/ProductService";
 
@@ -128,7 +130,7 @@ export const fetchSortedProducts = async (
   }
 };
 export const addReviewToProductOrPack = async (
-  name: string,
+  id: string,
   review: {
     name: string;
     rating: number;
@@ -139,9 +141,38 @@ export const addReviewToProductOrPack = async (
 ) => {
   if (isProduct) {
     const productService = new ProductService();
-    return await productService.addReview(name, review);
+    return await productService.addReview(id, review);
   } else {
     const packsService = new PacksService();
-    return await packsService.addReview(name, review);
+    return await packsService.addReview(id, review);
+  }
+};
+export const incrementSoldCount = async (cartItems:any[]) => {
+  const productService = new ProductService();
+  const packsService = new PacksService();
+
+  for (const item of cartItems) {
+    let { id, quantity } = item;
+    if (id.includes("-")) {
+      id = id.split("-")[0];
+    }
+    let product = await productService.searchProducts({ _id:new ObjectId(id) }, 1, 1);
+    if (product.totalCount > 0) {
+      // Product found
+      const productId = product.data[0]._id;
+      const productSoldCount = product.data[0].soldCount
+      await productService.incrementSoldCount(productId.toString(),productSoldCount,quantity)
+    } else {
+      // Check in packs
+      let pack = await packsService.searchProducts({ _id:new ObjectId(id) }, 1, 1);
+      if (pack.totalCount > 0) {
+        // Pack found
+        const packId = pack.data[0]._id;
+        const packSoldCount = pack.data[0].soldCount
+        await packsService.incrementSoldCount(packId.toString(),packSoldCount,quantity)
+      } else {
+        throw new Error(`Product or Pack with slug ${id} not found`);
+      }
+    }
   }
 };

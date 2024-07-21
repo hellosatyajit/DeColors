@@ -1,4 +1,5 @@
 export interface IProduct {
+  _id: any;
   name: string;
   description: [string];
   price: {
@@ -28,6 +29,7 @@ export interface IProduct {
 }
 
 export interface IPacks {
+  _id: any;
   name: string;
   description: [string];
   price: {

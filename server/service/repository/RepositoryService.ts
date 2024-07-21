@@ -107,5 +107,16 @@ export class Repository<T> implements IRepository<T> {
       }
     }
   }
+  async updateById(id: string, update: Partial<T>): Promise<void> {
+    try {
+      const client: MongoClient = await clientPromise;
+      const collection = client.db().collection(this.collection);
+      await collection.updateOne({ _id: new ObjectId(id) }, { $set: update });
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error("An error occurred:", error.message);
+      }
+    }
+  }
   
 }
