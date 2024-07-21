@@ -104,7 +104,7 @@ const ProductDetailsClient = ({ product }: { product: IProduct }) => {
 
                         <div className="flex items-center">
                             <p className="mr-2 text-lg font-semibold">
-                                {product?.price.mrp ?? 0 - (product?.price.discount ?? 0)} ₹
+                                {product?.price.mrp - product?.price.discount} ₹
                             </p>
                             {product?.price.discount > 0 && (
                                 <>
