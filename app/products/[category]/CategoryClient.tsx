@@ -24,7 +24,14 @@ const CategoryClient = ({ products, category }: { products: (IProduct | IPacks)[
     setLoading(true);
 
     try {
-      const response = await fetchSortedProducts(newValue, category);
+      let field: "category" | "brand" | "None" | undefined;
+      if (category === 'De Colores' || category === 'Chelsy' || category === 'Herbonica') {
+        field = "brand"
+      }
+      else{
+        field = "category"
+      }
+      const response = await fetchSortedProducts(newValue, category,field);
       const sortedProducts = response.data;
       setCurrentProducts(sortedProducts);
     } catch (error) {
