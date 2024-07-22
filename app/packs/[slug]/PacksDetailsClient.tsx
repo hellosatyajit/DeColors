@@ -6,11 +6,12 @@ import ProductDetailsCarousel from "@/components/ProductDetailsCarousel";
 import { getDiscountedPricePercentage } from "@/utils/helper";
 import toast from "react-hot-toast";
 import { addToCart } from "@/utils/cart";
-import { IPacks } from "@/types/product";
+import { IPacks, IProduct } from "@/types/product";
 import { useSession } from "next-auth/react";
 import { FaStar } from "react-icons/fa";
-import { addReviewToProductOrPack } from "@/server/actions/ProductActions";
+import { addReviewToProductOrPack, fetchSuggestedProducts } from "@/server/actions/ProductActions";
 import { format } from "date-fns";
+import ProductsSlider from "@/components/home/ProductsSlider";
 
 const ProductDetailsClient = ({ product }: { product: IPacks }) => {
     const router = useRouter();
@@ -19,11 +20,18 @@ const ProductDetailsClient = ({ product }: { product: IPacks }) => {
     const [reviewRating, setReviewRating] = useState(5);
     const [feedbacks, setFeedbacks] = useState(product.rating.reviews || []);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
-
+    const [SuggestedProducts,setSuggestedProducts] = useState<(IPacks | IProduct)[]>([]);
     useEffect(() => {
-        console.log(session)
-        setIsAuthenticated(status === "authenticated");
-    }, [status]);
+        const fetchProducts = async () => {
+          if (product?.brand && product?.category) {
+            const { data: Suggestedproducts } = await fetchSuggestedProducts(product.brand, product.category);
+            setSuggestedProducts(Suggestedproducts);
+          }
+        };
+    
+        fetchProducts();
+        setIsAuthenticated(status === 'authenticated');
+      }, [status, product?.brand, product?.category]);
 
     const notify = () => {
         toast.success("Success. Check your cart!");
@@ -175,7 +183,9 @@ const ProductDetailsClient = ({ product }: { product: IPacks }) => {
                         </div>
                     </div>
                 </div>
+                
             </div>
+            <ProductsSlider title="Suggest Product" viewAll="" products={JSON.parse(JSON.stringify(SuggestedProducts))} />
         </section>
     );
 };
