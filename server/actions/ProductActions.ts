@@ -187,15 +187,21 @@ export const incrementSoldCount = async (cartItems:any[]) => {
 
   for (const item of cartItems) {
     let { id, quantity } = item;
+    let sku: string='';
+
     if (id.includes("-")) {
-      id = id.split("-")[0];
+      const parts = id.split("-");
+      id = parts.shift() as string; 
+      sku = parts.join("-"); 
     }
     let product = await productService.searchProducts({ _id:new ObjectId(id) }, 1, 1);
     if (product.totalCount > 0) {
       // Product found
       const productId = product.data[0]._id;
       const productSoldCount = product.data[0].soldCount
-      await productService.incrementSoldCount(productId.toString(),productSoldCount,quantity)
+      const variant = product.data[0].variants.find((v: any) => v.sku === sku);
+      const variantInventory = variant?.inventory;
+      await productService.incrementSoldCount(productId.toString(),productSoldCount,sku,variantInventory,quantity)
     } else {
       // Check in packs
       let pack = await packsService.searchProducts({ _id:new ObjectId(id) }, 1, 1);
@@ -203,7 +209,8 @@ export const incrementSoldCount = async (cartItems:any[]) => {
         // Pack found
         const packId = pack.data[0]._id;
         const packSoldCount = pack.data[0].soldCount
-        await packsService.incrementSoldCount(packId.toString(),packSoldCount,quantity)
+        const packinventory = pack.data[0].inventory
+        await packsService.incrementSoldCount(packId.toString(),packSoldCount,packinventory,quantity)
       } else {
         throw new Error(`Product or Pack with slug ${id} not found`);
       }

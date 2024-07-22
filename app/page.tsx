@@ -19,7 +19,7 @@ export default async function Index() {
         <Hero />
         <ShopByCategory />
         <ProductsSlider title="Best Sellers" viewAll="/products" products={JSON.parse(JSON.stringify(bestSellingProducts))} />
-        <ProductsSlider title="De Colores" viewAll="/products/de-coloress" products={JSON.parse(JSON.stringify(deColoressProducts))} />
+        <ProductsSlider title="De Colores" viewAll="/products/de-colores" products={JSON.parse(JSON.stringify(deColoressProducts))} />
         <ProductsSlider title="Herbonica" viewAll="/products/herbonica" products={JSON.parse(JSON.stringify(herbonicaProducts))} />
         <ProductsSlider title="Chelsy" viewAll="/products/chelsy" products={JSON.parse(JSON.stringify(chelsyProducts))} />
         {/* <HotDeals /> */}

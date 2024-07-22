@@ -8,7 +8,7 @@ export default async function CategoryPage({ params }: { params: { category: str
 
   let products = [];
 
-  if (category === 'De Coloress' || category === 'Chelsy' || category === 'Herbonica') {
+  if (category === 'De Colores' || category === 'Chelsy' || category === 'Herbonica') {
     const response = await fetchProductsByBrand(category);
     products = response.data;
   } else {

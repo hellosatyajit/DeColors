@@ -43,6 +43,7 @@ export interface IPacks {
   brand: string;
   category: string;
   subheading: string;
+  inventory: number;
   type: string;
   rating: {
     reviews: {
