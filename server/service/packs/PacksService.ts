@@ -37,7 +37,8 @@ export class PacksService implements IPacksService {
 
     return this.repository.findById(id) as Promise<IPacks>;
   }
-  async incrementSoldCount(id: any,packSoldCount:number, quantity: number): Promise<void> {
+  async incrementSoldCount(id: any,packSoldCount:number,packinventory:number, quantity: number): Promise<void> {
     await this.repository.update(id, { soldCount: packSoldCount  + quantity });
+    await this.repository.update(id, { inventory:packinventory - quantity });
   }
 }

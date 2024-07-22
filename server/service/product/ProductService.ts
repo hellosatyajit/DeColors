@@ -38,7 +38,8 @@ export class ProductService implements IProductService {
 
     return this.repository.findById(id) as Promise<IProduct>;
   }
-  async incrementSoldCount(id: any,productSoldCount:number, quantity: number): Promise<void> {
+  async incrementSoldCount(id: any,productSoldCount:number,sku:string,variantInventory:number, quantity: number): Promise<void> {
     await this.repository.update(id, { soldCount: productSoldCount  + quantity });
+    await this.repository.updateVariantInventory(id, sku, variantInventory - quantity);
   }
 }

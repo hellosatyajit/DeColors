@@ -118,5 +118,18 @@ export class Repository<T> implements IRepository<T> {
       }
     }
   }
-  
+  async updateVariantInventory(id: string, sku: string, newInventory: number): Promise<void> {
+    try {
+      const client: MongoClient = await clientPromise;
+      const collection = client.db().collection(this.collection);
+      await collection.updateOne(
+        { _id: new ObjectId(id), "variants.sku": sku },
+        { $set: { "variants.$.inventory": newInventory } }
+      );
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error("An error occurred:", error.message);
+      }
+    }
+  }
 }
