@@ -6,40 +6,48 @@ import ProductDetailsCarousel from "@/components/ProductDetailsCarousel";
 import { getDiscountedPricePercentage } from "@/utils/helper";
 import toast from "react-hot-toast";
 import { addToCart } from "@/utils/cart";
-import { IProduct } from "@/types/product";
+import { IPacks, IProduct } from "@/types/product";
 import { useSession } from "next-auth/react";
 import { FaStar } from "react-icons/fa";
-import { addReviewToProductOrPack } from "@/server/actions/ProductActions";
+import { addReviewToProductOrPack, fetchSuggestedProducts } from "@/server/actions/ProductActions";
 import { format } from 'date-fns';
+import ProductsSlider from "@/components/home/ProductsSlider";
 
 const ProductDetailsClient = ({ product }: { product: IProduct }) => {
     const router = useRouter();
-
     const { data: session, status: isAuthenticated } = useSession();
-    const [selectedSize, setSelectedColor] = useState("");
+    const [selectedVariant, setSelectedVariant] = useState("");
     const [showError, setShowError] = useState(false);
     const [reviewText, setReviewText] = useState("");
     const [reviewRating, setReviewRating] = useState(5);
     const [feedbacks, setFeedbacks] = useState(product.rating.reviews || []);
     const [images, setImages] = useState(product?.variants.flatMap((item: any) => item.image).slice(0, 5));
+    const [SuggestedProducts, setSuggestedProducts] = useState<(IPacks | IProduct)[]>([]);
+
+    useEffect(() => {
+        const fetchProducts = async () => {
+            if (product?.brand && product?.category) {
+                const { data: Suggestedproducts } = await fetchSuggestedProducts(product.brand, product.category);
+                setSuggestedProducts(Suggestedproducts);
+            }
+        };
+
+        fetchProducts();
+    }, [product?.brand, product?.category]);
 
     const notify = () => {
         toast.success("Success. Check your cart!");
     };
-    let productname = ''
-    if (selectedSize === ""){
-         productname = product?.name + " - "  + product.brand 
-    }
-    else {
-         productname = product?.name + " - "  + selectedSize
-    }
+
+    let productname = selectedVariant ? `${product?.name} - ${selectedVariant}` : `${product?.name} - ${product.brand}`;
+
     const doAddToCart = () => {
-        if (selectedSize === "") {
+        if (selectedVariant === "") {
             setShowError(true);
-            toast.error("Please select a color.");
+            toast.error("Please select a variant.");
             return;
         } else {
-            addToCart(product, selectedSize);
+            addToCart(product, selectedVariant);
             notify();
         }
     };
@@ -79,16 +87,20 @@ const ProductDetailsClient = ({ product }: { product: IProduct }) => {
         await addReviewToProductOrPack(product._id, newReview);
     };
 
-    const formatDate = (date: Date | string, formatStr: string = 'MM/dd/yyyy') => {
-        return format(new Date(date), formatStr);
-    };
-
-    const handleColorSelection = (variant: any) => {
-        setSelectedColor(variant.sku);
+    const handleVariantSelection = (variant: any) => {
+        setSelectedVariant(variant.sku);
         addQueryParam(variant.sku);
         setShowError(false);
-        setImages(variant.image); 
+        setImages(variant.image);
     };
+
+    const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const selected = e.target.value;
+        const selectedVariant = product.variants.find((variant: any) => variant.sku === selected);
+        handleVariantSelection(selectedVariant);
+    };
+
+    const variantType = product?.variants[0]?.attribute?.color ? 'color' : 'flavor';
 
     return (
         <section className="w-full">
@@ -131,32 +143,50 @@ const ProductDetailsClient = ({ product }: { product: IProduct }) => {
 
                         <div className="mb-10">
                             <div className="flex justify-between mb-2 text-md font-semibold">
-                                Select Color
+                                {variantType === 'color' ? 'Select Color' : 'Select Flavor'}
                             </div>
 
-                            <div id="sizesGrid" className="flex flex-wrap gap-2">
-                                {product?.variants.map((item: any, index: number) => (
-                                    <button
-                                        key={index}
-                                        className={`border rounded-full text-center py-3 font-medium w-10 h-10 cursor-pointer ${selectedSize === item.sku ? "border-black" : ""
-                                            }`}
-                                        style={{
-                                            backgroundColor: isURL(item.attribute.color)
-                                                ? ""
-                                                : item.attribute.color,
-                                            backgroundImage: isURL(item.attribute.color)
-                                                ? `url(${item.attribute.color})`
-                                                : "",
-                                            backgroundSize: "cover",
-                                        }}
-                                        onClick={() => handleColorSelection(item)}
-                                    ></button>
-                                ))}
-                            </div>
+                            {variantType === 'color' ? (
+                                <div id="sizesGrid" className="flex flex-wrap gap-2">
+                                    {product?.variants.map((item: any, index: number) => (
+                                        <button
+                                            key={index}
+                                            className={`border rounded-full text-center py-3 font-medium w-10 h-10 cursor-pointer ${selectedVariant === item.sku ? "border-black" : ""}`}
+                                            style={{
+                                                backgroundColor: isURL(item.attribute.color)
+                                                    ? ""
+                                                    : item.attribute.color,
+                                                backgroundImage: isURL(item.attribute.color)
+                                                    ? `url(${item.attribute.color})`
+                                                    : "",
+                                                backgroundSize: "cover",
+                                            }}
+                                            onClick={() => handleVariantSelection(item)}
+                                        ></button>
+                                    ))}
+                                </div>
+                            ) : (
+                                <select
+                                    name="flavor"
+                                    id="flavor"
+                                    value={selectedVariant}
+                                    onChange={handleSelectChange}
+                                    className="px-4 py-1 rounded-full bg-rose-50 sm:bg-transparent hover:bg-rose-50 transition-all text-sm sm:text-base"
+                                >
+                                    <option value="" disabled>
+                                        Select Flavor
+                                    </option>
+                                    {product?.variants.map((item: any, index: number) => (
+                                        <option key={index} value={item.sku}>
+                                            {item.attribute.flavor}
+                                        </option>
+                                    ))}
+                                </select>
+                            )}
 
                             {showError && (
                                 <div className="text-red-600 mt-1">
-                                    Color selection is required
+                                    {variantType === 'color' ? 'Color' : 'Flavor'} selection is required
                                 </div>
                             )}
                         </div>
@@ -192,8 +222,7 @@ const ProductDetailsClient = ({ product }: { product: IProduct }) => {
                                             <FaStar
                                                 key={rating}
                                                 size={24}
-                                                className={`cursor-pointer ${reviewRating >= rating ? "text-yellow-500" : "text-gray-300"
-                                                    }`}
+                                                className={`cursor-pointer ${reviewRating >= rating ? "text-yellow-500" : "text-gray-300"}`}
                                                 onClick={() => setReviewRating(rating)}
                                             />
                                         ))}
@@ -254,6 +283,7 @@ const ProductDetailsClient = ({ product }: { product: IProduct }) => {
                     </div>
                 </div>
             </div>
+            <ProductsSlider title="Suggest Product" viewAll="" products={JSON.parse(JSON.stringify(SuggestedProducts))} />
         </section>
     );
 };

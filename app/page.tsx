@@ -9,7 +9,7 @@ import { fetchProductsByBrand, fetchSortedProducts } from "@/server/actions/Prod
 export default async function Index() {
   const pageNumber = 1;
   const { data: bestSellingProducts } = await fetchSortedProducts('best-selling','None','None',pageNumber);
-  const { data: deColoressProducts } = await fetchProductsByBrand("De Coloress", pageNumber);
+  const { data: deColoressProducts } = await fetchProductsByBrand("De Colores", pageNumber);
   const { data: chelsyProducts } = await fetchProductsByBrand("Chelsy", pageNumber);
   const { data: herbonicaProducts } = await fetchProductsByBrand("Herbonica", pageNumber);
 
@@ -19,7 +19,7 @@ export default async function Index() {
         <Hero />
         <ShopByCategory />
         <ProductsSlider title="Best Sellers" viewAll="/products" products={JSON.parse(JSON.stringify(bestSellingProducts))} />
-        <ProductsSlider title="De Coloress" viewAll="/products/de-coloress" products={JSON.parse(JSON.stringify(deColoressProducts))} />
+        <ProductsSlider title="De Colores" viewAll="/products/de-coloress" products={JSON.parse(JSON.stringify(deColoressProducts))} />
         <ProductsSlider title="Herbonica" viewAll="/products/herbonica" products={JSON.parse(JSON.stringify(herbonicaProducts))} />
         <ProductsSlider title="Chelsy" viewAll="/products/chelsy" products={JSON.parse(JSON.stringify(chelsyProducts))} />
         {/* <HotDeals /> */}

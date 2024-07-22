@@ -129,6 +129,40 @@ export const fetchSortedProducts = async (
       return {data:allProducts};
   }
 };
+export const fetchSuggestedProducts = async (
+  brand: string | null,
+  category: string | null,
+  pageNumber: number = 1
+) => {
+  const productService = new ProductService();
+  const packsService = new PacksService();
+
+  let searchOptions: any = {};
+
+  if (brand) {
+    searchOptions.brand = brand;
+  }
+
+  if (category) {
+    searchOptions.category = category;
+  }
+
+  const products = await productService.searchProducts(
+    searchOptions,
+    pageNumber,
+    limit
+  );
+
+  const packs = await packsService.searchProducts(
+    searchOptions,
+    pageNumber,
+    limit
+  );
+
+  return {
+    data: [...products.data, ...packs.data],
+  };
+};
 export const addReviewToProductOrPack = async (
   id: string,
   review: {

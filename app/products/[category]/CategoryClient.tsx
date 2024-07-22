@@ -36,7 +36,7 @@ const CategoryClient = ({ products, category }: { products: (IProduct | IPacks)[
 
   return (
     <section className="w-full">
-      {(category === 'De Coloress' || category === 'Chelsy' || category === 'Herbonica') ? (
+      {(category === 'De Colores' || category === 'Chelsy' || category === 'Herbonica') ? (
         <div className="relative">
           <Image
             src="https://juewdrvuynzvupklbxme.supabase.co/storage/v1/object/public/home/1.png"
@@ -58,9 +58,9 @@ const CategoryClient = ({ products, category }: { products: (IProduct | IPacks)[
           <div className="flex items-center justify-between">
             <div><span>{currentProducts.length} Products</span></div>
             <div className="flex gap-1 sm:gap-5">
-              <button className="px-4 py-1 rounded-full bg-rose-50 sm:bg-transparent hover:bg-rose-50 transition-all text-sm sm:text-base">
-                Filter <span className="hidden sm:inline-block rotate-90">{'>'}</span>
-              </button>
+              <div className="px-4 py-1 rounded-full bg-rose-50 sm:bg-transparent transition-all text-sm sm:text-base">
+                Filter 
+              </div>
               <select name="sortby" id="sortby" value={selectedValue} onChange={handleSelectChange} className="px-4 py-1 rounded-full bg-rose-50 sm:bg-transparent hover:bg-rose-50 transition-all text-sm sm:text-base">
                 <option value="" disabled >Sort By</option>
                 <option value="best-selling">Best Selling</option>
@@ -71,17 +71,6 @@ const CategoryClient = ({ products, category }: { products: (IProduct | IPacks)[
                 <option value="alphabet-descending">Z - A</option>
               </select>
             </div>
-          </div>
-          <div className="hidden sm:flex flex-wrap gap-2">
-            <span className="px-3 py-1 space-x-1 rounded-full bg-gray-50 hover:bg-rose-100 transition-all">
-              <span>Color: Blue</span> <button className="">{'X'}</button>
-            </span>
-            <span className="px-3 py-1 space-x-1 rounded-full bg-gray-50 hover:bg-rose-100 transition-all">
-              <span>Color: Blue</span> <button className="">{'X'}</button>
-            </span>
-            <span className="px-3 py-1 space-x-1 rounded-full bg-gray-50 hover:bg-rose-100 transition-all">
-              <span>Color: Blue</span> <button className="">{'X'}</button>
-            </span>
           </div>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
