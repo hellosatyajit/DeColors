@@ -91,9 +91,14 @@ const ProductDetailsClient = ({ product }: { product: IProduct }) => {
         setSelectedVariant(variant.sku);
         addQueryParam(variant.sku);
         setShowError(false);
-        const selectedVariantImages = variant.image || [];
-        let otherImages = product.variants.flatMap((v: any) => v.image).filter((url: string) => !selectedVariantImages.includes(url));
-        setImages([...selectedVariantImages, ...otherImages.slice(0, 4)]);
+        if (!variant.attribute.flavor){
+            setImages(variant.image)
+        }
+        else{
+            const selectedVariantImages = variant.image || [];
+            let otherImages = product.variants.flatMap((v: any) => v.image).filter((url: string) => !selectedVariantImages.includes(url));
+            setImages([...selectedVariantImages, ...otherImages.slice(0, 4)]);
+        }
     };
 
     const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
