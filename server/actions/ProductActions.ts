@@ -4,20 +4,24 @@ import { ObjectId } from "mongodb";
 import { ICartItem } from "../model/transaction";
 import { PacksService } from "../service/packs/PacksService";
 import { ProductService } from "../service/product/ProductService";
+import { notFound } from "next/navigation";
 
 const limit = 1000;
 
-export const fetchProducts = async (pageNumber: number=1) => {
+export const fetchProducts = async (pageNumber: number = 1) => {
   const productService = new ProductService();
   const packsService = new PacksService();
   const products = await productService.searchProducts({}, pageNumber, limit);
-  const packs = await packsService.searchProducts({},pageNumber,limit)
+  const packs = await packsService.searchProducts({}, pageNumber, limit);
   return {
     data: [...products.data, ...packs.data],
   };
 };
 
-export const fetchProductBySlug = async (slug: string, pageNumber: number = 1) => {
+export const fetchProductBySlug = async (
+  slug: string,
+  pageNumber: number = 1
+) => {
   const productService = new ProductService();
 
   const products = await productService.searchProducts(
@@ -26,8 +30,12 @@ export const fetchProductBySlug = async (slug: string, pageNumber: number = 1) =
     limit
   );
 
+  if (products.data.length === 0) {
+    notFound();
+  }
+
   return products.data[0];
-}
+};
 
 export const fetchPackBySlug = async (slug: string, pageNumber: number = 1) => {
   const packsService = new PacksService();
@@ -38,8 +46,12 @@ export const fetchPackBySlug = async (slug: string, pageNumber: number = 1) => {
     limit
   );
 
+  if (products.data.length === 0) {
+    notFound();
+  }
+
   return products.data[0];
-}
+};
 
 export const fetchProductsByBrand = async (
   brandName: string,
@@ -90,7 +102,7 @@ export const fetchProductsByCategory = async (
 export const fetchSortedProducts = async (
   sortingOption: string,
   categoryOrBrand: string = "None",
-  field: 'category' | 'brand' | 'None' = "None",
+  field: "category" | "brand" | "None" = "None",
   pageNumber: number = 1
 ) => {
   const productService = new ProductService();
@@ -114,19 +126,23 @@ export const fetchSortedProducts = async (
 
   switch (sortingOption) {
     case "best-selling":
-      return {data: allProducts.sort((a, b) => b.soldCount - a.soldCount)};
+      return { data: allProducts.sort((a, b) => b.soldCount - a.soldCount) };
     case "newest":
-      return {data:allProducts.sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime())};
+      return {
+        data: allProducts.sort(
+          (a, b) => b.updatedAt.getTime() - a.updatedAt.getTime()
+        ),
+      };
     case "price-ascending":
-      return {data: allProducts.sort((a, b) => a.price.mrp - b.price.mrp)};
+      return { data: allProducts.sort((a, b) => a.price.mrp - b.price.mrp) };
     case "price-descending":
-      return {data: allProducts.sort((a, b) => b.price.mrp - a.price.mrp)};
+      return { data: allProducts.sort((a, b) => b.price.mrp - a.price.mrp) };
     case "alphabet-ascending":
-      return {data: allProducts.sort((a, b) => a.name.localeCompare(b.name))};
+      return { data: allProducts.sort((a, b) => a.name.localeCompare(b.name)) };
     case "alphabet-descending":
-      return {data: allProducts.sort((a, b) => b.name.localeCompare(a.name))};
+      return { data: allProducts.sort((a, b) => b.name.localeCompare(a.name)) };
     default:
-      return {data:allProducts};
+      return { data: allProducts };
   }
 };
 export const fetchSuggestedProducts = async (
@@ -181,36 +197,55 @@ export const addReviewToProductOrPack = async (
     return await packsService.addReview(id, review);
   }
 };
-export const incrementSoldCount = async (cartItems:any[]) => {
+export const incrementSoldCount = async (cartItems: any[]) => {
   const productService = new ProductService();
   const packsService = new PacksService();
 
   for (const item of cartItems) {
     let { id, quantity } = item;
-    let sku: string='';
+    let sku: string = "";
 
     if (id.includes("-")) {
       const parts = id.split("-");
-      id = parts.shift() as string; 
-      sku = parts.join("-"); 
+      id = parts.shift() as string;
+      sku = parts.join("-");
     }
-    let product = await productService.searchProducts({ _id:new ObjectId(id) }, 1, 1);
+    let product = await productService.searchProducts(
+      { _id: new ObjectId(id) },
+      1,
+      1
+    );
     if (product.totalCount > 0) {
       // Product found
       const productId = product.data[0]._id;
-      const productSoldCount = product.data[0].soldCount
+      const productSoldCount = product.data[0].soldCount;
       const variant = product.data[0].variants.find((v: any) => v.sku === sku);
       const variantInventory = variant?.inventory;
-      await productService.incrementSoldCount(productId.toString(),productSoldCount,sku,variantInventory,quantity)
+      await productService.incrementSoldCount(
+        productId.toString(),
+        productSoldCount,
+        sku,
+        variantInventory,
+        quantity
+      );
     } else {
       // Check in packs
-      let pack = await packsService.searchProducts({ _id:new ObjectId(id) }, 1, 1);
+      let pack = await packsService.searchProducts(
+        { _id: new ObjectId(id) },
+        1,
+        1
+      );
       if (pack.totalCount > 0) {
         // Pack found
         const packId = pack.data[0]._id;
-        const packSoldCount = pack.data[0].soldCount
-        const packinventory = pack.data[0].inventory
-        await packsService.incrementSoldCount(packId.toString(),packSoldCount,packinventory,quantity)
+        const packSoldCount = pack.data[0].soldCount;
+        const packinventory = pack.data[0].inventory;
+        await packsService.incrementSoldCount(
+          packId.toString(),
+          packSoldCount,
+          packinventory,
+          quantity
+        );
       } else {
         throw new Error(`Product or Pack with slug ${id} not found`);
       }

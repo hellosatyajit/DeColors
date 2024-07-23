@@ -141,17 +141,17 @@ const ProductDetailsClient = ({ product }: { product: IPacks }) => {
                                     ></textarea>
                                 </div>
                                 <button
-                                    className="ml-2 py-2 px-4 rounded-full bg-black text-white text-lg font-medium transition-transform rounded-md hover:opacity-75"
+                                    className="ml-2 py-2 px-4 rounded-full bg-black text-white text-lg font-medium transition-transform hover:opacity-75"
                                     onClick={handleReviewSubmit}
                                 >
                                     Submit Review
                                 </button>
                             </>
                         ) : (
-                            <div className="text-gray-700">
-                                You must be signed in to leave a review.
+                            <div className="text-gray-700 space-y-2">
+                                <p>You must be signed in to leave a review.</p>
                                 <button
-                                    className="ml-2 py-2 px-4 rounded-full bg-black text-white text-lg font-medium transition-transform rounded-md hover:opacity-75"
+                                    className="ml-2 py-2 px-4 rounded-full bg-black text-white text-lg font-medium transition-transform hover:opacity-75"
                                     onClick={() => router.push("/login")}
                                 >
                                     Sign In

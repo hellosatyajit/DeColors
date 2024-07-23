@@ -247,8 +247,8 @@ const ProductDetailsClient = ({ product }: { product: IProduct }) => {
                         )}
 
                         {isAuthenticated === 'unauthenticated' &&
-                            <div className="text-gray-700">
-                                You must be signed in to leave a review.
+                            <div className="text-gray-700 space-y-2">
+                                <p>You must be signed in to leave a review.</p>
                                 <button
                                     className="py-2 px-4 rounded-full bg-black text-white text-lg font-medium transition-transform hover:opacity-75"
                                     onClick={() => router.push("/login")}

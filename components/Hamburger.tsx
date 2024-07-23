@@ -5,6 +5,10 @@ import Link from "next/link";
 export default function Hamburger({ links = [] }: { links: any[] }) {
     const [isMenuOpen, setMenuOpen] = useState(false);
 
+    const handleLinkClick = () => {
+        setMenuOpen(false);
+    }
+
     return (
         <>
             <svg width="18" height="14" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg" onClick={() => setMenuOpen(!isMenuOpen)}>
@@ -16,7 +20,7 @@ export default function Hamburger({ links = [] }: { links: any[] }) {
                 <ul className={`${isMenuOpen ? 'flex' : 'hidden'} flex-col p-5 gap-5 transition-all`}>
                     {links.map(({ href, label }, index) => (
                         <li key={index} className="border-l-2 border-gray-900 p-2">
-                            <Link href={href} className="group transition duration-300 text-black text-lg leading-none">
+                            <Link href={href} onClick={handleLinkClick} className="group transition duration-300 text-black text-lg leading-none">
                                 {label}
                             </Link>
                         </li>

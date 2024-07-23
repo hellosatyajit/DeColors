@@ -65,10 +65,10 @@ const CategoryClient = ({ products, category }: { products: (IProduct | IPacks)[
           <div className="flex items-center justify-between">
             <div><span>{currentProducts.length} Products</span></div>
             <div className="flex gap-1 sm:gap-5">
-              <div className="px-4 py-1 rounded-full bg-rose-50 sm:bg-transparent transition-all text-sm sm:text-base">
+              {/* <div className="px-4 py-1 rounded-full bg-rose-50 sm:bg-transparent transition-all text-sm sm:text-base">
                 Filter 
-              </div>
-              <select name="sortby" id="sortby" value={selectedValue} onChange={handleSelectChange} className="px-4 py-1 rounded-full bg-rose-50 sm:bg-transparent hover:bg-rose-50 transition-all text-sm sm:text-base">
+              </div> */}
+              <select name="sortby" id="sortby" value={selectedValue} onChange={handleSelectChange} className="px-4 py-1 rounded-full bg-rose-50 sm:bg-transparent hover:bg-rose-50 transition-all text-sm sm:text-base cursor-pointer">
                 <option value="" disabled >Sort By</option>
                 <option value="best-selling">Best Selling</option>
                 <option value="newest">Newest</option>

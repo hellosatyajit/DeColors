@@ -13,10 +13,7 @@ export default async function Category() {
                     <div className="flex items-center justify-between">
                         <div><span>{products.length} Products</span></div>
                         <div className="flex gap-1 sm:gap-5">
-                            <button className="px-4 py-1 rounded-full bg-rose-50 sm:bg-transparent hover:bg-rose-50 transition-all text-sm sm:text-base">
-                                Filter <span className="hidden sm:inline-block rotate-90">{'>'}</span>
-                            </button>
-                            <select name="sotby" id="sortby" className="px-4 py-1 rounded-full bg-rose-50 sm:bg-transparent hover:bg-rose-50 transition-all text-sm sm:text-base">
+                            <select name="sotby" id="sortby" className="px-4 py-1 rounded-full bg-rose-50 sm:bg-transparent hover:bg-rose-50 transition-all text-sm sm:text-base cursor-pointer">
                                 {/* Sort <span className="hidden sm:inline-block">By: Best Selling</span> <span className="hidden sm:inline-block rotate-90">{'>'}</span> */}
                                 <option value="" disabled selected>Sort By</option>
                                 <option value="best-selling">Best Selling</option>
@@ -28,7 +25,7 @@ export default async function Category() {
                             </select>
                         </div>
                     </div>
-                    <div className="hidden sm:flex flex-wrap gap-2">
+                    <div className="hidden flex-wrap gap-2">
                         <span className="px-3 py-1 space-x-1 rounded-full bg-gray-50 hover:bg-rose-100 transition-all">
                             <span>Color: Blue</span> <button className="">{'X'}</button>
                         </span>

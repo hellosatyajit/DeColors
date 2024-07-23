@@ -70,6 +70,11 @@ export default function Hero() {
                         ))
                     }
                 </div>
+                {
+                    !loaded && <div className="w-full h-56 bg-gray-50">
+
+                    </div>
+                }
                 {loaded && instanceRef.current && (
                     <>
                         <div className="absolute left-2 xs:left-10 bottom-[calc(50%-16px)] w-8 h-8 cursor-pointer opacity-50 hover:opacity-100 transition-all mx-auto">
