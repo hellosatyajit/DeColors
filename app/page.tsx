@@ -18,10 +18,10 @@ export default async function Index() {
       <div className="w-full">
         <Hero />
         <ShopByCategory />
-        <ProductsSlider title="Best Sellers" viewAll="/products" products={JSON.parse(JSON.stringify(bestSellingProducts))} />
-        <ProductsSlider title="De Colores" viewAll="/products/de-colores" products={JSON.parse(JSON.stringify(deColoressProducts))} />
-        <ProductsSlider title="Herbonica" viewAll="/products/herbonica" products={JSON.parse(JSON.stringify(herbonicaProducts))} />
-        <ProductsSlider title="Chelsy" viewAll="/products/chelsy" products={JSON.parse(JSON.stringify(chelsyProducts))} />
+        <ProductsSlider title="Best Sellers" viewAll="/products" products={bestSellingProducts} />
+        <ProductsSlider title="Chelsy" viewAll="/products/chelsy" products={chelsyProducts} />
+        <ProductsSlider title="De Colores" viewAll="/products/de-colores" products={deColoressProducts} />
+        <ProductsSlider title="Herbonica" viewAll="/products/herbonica" products={herbonicaProducts} />
         {/* <HotDeals /> */}
         <Newsletter />
       </div>

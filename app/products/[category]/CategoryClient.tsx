@@ -86,7 +86,6 @@ const CategoryClient = ({ products, category }: { products: (IProduct | IPacks)[
           ))}
         </div>
       </div>
-      {loading && <div>Loading...</div>}
     </section>
   );
 };

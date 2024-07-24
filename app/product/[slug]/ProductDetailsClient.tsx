@@ -22,7 +22,7 @@ const ProductDetailsClient = ({ product }: { product: IProduct }) => {
     const [reviewRating, setReviewRating] = useState(5);
     const [feedbacks, setFeedbacks] = useState(product.rating.reviews || []);
     const [images, setImages] = useState(product?.variants.flatMap((item: any) => item.image).slice(0, 5));
-    const [SuggestedProducts, setSuggestedProducts] = useState<(IPacks | IProduct)[]>([]);
+    const [suggestedProducts, setSuggestedProducts] = useState<(IPacks | IProduct)[]>([]);
 
     useEffect(() => {
         const fetchProducts = async () => {
@@ -283,7 +283,7 @@ const ProductDetailsClient = ({ product }: { product: IProduct }) => {
                     </div>
                 </div>
             </div>
-            <ProductsSlider title="Suggest Product" viewAll="" products={JSON.parse(JSON.stringify(SuggestedProducts))} />
+            <ProductsSlider title="Suggested Product" viewAll="" products={suggestedProducts} />
         </section>
     );
 };

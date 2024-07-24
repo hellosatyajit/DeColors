@@ -14,7 +14,7 @@ export const fetchProducts = async (pageNumber: number = 1) => {
   const products = await productService.searchProducts({}, pageNumber, limit);
   const packs = await packsService.searchProducts({}, pageNumber, limit);
   return {
-    data: [...products.data, ...packs.data],
+    data: JSON.parse(JSON.stringify([...products.data, ...packs.data])),
   };
 };
 
@@ -34,7 +34,7 @@ export const fetchProductBySlug = async (
     notFound();
   }
 
-  return products.data[0];
+  return JSON.parse(JSON.stringify(products.data[0]));
 };
 
 export const fetchPackBySlug = async (slug: string, pageNumber: number = 1) => {
@@ -50,7 +50,7 @@ export const fetchPackBySlug = async (slug: string, pageNumber: number = 1) => {
     notFound();
   }
 
-  return products.data[0];
+  return JSON.parse(JSON.stringify(products.data[0]));
 };
 
 export const fetchProductsByBrand = async (
@@ -73,7 +73,7 @@ export const fetchProductsByBrand = async (
   );
 
   return {
-    data: [...products.data, ...packs.data],
+    data: JSON.parse(JSON.stringify([...products.data, ...packs.data])),
   };
 };
 export const fetchProductsByCategory = async (
@@ -96,7 +96,7 @@ export const fetchProductsByCategory = async (
   );
 
   return {
-    data: [...products.data, ...packs.data],
+    data: JSON.parse(JSON.stringify([...products.data, ...packs.data])),
   };
 };
 export const fetchSortedProducts = async (
@@ -124,32 +124,43 @@ export const fetchSortedProducts = async (
 
   const allProducts = [...products.data, ...packs.data];
 
+  let sortedProducts = [];
+
   switch (sortingOption) {
     case "best-selling":
-      return { data: allProducts.sort((a, b) => b.soldCount - a.soldCount) };
+      sortedProducts = allProducts.sort((a, b) => b.soldCount - a.soldCount);
+      break;
     case "newest":
-      return {
-        data: allProducts.sort(
+      sortedProducts = allProducts.sort(
           (a, b) => b.updatedAt.getTime() - a.updatedAt.getTime()
-        ),
-      };
+        );
+        break;
     case "price-ascending":
-      return { data: allProducts.sort((a, b) => a.price.mrp - b.price.mrp) };
+      sortedProducts = allProducts.sort((a, b) => a.price.mrp - b.price.mrp);
+      break;
     case "price-descending":
-      return { data: allProducts.sort((a, b) => b.price.mrp - a.price.mrp) };
+      sortedProducts = allProducts.sort((a, b) => b.price.mrp - a.price.mrp);
+      break;
     case "alphabet-ascending":
-      return { data: allProducts.sort((a, b) => a.name.localeCompare(b.name)) };
+      sortedProducts = allProducts.sort((a, b) => a.name.localeCompare(b.name));
+      break;
     case "alphabet-descending":
-      return { data: allProducts.sort((a, b) => b.name.localeCompare(a.name)) };
+      sortedProducts = allProducts.sort((a, b) => b.name.localeCompare(a.name));
+      break;
     default:
-      return { data: allProducts };
+      sortedProducts = allProducts;
   }
+
+  return {
+    data: JSON.parse(JSON.stringify(sortedProducts)),
+  };
 };
 export const fetchSuggestedProducts = async (
   brand: string | null,
   category: string | null,
   pageNumber: number = 1
 ) => {
+  const limit = 10;
   const productService = new ProductService();
   const packsService = new PacksService();
 
@@ -176,7 +187,7 @@ export const fetchSuggestedProducts = async (
   );
 
   return {
-    data: [...products.data, ...packs.data],
+    data: JSON.parse(JSON.stringify([...products.data, ...packs.data])),
   };
 };
 export const addReviewToProductOrPack = async (

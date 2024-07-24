@@ -5,6 +5,8 @@ import { Toaster } from "react-hot-toast";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import AuthProvider from "@/components/Provider";
+import MetaPixels from "@/lib/metapixels";
+import Head from "next/head";
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
@@ -23,6 +25,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={GeistSans.className}>
+      <Head>
+        <MetaPixels />
+      </Head>
       <body>
         <AuthProvider>
           <Header />

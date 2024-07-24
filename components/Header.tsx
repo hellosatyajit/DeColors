@@ -7,8 +7,8 @@ const links = [
   { href: "/products", label: "Best Sellers" },
   { href: "/#category", label: "Categories" },
   // { href: "/#hot-deals", label: "Hot Deals" }, 
-  { href: "/products/de-colores", label: "De Colors" },
   { href: "/products/chelsy", label: "Chelsy" },
+  { href: "/products/de-colores", label: "De Colors" },
   { href: "/products/herbonica", label: "Herbonica" },
 ]
 

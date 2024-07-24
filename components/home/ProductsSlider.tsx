@@ -63,11 +63,13 @@ export default function ProductsSlider({ title, viewAll, products = [] }: { titl
                         {title}
                     </p>
                 </div>
-                <div className="max-w-[1600px] w-full space-y-5 sm:space-y-10"> 
+                <div className="max-w-[1600px] w-full space-y-5 sm:space-y-10">
                     <div className="flex justify-end md:justify-between">
-                        {viewAll && (
-                            <Link href={viewAll} className="px-4 py-2 hover:underline bg-rose-50 hover:bg-rose-100 rounded-full text-xs xs:text-sm transition-all">View All</Link>
-                        )}
+                        <div>
+                            {viewAll && (
+                                <Link href={viewAll} className="px-4 py-2 hover:underline bg-rose-50 hover:bg-rose-100 rounded-full text-xs xs:text-sm transition-all block">View All</Link>
+                            )}
+                        </div>
                         {loaded && instanceRef.current && (
                             <div className="space-x-2 hidden md:block">
                                 <button

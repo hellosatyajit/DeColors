@@ -100,7 +100,7 @@ export default function Footer() {
                                 <Link href="/" className="text-black opacity-90 hover:opacity-100 text-sm font-normal">Home</Link>
                                 <Link href="/" className="text-black opacity-90 hover:opacity-100 text-sm font-normal">Our Story</Link>
                                 <Link href="/" className="text-black opacity-90 hover:opacity-100 text-sm font-normal">FAQs</Link>
-                                <Link href="/" className="text-black opacity-90 hover:opacity-100 text-sm font-normal">Order Tracking</Link>
+                                <Link href="https://www.shiprocket.in/shipment-tracking/" target="_blank" className="text-black opacity-90 hover:opacity-100 text-sm font-normal">Order Tracking</Link>
                             </div>
                         </div>
                         <div className="flex-col justify-start items-start gap-5 inline-flex">
@@ -116,10 +116,14 @@ export default function Footer() {
                             </div>
                             <div className="space-y-3">
                                 <p className="text-xl font-semibold">Address</p>
-                                <div className="text-black text-sm font-normal"><p>A-702 Rajyash Riverium,<br />
-                                    B/H G.B.Shah College,<br />
-                                    South Vasna,<br />
-                                    Ahmedabad</p></div>
+                                <div className="text-black text-sm font-normal">
+                                    <p>
+                                        A-702 Rajyash Riverium,<br />
+                                        B/H G.B.Shah College,<br />
+                                        South Vasna,<br />
+                                        Ahmedabad, Gujarat,<br />
+                                        Pincode: 380007
+                                    </p></div>
                             </div>
                         </div>
                     </div>

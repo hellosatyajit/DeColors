@@ -15,30 +15,29 @@ import ProductsSlider from "@/components/home/ProductsSlider";
 
 const ProductDetailsClient = ({ product }: { product: IPacks }) => {
     const router = useRouter();
-    const { data: session, status } = useSession();
+    const { data: session, status: isAuthenticated } = useSession();
     const [reviewText, setReviewText] = useState("");
     const [reviewRating, setReviewRating] = useState(5);
     const [feedbacks, setFeedbacks] = useState(product.rating.reviews || []);
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const [SuggestedProducts,setSuggestedProducts] = useState<(IPacks | IProduct)[]>([]);
+    const [suggestedProducts, setSuggestedProducts] = useState<(IPacks | IProduct)[]>([]);
+
     useEffect(() => {
         const fetchProducts = async () => {
-          if (product?.brand && product?.category) {
-            const { data: Suggestedproducts } = await fetchSuggestedProducts(product.brand, product.category);
-            setSuggestedProducts(Suggestedproducts);
-          }
+            if (product?.brand && product?.category) {
+                const { data: Suggestedproducts } = await fetchSuggestedProducts(product.brand, product.category);
+                setSuggestedProducts(Suggestedproducts);
+            }
         };
-    
+
         fetchProducts();
-        setIsAuthenticated(status === 'authenticated');
-      }, [status, product?.brand, product?.category]);
+    }, [product?.brand, product?.category]);
 
     const notify = () => {
         toast.success("Success. Check your cart!");
     };
 
     const doAddToCart = () => {
-        addToCart(product,product.slug);    
+        addToCart(product, product.slug);
         notify();
     };
 
@@ -115,7 +114,7 @@ const ProductDetailsClient = ({ product }: { product: IPacks }) => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-10">
                     <div>
                         <h2 className="text-xl font-bold mb-4">Leave a Review</h2>
-                        {isAuthenticated ? (
+                        {isAuthenticated === "authenticated" && (
                             <>
                                 <div className="mb-4">
                                     <label className="block text-gray-700">Rating:</label>
@@ -147,17 +146,19 @@ const ProductDetailsClient = ({ product }: { product: IPacks }) => {
                                     Submit Review
                                 </button>
                             </>
-                        ) : (
+                        )}
+
+                        {isAuthenticated === 'unauthenticated' &&
                             <div className="text-gray-700 space-y-2">
                                 <p>You must be signed in to leave a review.</p>
                                 <button
-                                    className="ml-2 py-2 px-4 rounded-full bg-black text-white text-lg font-medium transition-transform hover:opacity-75"
+                                    className="py-2 px-4 rounded-full bg-black text-white text-lg font-medium transition-transform hover:opacity-75"
                                     onClick={() => router.push("/login")}
                                 >
                                     Sign In
                                 </button>
                             </div>
-                        )}
+                        }
                     </div>
                     <div>
                         <h2 className="text-xl font-bold mb-4">Customer Reviews</h2>
@@ -183,9 +184,9 @@ const ProductDetailsClient = ({ product }: { product: IPacks }) => {
                         </div>
                     </div>
                 </div>
-                
+
             </div>
-            <ProductsSlider title="Suggest Product" viewAll="" products={JSON.parse(JSON.stringify(SuggestedProducts))} />
+            <ProductsSlider title="Suggested Product" viewAll="" products={suggestedProducts} />
         </section>
     );
 };
