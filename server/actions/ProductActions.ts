@@ -17,6 +17,21 @@ export const fetchProducts = async (pageNumber: number = 1) => {
     data: JSON.parse(JSON.stringify([...products.data, ...packs.data])),
   };
 };
+export const searchProductsAndPacks = async (
+  searchTerm: string,
+  pageNumber: number = 1
+) => {
+  const limit = 10;
+  const productService = new ProductService();
+  const packsService = new PacksService();
+
+  const products = await productService.searchByText(searchTerm, pageNumber, limit);
+  const packs = await packsService.searchByText(searchTerm, pageNumber, limit);
+
+  return {
+    data: JSON.parse(JSON.stringify([...products.data, ...packs.data])),
+  };
+};
 
 export const fetchProductBySlug = async (
   slug: string,

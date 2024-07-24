@@ -20,7 +20,7 @@ const ProductDetailsClient = ({ product }: { product: IProduct }) => {
     const [showError, setShowError] = useState(false);
     const [reviewText, setReviewText] = useState("");
     const [reviewRating, setReviewRating] = useState(5);
-    const [feedbacks, setFeedbacks] = useState(product.rating.reviews || []);
+    const [feedbacks, setFeedbacks] = useState(product?.rating.reviews || []);
     const [images, setImages] = useState(product?.variants.flatMap((item: any) => item.image).slice(0, 5));
     const [suggestedProducts, setSuggestedProducts] = useState<(IPacks | IProduct)[]>([]);
 
@@ -91,7 +91,14 @@ const ProductDetailsClient = ({ product }: { product: IProduct }) => {
         setSelectedVariant(variant.sku);
         addQueryParam(variant.sku);
         setShowError(false);
-        setImages(variant.image);
+        if (!variant.attribute.flavor){
+            setImages(variant.image)
+        }
+        else{
+            const selectedVariantImages = variant.image || [];
+            let otherImages = product.variants.flatMap((v: any) => v.image).filter((url: string) => !selectedVariantImages.includes(url));
+            setImages([...selectedVariantImages, ...otherImages.slice(0, 4)]);
+        }
     };
 
     const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {

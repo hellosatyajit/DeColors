@@ -2,7 +2,7 @@ import { GeistSans } from "geist/font/sans";
 import "./globals.css";
 import Script from 'next/script';
 import { Toaster } from "react-hot-toast";
-import Header from "@/components/Header";
+import Header from "@/components/header";
 import Footer from "@/components/Footer";
 import AuthProvider from "@/components/Provider";
 import MetaPixels from "@/lib/metapixels";
