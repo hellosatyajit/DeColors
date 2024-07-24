@@ -16,7 +16,20 @@ export class ProductService implements IProductService {
   ): Promise<{ data: IProduct[]; totalCount: number }> {
     return this.repository.find(filter, page, limit);
   }
-
+  async searchByText(
+    searchTerm: string,
+    page: number = 1,
+    limit: number = 10
+  ): Promise<{ data: IProduct[]; totalCount: number }> {
+    const filter = {
+      $or: [
+        { name: { $regex: searchTerm, $options: "i" } },
+        { subheading: { $regex: searchTerm, $options: "i" } },
+        { type: { $regex: searchTerm, $options: "i" } },
+      ],
+    };
+    return this.repository.find(filter, page, limit);
+  }
   async addReview(
     id: string,
     review: { name: string, rating: number, review: string, date: Date }

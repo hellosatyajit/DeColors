@@ -15,7 +15,7 @@ export class Repository<T> implements IRepository<T> {
   }
 
   async find(
-    filter: Partial<T>,
+    filter: Partial<T> | Record<string, any>,
     page: number = 1,
     limit: number = 10,
     projection?: Partial<Record<keyof T, 1 | 0>>

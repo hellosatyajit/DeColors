@@ -17,7 +17,22 @@ export const fetchProducts = async (pageNumber: number = 1) => {
     data: [...products.data, ...packs.data],
   };
 };
+export const searchProductsAndPacks = async (
+  searchTerm: string,
+  pageNumber: number = 1
+) => {
+  const productService = new ProductService();
+  const packsService = new PacksService();
 
+  const products = await productService.searchByText(searchTerm, pageNumber, limit);
+  const packs = await packsService.searchByText(searchTerm, pageNumber, limit);
+
+  const combinedResults = [...products.data, ...packs.data];
+
+  return {
+    data: combinedResults,
+  };
+};
 export const fetchProductBySlug = async (
   slug: string,
   pageNumber: number = 1
