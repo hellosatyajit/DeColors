@@ -1,4 +1,3 @@
-"use client";
 import Link from "next/link";
 import AuthButton from "../AuthButton";
 import Hamburger from "./Hamburger";
@@ -14,7 +13,6 @@ const links = [
 ];
 
 export default function Header() {
-
   return (
     <nav className="w-full bg-rose-600 sticky sm:static top-0 z-[100]">
       <div className="max-w-[1600px] w-full m-auto p-5 flex justify-between items-center gap-5">
