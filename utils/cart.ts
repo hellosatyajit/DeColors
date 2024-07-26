@@ -6,6 +6,8 @@ export interface CartItem {
   isPack:boolean;
   name: string;
   image: string;
+  category:string;
+  brand:string;
   sku?: string;
   quantity: number;
   price: {
@@ -54,6 +56,8 @@ export const addToCart = (item: any, sku: string = "") => {
     id: item.variants ? `${item._id}-${sku}` : item._id,
     subheading: item.subheading,
     name: item.name,
+    category:item.category,
+    brand:item.brand,
     isPack: item.variants ? false : true,
     image: getItemImage(item, sku),
     sku: sku || undefined,

@@ -75,6 +75,33 @@ export async function POST(request: NextRequest) {
 
       const { token } = shiprocketAuthResponse.data;
 
+      const orderItems = await Promise.all(
+        cartdetails.map(async (item: any) => {
+          if (item.isPack) {
+            const variants = await getVariantsAndQuantitiesFromPackId(item.id);
+            const variantSkus = variants.map((variant: any) => variant.sku).join(',');
+            return {
+              name: `${item.brand} ${item.name}`,
+              sku: `${item.sku}(${variantSkus})`,
+              units: item.quantity,
+              selling_price: item.price.mrp.toString(),
+              discount: item.price.discount.toString(),
+              hsn: 3304,
+            };
+          } else {
+            return {
+              name: `${item.brand} ${item.name}`,
+              sku: item.sku,
+              units: item.quantity,
+              selling_price: item.price.mrp.toString(),
+              discount: item.price.discount.toString(),
+              hsn: 3304,
+            };
+          }
+        })
+      );
+      
+
       const createShipmentResponse = await axios.post(
         "https://apiv2.shiprocket.in/v1/external/orders/create/adhoc",
         {
@@ -104,21 +131,7 @@ export async function POST(request: NextRequest) {
           shipping_state: user.address?.state,
           shipping_email: user.email,
           shipping_phone: user.phoneNumber,
-          order_items: cartdetails.map(
-            (item: {
-              name: any;
-              sku: any;
-              quantity: any;
-              price: { mrp: number; discount: number };
-            }) => ({
-              name: item.name,
-              sku: item.sku,
-              units: item.quantity,
-              selling_price: item.price.mrp.toString(),
-              discount: item.price.discount.toString(),
-              hsn: 3304,
-            })
-          ),
+          order_items: orderItems,
           payment_method: "Prepaid",
           shipping_charges: shippingCharges,
           giftwrap_charges: 0,
@@ -137,7 +150,7 @@ export async function POST(request: NextRequest) {
           },
         }
       );
-
+      console.log(createShipmentResponse.data.data)
       const { order_id, awb_number: awb_code } = createShipmentResponse.data;
       const order: IOrder = {
         userId: id,
@@ -202,7 +215,7 @@ export async function POST(request: NextRequest) {
       );
     }
   } catch (error: any) {
-    console.error(error);
+    console.error(error.data);
     return NextResponse.json(
       { success: false, message: "Internal Server Error" },
       { status: 500 }
