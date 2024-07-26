@@ -23,7 +23,7 @@ const ProductDetailsClient = ({ product }: { product: IProduct }) => {
     const [feedbacks, setFeedbacks] = useState(product?.rating.reviews || []);
     const [images, setImages] = useState(product?.variants.flatMap((item: any) => item.image).slice(0, 5));
     const [suggestedProducts, setSuggestedProducts] = useState<(IPacks | IProduct)[]>([]);
-
+    const [inventory, setInventory] = useState(1);
     useEffect(() => {
         const fetchProducts = async () => {
             if (product?.brand && product?.category) {
@@ -91,6 +91,7 @@ const ProductDetailsClient = ({ product }: { product: IProduct }) => {
         setSelectedVariant(variant.sku);
         addQueryParam(variant.sku);
         setShowError(false);
+        setInventory(variant.inventory); 
         if (!variant.attribute.flavor){
             setImages(variant.image)
         }
@@ -198,12 +199,18 @@ const ProductDetailsClient = ({ product }: { product: IProduct }) => {
                             )}
                         </div>
 
-                        <button
-                            className="w-full py-4 rounded-full bg-black text-white text-lg font-medium transition-transform active:scale-95 mb-10 hover:opacity-75"
-                            onClick={doAddToCart}
-                        >
-                            Add to Cart
-                        </button>
+                        {inventory <= 0 ? (
+                            <div className="flex justify-center items-center w-full py-4 rounded-full bg-red-500 text-white font-medium text-lg font-bold mb-5">
+                                Out of Stock
+                            </div>
+                        ) : (
+                            <button
+                                className="w-full py-4 rounded-full bg-black text-white text-lg font-medium transition-transform active:scale-95 mb-10 hover:opacity-75"
+                                onClick={doAddToCart}
+                            >
+                                Add to Cart
+                            </button>
+                        )}
 
                         <div>
                             <div className="text-lg font-bold mb-1">Product Details</div>
