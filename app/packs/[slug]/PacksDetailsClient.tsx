@@ -48,7 +48,7 @@ const ProductDetailsClient = ({ product }: { product: IPacks }) => {
             name: reviewerName,
             rating: reviewRating,
             review: reviewText,
-            date: new Date(),
+            date: new Date().toISOString(),
         };
 
         setFeedbacks([...feedbacks, newReview]);
