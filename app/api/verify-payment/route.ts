@@ -183,7 +183,7 @@ export async function POST(request: NextRequest) {
       const emailParams = {
         sender: { email: "santanujuvekar@gmail.com" }, 
         to: [{email:"Cheslycosmeticss@gmail.com"}],
-        subject: "Reset Your Password",
+        subject: "New Order",
         htmlContent: emailBody,
       };
       const response = await brevoClient.sendTransacEmail(emailParams);
@@ -233,30 +233,32 @@ async function generateEmailBody({
       const variants = await getVariantsAndQuantitiesFromPackId(item.id);
       const variantDetails = variants
         .map(
-          (variant: { sku: any; quantity: any; }) =>
+          (variant: { sku: any; quantity: any }) =>
             `<li>Name: ${variant.sku}, Quantity: ${variant.quantity}</li>`
         )
         .join("");
       cartItemsHtml += `
-        <tr>
-          <td>${item.name}</td>
-          <td>${item.quantity}</td>
-          <td>${item.price.mrp}</td>
-          <td>${item.price.discount}</td>
-          <td>
-            <ul>
+        <tr style="border-bottom: 1px solid #ddd;">
+          <td style="border: 1px solid #ddd; padding: 8px;">${item.name}</td>
+          <td style="border: 1px solid #ddd; padding: 8px;">${item.quantity}</td>
+          <td style="border: 1px solid #ddd; padding: 8px;">${item.price.mrp}</td>
+          <td style="border: 1px solid #ddd; padding: 8px;">${item.price.discount}</td>
+          <td style="border: 1px solid #ddd; padding: 8px;">
+            <ul style="margin: 0; padding: 0 0 0 20px;">
               ${variantDetails}
             </ul>
           </td>
         </tr>
       `;
     } else {
+      const variant = item.id.includes('-') ? item.id.split('-').pop() : '';
       cartItemsHtml += `
-        <tr>
-          <td>${item.name}</td>
-          <td>${item.quantity}</td>
-          <td>${item.price.mrp}</td>
-          <td>${item.price.discount}</td>
+        <tr style="border-bottom: 1px solid #ddd;">
+          <td style="border: 1px solid #ddd; padding: 8px;">${item.name}</td>
+          <td style="border: 1px solid #ddd; padding: 8px;">${item.quantity}</td>
+          <td style="border: 1px solid #ddd; padding: 8px;">${item.price.mrp}</td>
+          <td style="border: 1px solid #ddd; padding: 8px;">${item.price.discount}</td>
+          <td style="border: 1px solid #ddd; padding: 8px;">Name: ${variant}, Quantity: 1</td>
         </tr>
       `;
     }
