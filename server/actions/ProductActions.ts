@@ -53,7 +53,7 @@ const addReviewToProductOrPack = async (id: string, review: any, isProduct: bool
 };
 
 const incrementSoldCount = async (cartItems: any[]) => {
-  const response = await axios.post(`${API_BASE_URL}/soldCount`, { cartItems });
+  const response = await axios.post(`${API_BASE_URL}/increment-sold-count`, { cartItems });
   return response.data;
 };
 
