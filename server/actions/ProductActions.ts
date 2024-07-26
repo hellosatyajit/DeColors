@@ -58,7 +58,7 @@ const incrementSoldCount = async (cartItems: any[]) => {
 };
 
 const getVariantsAndQuantitiesFromPackId = async (packId: string) => {
-  const response = await axios.post(`${API_BASE_URL}/variants`, { packId });
+  const response = await axios.post(`${API_BASE_URL}/pack/variants`, { packId });
   return response.data;
 };
 
