@@ -5,9 +5,9 @@ import { ITransaction, createTransaction } from "@/server/model/transaction";
 import { findUserByEmail } from "@/server/model/User";
 import axios from "axios";
 import { format } from "date-fns";
-
+import { TransactionalEmailsApi, TransactionalEmailsApiApiKeys } from "@sendinblue/client";
 import { createOrder, IOrder } from "@/server/model/order";
-import { incrementSoldCount } from "@/server/actions/ProductActions";
+import { getVariantsAndQuantitiesFromPackId, incrementSoldCount } from "@/server/actions/ProductActions";
 
 export async function POST(request: NextRequest) {
   try {
@@ -75,6 +75,33 @@ export async function POST(request: NextRequest) {
 
       const { token } = shiprocketAuthResponse.data;
 
+      const orderItems = await Promise.all(
+        cartdetails.map(async (item: any) => {
+          if (item.isPack) {
+            const variants = await getVariantsAndQuantitiesFromPackId(item.id);
+            const variantSkus = variants.map((variant: any) => variant.sku).join(',');
+            return {
+              name: `${item.brand} ${item.name}`,
+              sku: `${item.sku}(${variantSkus})`,
+              units: item.quantity,
+              selling_price: item.price.mrp.toString(),
+              discount: item.price.discount.toString(),
+              hsn: 3304,
+            };
+          } else {
+            return {
+              name: `${item.brand} ${item.name}`,
+              sku: item.sku,
+              units: item.quantity,
+              selling_price: item.price.mrp.toString(),
+              discount: item.price.discount.toString(),
+              hsn: 3304,
+            };
+          }
+        })
+      );
+      
+
       const createShipmentResponse = await axios.post(
         "https://apiv2.shiprocket.in/v1/external/orders/create/adhoc",
         {
@@ -104,21 +131,7 @@ export async function POST(request: NextRequest) {
           shipping_state: user.address?.state,
           shipping_email: user.email,
           shipping_phone: user.phoneNumber,
-          order_items: cartdetails.map(
-            (item: {
-              name: any;
-              sku: any;
-              quantity: any;
-              price: { mrp: number; discount: number };
-            }) => ({
-              name: item.name,
-              sku: item.sku,
-              units: item.quantity,
-              selling_price: item.price.mrp.toString(),
-              discount: item.price.discount.toString(),
-              hsn: 3304,
-            })
-          ),
+          order_items: orderItems,
           payment_method: "Prepaid",
           shipping_charges: shippingCharges,
           giftwrap_charges: 0,
@@ -137,7 +150,7 @@ export async function POST(request: NextRequest) {
           },
         }
       );
-
+      console.log(createShipmentResponse.data.data)
       const { order_id, awb_number: awb_code } = createShipmentResponse.data;
       const order: IOrder = {
         userId: id,
@@ -155,8 +168,38 @@ export async function POST(request: NextRequest) {
         },
         createdAt: new Date(),
       };
+
+      
       await createOrder(order);
       await incrementSoldCount(cartdetails)
+
+
+      const emailBody = await generateEmailBody({
+        user,
+        cartdetails,
+        orderId: order_id,
+        totalCost,
+        totalDiscount,
+        shippingCharges,
+        subTotal,
+      });
+
+      const apiKey = process.env.BREVO_API_KEY;
+      if (!apiKey) {
+        console.error("BREVO_API_KEY is not defined");
+        return NextResponse.json({ error: "Server configuration error" });
+      }
+  
+      
+      const brevoClient = new TransactionalEmailsApi();
+      brevoClient.setApiKey(TransactionalEmailsApiApiKeys.apiKey, apiKey);
+      const emailParams = {
+        sender: { email: "santanujuvekar@gmail.com" }, 
+        to: [{email:"Cheslycosmeticss@gmail.com"}],
+        subject: "New Order",
+        htmlContent: emailBody,
+      };
+      const response = await brevoClient.sendTransacEmail(emailParams);
       return NextResponse.json(
         {
           success: true,
@@ -172,10 +215,102 @@ export async function POST(request: NextRequest) {
       );
     }
   } catch (error: any) {
-    console.error(error);
+    console.error(error.data);
     return NextResponse.json(
       { success: false, message: "Internal Server Error" },
       { status: 500 }
     );
   }
+}
+async function generateEmailBody({
+  user,
+  cartdetails,
+  orderId,
+  totalCost,
+  totalDiscount,
+  shippingCharges,
+  subTotal,
+}: {
+  user: any;
+  cartdetails: any[];
+  orderId: string;
+  totalCost: number;
+  totalDiscount: number;
+  shippingCharges: number;
+  subTotal: number;
+}): Promise<string> {
+  let cartItemsHtml = "";
+
+  for (const item of cartdetails) {
+    if (item.isPack) {
+      const variants = await getVariantsAndQuantitiesFromPackId(item.id);
+      const variantDetails = variants
+        .map(
+          (variant: { sku: any; quantity: any }) =>
+            `<li>Name: ${variant.sku}, Quantity: ${variant.quantity}</li>`
+        )
+        .join("");
+      cartItemsHtml += `
+        <tr style="border-bottom: 1px solid #ddd;">
+          <td style="border: 1px solid #ddd; padding: 8px;">${item.name}</td>
+          <td style="border: 1px solid #ddd; padding: 8px;">${item.quantity}</td>
+          <td style="border: 1px solid #ddd; padding: 8px;">${item.price.mrp}</td>
+          <td style="border: 1px solid #ddd; padding: 8px;">${item.price.discount}</td>
+          <td style="border: 1px solid #ddd; padding: 8px;">
+            <ul style="margin: 0; padding: 0 0 0 20px;">
+              ${variantDetails}
+            </ul>
+          </td>
+        </tr>
+      `;
+    } else {
+      const variant = item.id.includes('-') ? item.id.split('-').pop() : '';
+      cartItemsHtml += `
+        <tr style="border-bottom: 1px solid #ddd;">
+          <td style="border: 1px solid #ddd; padding: 8px;">${item.name}</td>
+          <td style="border: 1px solid #ddd; padding: 8px;">${item.quantity}</td>
+          <td style="border: 1px solid #ddd; padding: 8px;">${item.price.mrp}</td>
+          <td style="border: 1px solid #ddd; padding: 8px;">${item.price.discount}</td>
+          <td style="border: 1px solid #ddd; padding: 8px;">Name: ${variant}, Quantity: 1</td>
+        </tr>
+      `;
+    }
+  }
+
+  return `
+    <div style="font-family: Arial, sans-serif;">
+      <h2>Order Confirmation</h2>
+      <p>Thank you for your purchase, ${user.name}!</p>
+      <p>Order ID: ${orderId}</p>
+      <h3>User Information</h3>
+      <p>
+        Name: ${user.name}<br>
+        Email: ${user.email}<br>
+        Address: ${user.address?.address}, ${user.address?.city}, ${user.address?.state}, ${user.address?.pinCode}, ${user.address?.country}<br>
+        Phone: ${user.phoneNumber}
+      </p>
+      <h3>Order Details</h3>
+      <table style="width: 100%; border-collapse: collapse;">
+        <thead>
+          <tr>
+            <th style="border: 1px solid #ddd; padding: 8px;">Product</th>
+            <th style="border: 1px solid #ddd; padding: 8px;">Quantity</th>
+            <th style="border: 1px solid #ddd; padding: 8px;">Price</th>
+            <th style="border: 1px solid #ddd; padding: 8px;">Discount</th>
+            <th style="border: 1px solid #ddd; padding: 8px;">Variants</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${cartItemsHtml}
+        </tbody>
+      </table>
+      <h3>Price Details</h3>
+      <p>
+        SubTotal: ${subTotal}<br>
+        Total Discount: ${totalDiscount}<br>
+        Shipping Charges: ${shippingCharges}<br>
+        Total Cost: ${totalCost}
+      </p>
+    </div>
+  `;
 }

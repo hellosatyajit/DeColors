@@ -18,7 +18,7 @@ export interface IProduct {
       name: string;
       rating: number;
       review: string;
-      date: Date;
+      date: any;
     }[];
   };
   soldCount: number;
@@ -40,6 +40,7 @@ export interface IPacks {
   url: string;
   slug: string;
   sku:string;
+  packItem:[any];
   brand: string;
   category: string;
   subheading: string;
@@ -50,7 +51,7 @@ export interface IPacks {
       name: string;
       rating: number;
       review: string;
-      date: Date;
+      date: any;
     }[];
   };
   soldCount: number;
@@ -67,5 +68,5 @@ export interface Review {
   name: string;
   rating: number;
   review: string;
-  date: Date;
+  date: any;
 }

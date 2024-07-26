@@ -48,7 +48,7 @@ const ProductDetailsClient = ({ product }: { product: IPacks }) => {
             name: reviewerName,
             rating: reviewRating,
             review: reviewText,
-            date: new Date(),
+            date: new Date().toISOString(),
         };
 
         setFeedbacks([...feedbacks, newReview]);
@@ -58,7 +58,7 @@ const ProductDetailsClient = ({ product }: { product: IPacks }) => {
 
         await addReviewToProductOrPack(product._id, newReview, false);
     };
-
+    const isOutOfStock = product.inventory === 0;
     return (
         <section className="w-full">
             <div className="max-w-7xl m-auto px-5 py-10 space-y-20">
@@ -92,12 +92,18 @@ const ProductDetailsClient = ({ product }: { product: IPacks }) => {
                             {`(Also includes all applicable duties)`}
                         </div>
 
-                        <button
-                            className="w-full py-4 rounded-full bg-black text-white text-lg font-medium transition-transform active:scale-95 mb-10 hover:opacity-75"
-                            onClick={doAddToCart}
-                        >
-                            Add to Cart
-                        </button>
+                        {isOutOfStock ? (
+                            <div className="flex justify-center items-center w-full py-4 rounded-full bg-red-500 text-white font-medium text-lg font-bold mb-5">
+                                Out of Stock
+                            </div>
+                        ) : (
+                            <button
+                                className="w-full py-4 rounded-full bg-black text-white text-lg font-medium transition-transform active:scale-95 mb-10 hover:opacity-75"
+                                onClick={doAddToCart}
+                            >
+                                Add to Cart
+                            </button>
+                        )}
 
                         <div>
                             <div className="text-lg font-bold mb-1">Product Details</div>

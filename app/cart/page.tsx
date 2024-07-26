@@ -47,19 +47,27 @@ export default function CartPage() {
     }, []);
 
     const handleCheckout = async () => {
-        const order = await createOrder(subTotal);
-        if (!userinfo) {
-            toast.error('Please Signup First');
-            router.push("/register");
-            return;
+        try {
+            const order = await createOrder(subTotal);
+
+            if (!userinfo) {
+                toast.error('Please Signup First');
+                router.push("/register");
+                return;
+            }
+
+            const Userdata = await findUserByEmail(userinfo.email);
+            if (!Userdata?.address || !Userdata?.phoneNumber) {
+                toast.error('Please add address and phone number first');
+                router.push("/onboarding");
+                return;
+            }
+
+            displayRazorpay(subTotal * 100, order.id, Userdata);
+        } catch (error) {
+            toast.error('Something went wrong. Please try again.');
+            console.error(error);
         }
-        const Userdata = await findUserByEmail(userinfo?.email);
-        if (!Userdata?.address || !Userdata?.phoneNumber) {
-            toast.error('Please add address and phone number first');
-            router.push("/onboarding");
-            return;
-        }
-        displayRazorpay(subTotal * 100, order.id, Userdata);
     }
 
     function loadScript(src: any) {
