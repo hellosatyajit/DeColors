@@ -8,7 +8,7 @@ export async function POST(request: NextRequest){
     const { email } = await request.json();
     const user = await findUserByEmail(email);
     if(user?._id){
-    const orders = await findOrdersByUserId(user?._id);
+    const orders = await findOrdersByUserId(user?._id.toString());
     return NextResponse.json({ orders },{status:200});
   }
   else{

@@ -1,40 +1,25 @@
-import { ObjectId } from "mongodb";
-import clientPromise from "../../lib/mongodb";
+import axios from 'axios';
 
-export interface IOrder {
-  userId: ObjectId | undefined;
-  orderId: string;
-  transactionId: ObjectId | undefined;
-  amount: {
-    total: number;
-    discount: number;
-    shipping: number;
-  };
-  cart: any[];
-  trackingInfo: {
-    shipment_id: string;
-    tracking_url: string;
-  };
-  createdAt: Date;
-}
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:5000/api';
 
-async function getOrderCollection() {
-  const client = await clientPromise;
-  return client.db().collection<IOrder>("orders");
-}
+const createOrder = async (order: any) => {
+  const response = await axios.post(`${API_BASE_URL}/order/create`, { order });
+  return response.data;
+};
 
-export async function createOrder(order: IOrder) {
-  const orders = await getOrderCollection();
-  return orders.insertOne(order);
-}
-export async function updateOrder(
-  transactionId: ObjectId,
-  updateFields: Partial<IOrder>
-) {
-  const orders = await getOrderCollection();
-  return orders.updateOne({ transactionId }, { $set: updateFields });
-}
-export async function findOrdersByUserId(userId: ObjectId) {
-  const orders = await getOrderCollection();
-  return orders.find({ userId }).sort({ createdAt: -1 }).toArray();
-}
+const updateOrder = async (transactionId: string, updateFields: any) => {
+  const response = await axios.post(`${API_BASE_URL}/order/update`, { transactionId, updateFields });
+  return response.data;
+};
+
+const findOrdersByUserId = async (userId: string) => {
+  const response = await axios.post(`${API_BASE_URL}/order/user`, { userId });
+  return response.data;
+};
+
+
+export {
+  createOrder,
+  updateOrder,
+  findOrdersByUserId
+};
