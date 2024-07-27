@@ -66,6 +66,10 @@ const fetchHeroImages = async() => {
   const response = await axios.post(`${API_BASE_URL}/hero`);
   return response.data
 }
+const CheckReview = async(email:string,id:string,ispack:string)=>{
+  const response = await axios.post(`${API_BASE_URL}/check-review`, { email,id,ispack });
+  return response.data
+}
 export {
   fetchProducts,
   fetchPacks,
@@ -80,4 +84,5 @@ export {
   incrementSoldCount,
   getVariantsAndQuantitiesFromPackId,
   fetchHeroImages,
+  CheckReview
 };
