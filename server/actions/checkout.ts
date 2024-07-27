@@ -2,15 +2,21 @@
 import Razorpay from "razorpay";
 
 const instance = new Razorpay({
-    key_id: process.env.RAZORPAY_KEY_ID!,
-    key_secret: process.env.RAZORPAY_SECRET!,
-  });
+  key_id: process.env.RAZORPAY_KEY_ID!,
+  key_secret: process.env.RAZORPAY_SECRET!,
+});
 
-export async function createOrder(amount: number, receipt: string = 'order_123456') {
+function generateReceipt() {
+  const prefix = "order_";
+  const timestamp = Date.now(); // Get the current timestamp
+  return `${prefix}${timestamp}`;
+}
+
+export async function createOrder(amount: number) {
+  const receipt = generateReceipt(); // Generate a unique receipt
   return instance.orders.create({
     amount: amount * 100,
     currency: "INR",
     receipt,
   });
-    
 }
