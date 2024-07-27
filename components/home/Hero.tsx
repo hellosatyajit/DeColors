@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import Link from "next/link"; 
 import { useKeenSlider } from "keen-slider/react";
 import "keen-slider/keen-slider.min.css";
 import { fetchHeroImages } from "@/server/actions/ProductActions";
@@ -88,9 +89,9 @@ export default function Hero() {
           {!loaded && <SkeletonLoader />}
           {heroImages.length > 0 && heroImages.map((item, index) => (
             <div key={index} className="keen-slider__slide">
-              <a href={item.url} target="_blank" rel="noopener noreferrer">
-                <img src={item.image} alt={`Slide ${index}`} className="w-full" />
-              </a>
+              <Link href={item.url} passHref>
+                <img src={item.image} alt={`Slide ${index}`} className="w-full cursor-pointer" />
+              </Link>
             </div>
           ))}
         </div>
