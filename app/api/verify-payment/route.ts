@@ -1,12 +1,12 @@
 // app/api/verify-payment/route.ts
 import { NextResponse, NextRequest } from "next/server";
 import crypto from "crypto";
-import { ITransaction, createTransaction } from "@/server/model/transaction";
+import { createTransaction } from "@/server/model/transaction";
 import { findUserByEmail } from "@/server/model/User";
 import axios from "axios";
 import { format } from "date-fns";
 import { TransactionalEmailsApi, TransactionalEmailsApiApiKeys } from "@sendinblue/client";
-import { createOrder, IOrder } from "@/server/model/order";
+import { createOrder } from "@/server/model/order";
 import { getVariantsAndQuantitiesFromPackId, incrementSoldCount } from "@/server/actions/ProductActions";
 
 export async function POST(request: NextRequest) {
@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
     const digest = shasum.digest("hex");
 
     const user = await findUserByEmail(email);
-    const id = user?._id;
+    const id = user?._id.toString();
 
     if (digest === razorpaySignature) {
       if (!id) {
@@ -63,7 +63,8 @@ export async function POST(request: NextRequest) {
       };
 
       const transactionDb = await createTransaction(transaction);
-
+      console.log(transactionDb)
+      const trans_id:string = transactionDb?._id.toString()
       // Shiprocket API credentials
       const shiprocketAuthResponse = await axios.post(
         "https://apiv2.shiprocket.in/v1/external/auth/login",
@@ -110,27 +111,27 @@ export async function POST(request: NextRequest) {
           pickup_location: "Primary",
           channel_id: "",
           comment: "Thank you for your purchase!",
-          billing_customer_name: user.name,
+          billing_customer_name: user?.name,
           billing_last_name: "",
-          billing_address: user.address?.address,
+          billing_address: user?.address?.address,
           billing_address_2: "",
-          billing_city: user.address?.city,
-          billing_pincode: user.address?.pinCode,
-          billing_state: user.address?.state,
-          billing_country: user.address?.country,
-          billing_email: user.email,
-          billing_phone: user.phoneNumber,
+          billing_city: user?.address?.city,
+          billing_pincode: user?.address?.pinCode,
+          billing_state: user?.address?.state,
+          billing_country: user?.address?.country,
+          billing_email: user?.email,
+          billing_phone: user?.phoneNumber,
           shipping_is_billing: true,
-          shipping_customer_name: user.name,
+          shipping_customer_name: user?.name,
           shipping_last_name: "",
-          shipping_address: user.address?.address,
+          shipping_address: user?.address?.address,
           shipping_address_2: "",
-          shipping_city: user.address?.city,
-          shipping_pincode: user.address?.pinCode,
-          shipping_country: user.address?.country,
-          shipping_state: user.address?.state,
-          shipping_email: user.email,
-          shipping_phone: user.phoneNumber,
+          shipping_city: user?.address?.city,
+          shipping_pincode: user?.address?.pinCode,
+          shipping_country: user?.address?.country,
+          shipping_state: user?.address?.state,
+          shipping_email: user?.email,
+          shipping_phone: user?.phoneNumber,
           order_items: orderItems,
           payment_method: "Prepaid",
           shipping_charges: shippingCharges,
@@ -150,12 +151,11 @@ export async function POST(request: NextRequest) {
           },
         }
       );
-      console.log(createShipmentResponse.data.data)
       const { order_id, awb_number: awb_code } = createShipmentResponse.data;
-      const order: IOrder = {
+      const order = {
         userId: id,
         orderId: order_id,
-        transactionId: transactionDb?._id,
+        transactionId: trans_id,
         amount: {
           total: subTotal,
           discount: totalDiscount,
@@ -166,7 +166,7 @@ export async function POST(request: NextRequest) {
           shipment_id: orderCreationId,
           tracking_url: `https://shiprocket.co/tracking/order/${orderCreationId}?company_id=4008544`,
         },
-        createdAt: new Date(),
+        createdAt: new Date().toISOString(),
       };
 
       
@@ -215,7 +215,7 @@ export async function POST(request: NextRequest) {
       );
     }
   } catch (error: any) {
-    console.error(error.data);
+    console.error(error);
     return NextResponse.json(
       { success: false, message: "Internal Server Error" },
       { status: 500 }

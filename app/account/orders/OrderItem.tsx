@@ -7,7 +7,6 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion"
 import { SquareArrowOutUpRight } from 'lucide-react';
-import { IOrder } from '@/server/model/order';
 import Image from 'next/image';
 
 interface ShipmentTrackActivity {
@@ -29,7 +28,7 @@ interface TrackingDetails {
     shipment_track_activities: ShipmentTrackActivity[];
   };
 }
-export function OrderItem({ order }: { order: IOrder }) {
+export function OrderItem({ order }: { order: any }) {
   const [trackingDetails, setTrackingDetails] = useState<TrackingDetails | null>(null);
 
   useEffect(() => {

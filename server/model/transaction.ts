@@ -1,53 +1,12 @@
 "use server";
+import axios from 'axios';
 
-import { ObjectId, Collection, InsertOneResult } from 'mongodb';
-import clientPromise from '../../lib/mongodb';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:5000/api';
 
-export interface ICartItem {
-    productId: string;
-    name: string;
-    quantity: number;
-    price: {
-        mrp: number;
-        discount: number;
-    };
-    images: string;
-    url: string;
-    slug: string;
-    subheading: string;
-    brand: string;
-    category: string;
-    type: string;
-}
-
-export interface ITransaction {
-    userId: ObjectId | undefined;
-    orderCreationId: string;
-    razorpayPaymentId: string;
-    razorpayOrderId: string;
-    razorpaySignature: string;
-    amount: number;
-    cart: ICartItem[];
-    status: string;
-    createdAt: Date;
-}
-
-let transactions: Collection<ITransaction>;
-
-async function getTransactionCollection() {
-    const client = await clientPromise;
-    transactions = client.db().collection<ITransaction>('transaction');
-    return transactions;
-}
-
-export async function createTransaction(transaction: ITransaction) {
-    if (!transactions) {
-        await getTransactionCollection();
-    }
-    const result: InsertOneResult<ITransaction> = await transactions.insertOne(transaction);
-    if (!result.insertedId) {
-        throw new Error('Failed to insert transaction');
-    }
-    const insertedTransaction = await transactions.findOne({ _id: result.insertedId });
-    return insertedTransaction;
-}
+const createTransaction = async (transaction: any) => {
+    const response = await axios.post(`${API_BASE_URL}/transaction/create`, { transaction });
+    return response.data;
+  };
+export {
+    createTransaction
+};
