@@ -23,6 +23,7 @@ const breadcrumb = [
 export default function CartPage() {
     const [items, setItems] = useState<CartItem[]>([]);
     const [user, setUser] = useState<{ id: string; email: string; name: string; } | undefined>(undefined);
+    const [isLoading, setIsLoading] = useState(false);
 
     const totalCost = items.reduce((acc, item: CartItem) => acc + item.price.mrp * item.quantity, 0);
     const totalDiscount = items.reduce((acc, item: CartItem) => acc + item.price.discount * item.quantity, 0);
@@ -47,12 +48,17 @@ export default function CartPage() {
     }, []);
 
     const handleCheckout = async () => {
+        setIsLoading(true);
+        const loadingToastId = toast.loading('Processing payment...');  
         try {
+
             const order = await createOrder(subTotal);
 
             if (!userinfo) {
                 toast.error('Please Signup First');
                 router.push("/register");
+                setIsLoading(false);
+                toast.dismiss(loadingToastId);
                 return;
             }
 
@@ -60,13 +66,18 @@ export default function CartPage() {
             if (!Userdata?.address || !Userdata?.phoneNumber) {
                 toast.error('Please add address and phone number first');
                 router.push("/onboarding");
+                setIsLoading(false);
+                toast.dismiss(loadingToastId);
                 return;
             }
 
-            displayRazorpay(subTotal * 100, order.id, Userdata);
+            await displayRazorpay(subTotal * 100, order.id, Userdata);
+            toast.dismiss(loadingToastId);
         } catch (error) {
             toast.error('Something went wrong. Please try again.');
             console.error(error);
+            setIsLoading(false);
+            toast.dismiss(loadingToastId);
         }
     }
 
@@ -89,6 +100,7 @@ export default function CartPage() {
 
         if (!res) {
             alert("Razorpay SDK failed to load. Are you online?");
+            setIsLoading(false);
             return;
         }
 
@@ -120,6 +132,7 @@ export default function CartPage() {
                         toast.success('Payment successful!');
                         emptyCart();
                         setItems([]);
+                        setIsLoading(false);
                         router.push("/account/orders");
                     } else {
                         toast.error('Payment verification failed. Please try again.');
@@ -128,6 +141,7 @@ export default function CartPage() {
                     toast.error('Payment verification failed. Please try again.');
                     console.log(error);
                 }
+                
             },
             prefill: {
                 name: Userdata.name,
@@ -143,6 +157,7 @@ export default function CartPage() {
             modal: {
                 ondismiss: function () {
                     toast.error('Payment was unsuccessful. Please try again.');
+                    setIsLoading(false);
                 }
             }
         };
@@ -230,8 +245,9 @@ export default function CartPage() {
                                 type="submit"
                                 className="w-fit self-end md:w-full bg-rose-600 rounded-full text-white"
                                 onClick={handleCheckout}
+                                disabled={isLoading}
                             >
-                                Proceed to Checkout
+                                {isLoading ? 'Processing...' : 'Proceed to Checkout'}
                             </Button>
                         ) : (
                             <Link href="/login" className="w-fit self-end md:w-full px-4 py-2 text-center bg-rose-600 rounded-full text-white">
