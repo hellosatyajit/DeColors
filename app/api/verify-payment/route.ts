@@ -195,7 +195,7 @@ export async function POST(request: NextRequest) {
       brevoClient.setApiKey(TransactionalEmailsApiApiKeys.apiKey, apiKey);
       const emailParams = {
         sender: { email: "santanujuvekar@gmail.com" }, 
-        to: [{email:"Cheslycosmeticss@gmail.com"}],
+        to: [{email:"Chelsycosmeticss@gmail.com"}],
         subject: "New Order",
         htmlContent: emailBody,
       };
