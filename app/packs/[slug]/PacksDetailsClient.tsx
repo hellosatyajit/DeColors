@@ -9,7 +9,7 @@ import { addToCart } from "@/utils/cart";
 import { IPacks, IProduct } from "@/types/product";
 import { useSession } from "next-auth/react";
 import { FaStar } from "react-icons/fa";
-import { addReviewToProductOrPack, fetchSuggestedProducts } from "@/server/actions/ProductActions";
+import { addReviewToProductOrPack, fetchSuggestedProducts, CheckReview } from "@/server/actions/ProductActions";
 import { format } from "date-fns";
 import ProductsSlider from "@/components/home/ProductsSlider";
 
@@ -20,6 +20,7 @@ const ProductDetailsClient = ({ product }: { product: IPacks }) => {
     const [reviewRating, setReviewRating] = useState(5);
     const [feedbacks, setFeedbacks] = useState(product.rating.reviews || []);
     const [suggestedProducts, setSuggestedProducts] = useState<(IPacks | IProduct)[]>([]);
+    const [reviewPermission, setReviewPermission] = useState<"Yes" | "No" | "NotBuyed">("No");
 
     useEffect(() => {
         const fetchProducts = async () => {
@@ -31,6 +32,19 @@ const ProductDetailsClient = ({ product }: { product: IPacks }) => {
 
         fetchProducts();
     }, [product?.brand, product?.category]);
+
+    useEffect(() => {
+        const checkReviewPermission = async () => {
+            if (session?.user?.email) {
+                const permission = await CheckReview(session.user.email, product._id.toString(), "true");
+                setReviewPermission(permission.result);
+            }
+        };
+
+        if (isAuthenticated === "authenticated") {
+            checkReviewPermission();
+        }
+    }, [session, product._id, isAuthenticated]);
 
     const notify = () => {
         toast.success("Success. Check your cart!");
@@ -58,7 +72,9 @@ const ProductDetailsClient = ({ product }: { product: IPacks }) => {
 
         await addReviewToProductOrPack(product._id, newReview, false);
     };
+
     const isOutOfStock = product.inventory === 0;
+
     return (
         <section className="w-full">
             <div className="max-w-7xl m-auto px-5 py-10 space-y-20">
@@ -122,39 +138,54 @@ const ProductDetailsClient = ({ product }: { product: IPacks }) => {
                         <h2 className="text-xl font-bold mb-4">Leave a Review</h2>
                         {isAuthenticated === "authenticated" && (
                             <>
-                                <div className="mb-4">
-                                    <label className="block text-gray-700">Rating:</label>
-                                    <div className="flex">
-                                        {[1, 2, 3, 4, 5].map((rating) => (
-                                            <FaStar
-                                                key={rating}
-                                                size={24}
-                                                className={`cursor-pointer ${reviewRating >= rating ? "text-yellow-500" : "text-gray-300"
-                                                    }`}
-                                                onClick={() => setReviewRating(rating)}
-                                            />
-                                        ))}
+                                {reviewPermission === "Yes" && (
+                                    <div className="text-green-600 mb-4">
+                                        Thank you for your review!
                                     </div>
-                                </div>
-                                <div className="mb-4">
-                                    <label className="block text-gray-700">Review:</label>
-                                    <textarea
-                                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-                                        rows={4}
-                                        value={reviewText}
-                                        onChange={(e) => setReviewText(e.target.value)}
-                                    ></textarea>
-                                </div>
-                                <button
-                                    className="ml-2 py-2 px-4 rounded-full bg-black text-white text-lg font-medium transition-transform hover:opacity-75"
-                                    onClick={handleReviewSubmit}
-                                >
-                                    Submit Review
-                                </button>
+                                )}
+
+                                {reviewPermission === "No" && (
+                                    <>
+                                        <div className="mb-4">
+                                            <label className="block text-gray-700">Rating:</label>
+                                            <div className="flex">
+                                                {[1, 2, 3, 4, 5].map((rating) => (
+                                                    <FaStar
+                                                        key={rating}
+                                                        size={24}
+                                                        className={`cursor-pointer ${reviewRating >= rating ? "text-yellow-500" : "text-gray-300"}`}
+                                                        onClick={() => setReviewRating(rating)}
+                                                    />
+                                                ))}
+                                            </div>
+                                        </div>
+                                        <div className="mb-4">
+                                            <label className="block text-gray-700">Review:</label>
+                                            <textarea
+                                                className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+                                                rows={4}
+                                                value={reviewText}
+                                                onChange={(e) => setReviewText(e.target.value)}
+                                            ></textarea>
+                                        </div>
+                                        <button
+                                            className="ml-2 py-2 px-4 rounded-full bg-black text-white text-lg font-medium transition-transform hover:opacity-75"
+                                            onClick={handleReviewSubmit}
+                                        >
+                                            Submit Review
+                                        </button>
+                                    </>
+                                )}
+
+                                {reviewPermission === "NotBuyed" && (
+                                    <div className="text-red-600 mb-4">
+                                        You can only review after purchasing the product.
+                                    </div>
+                                )}
                             </>
                         )}
 
-                        {isAuthenticated === 'unauthenticated' &&
+                        {isAuthenticated === "unauthenticated" && (
                             <div className="text-gray-700 space-y-2">
                                 <p>You must be signed in to leave a review.</p>
                                 <button
@@ -164,7 +195,7 @@ const ProductDetailsClient = ({ product }: { product: IPacks }) => {
                                     Sign In
                                 </button>
                             </div>
-                        }
+                        )}
                     </div>
                     <div>
                         <h2 className="text-xl font-bold mb-4">Customer Reviews</h2>
@@ -190,7 +221,6 @@ const ProductDetailsClient = ({ product }: { product: IPacks }) => {
                         </div>
                     </div>
                 </div>
-
             </div>
             <ProductsSlider title="Suggested Product" viewAll="" products={suggestedProducts} />
         </section>

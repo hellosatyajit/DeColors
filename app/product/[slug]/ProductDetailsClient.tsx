@@ -9,9 +9,10 @@ import { addToCart } from "@/utils/cart";
 import { IPacks, IProduct } from "@/types/product";
 import { useSession } from "next-auth/react";
 import { FaStar } from "react-icons/fa";
-import { addReviewToProductOrPack, fetchSuggestedProducts } from "@/server/actions/ProductActions";
+import { addReviewToProductOrPack, fetchSuggestedProducts, CheckReview } from "@/server/actions/ProductActions";
 import { format } from 'date-fns';
 import ProductsSlider from "@/components/home/ProductsSlider";
+import { ObjectId } from 'mongodb';
 
 const ProductDetailsClient = ({ product }: { product: IProduct }) => {
     const router = useRouter();
@@ -24,6 +25,8 @@ const ProductDetailsClient = ({ product }: { product: IProduct }) => {
     const [images, setImages] = useState(product?.variants.flatMap((item: any) => item.image).slice(0, 5));
     const [suggestedProducts, setSuggestedProducts] = useState<(IPacks | IProduct)[]>([]);
     const [inventory, setInventory] = useState(1);
+    const [reviewStatus, setReviewStatus] = useState<'Yes' | 'No' | 'NotBuyed' | null>(null);
+
     useEffect(() => {
         const fetchProducts = async () => {
             if (product?.brand && product?.category) {
@@ -34,6 +37,17 @@ const ProductDetailsClient = ({ product }: { product: IProduct }) => {
 
         fetchProducts();
     }, [product?.brand, product?.category]);
+
+    useEffect(() => {
+        const checkReviewStatus = async () => {
+            if (session?.user?.email && product?._id) {
+                const response = await CheckReview(session.user.email, product._id.toString(), 'false');
+                setReviewStatus(response.result);
+            }
+        };
+
+        checkReviewStatus();
+    }, [session?.user?.email, product?._id]);
 
     const notify = () => {
         toast.success("Success. Check your cart!");
@@ -227,40 +241,51 @@ const ProductDetailsClient = ({ product }: { product: IProduct }) => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-10">
                     <div>
                         <h2 className="text-xl font-bold mb-4">Leave a Review</h2>
-                        {isAuthenticated === 'authenticated' && (
+                        {isAuthenticated === 'authenticated' ? (
                             <>
-                                <div className="mb-4">
-                                    <label className="block text-gray-700">Rating:</label>
-                                    <div className="flex">
-                                        {[1, 2, 3, 4, 5].map((rating) => (
-                                            <FaStar
-                                                key={rating}
-                                                size={24}
-                                                className={`cursor-pointer ${reviewRating >= rating ? "text-yellow-500" : "text-gray-300"}`}
-                                                onClick={() => setReviewRating(rating)}
-                                            />
-                                        ))}
-                                    </div>
-                                </div>
-                                <div className="mb-4">
-                                    <label className="block text-gray-700">Review:</label>
-                                    <textarea
-                                        className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-                                        rows={4}
-                                        value={reviewText}
-                                        onChange={(e) => setReviewText(e.target.value)}
-                                    ></textarea>
-                                </div>
-                                <button
-                                    className="py-2 px-4 rounded-full bg-black text-white text-lg font-medium transition-transform hover:opacity-75"
-                                    onClick={handleReviewSubmit}
-                                >
-                                    Submit Review
-                                </button>
+                                {reviewStatus === 'Yes' && (
+                                    <div className="text-gray-700">Thank you for your review.</div>
+                                )}
+                                {reviewStatus === 'No' && (
+                                    <>
+                                        <div className="mb-4">
+                                            <label className="block text-gray-700">Rating:</label>
+                                            <div className="flex">
+                                                {[1, 2, 3, 4, 5].map((rating) => (
+                                                    <FaStar
+                                                        key={rating}
+                                                        size={24}
+                                                        className={`cursor-pointer ${reviewRating >= rating ? "text-yellow-500" : "text-gray-300"}`}
+                                                        onClick={() => setReviewRating(rating)}
+                                                    />
+                                                ))}
+                                            </div>
+                                        </div>
+                                        <div className="mb-4">
+                                            <label className="block text-gray-700">Review:</label>
+                                            <textarea
+                                                className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+                                                rows={4}
+                                                value={reviewText}
+                                                onChange={(e) => setReviewText(e.target.value)}
+                                            ></textarea>
+                                        </div>
+                                        <button
+                                            className="py-2 px-4 rounded-full bg-black text-white text-lg font-medium transition-transform hover:opacity-75"
+                                            onClick={handleReviewSubmit}
+                                        >
+                                            Submit Review
+                                        </button>
+                                    </>
+                                )}
+                                {reviewStatus === 'NotBuyed' && (
+                                    <div className="text-red-600 mb-4">You can only review after the purchase of the product.</div>
+                                )}
+                                {reviewStatus === null && (
+                                    <div className="text-gray-700">Loading...</div>
+                                )}
                             </>
-                        )}
-
-                        {isAuthenticated === 'unauthenticated' &&
+                        ) : (
                             <div className="text-gray-700 space-y-2">
                                 <p>You must be signed in to leave a review.</p>
                                 <button
@@ -270,7 +295,7 @@ const ProductDetailsClient = ({ product }: { product: IProduct }) => {
                                     Sign In
                                 </button>
                             </div>
-                        }
+                        )}
                     </div>
                     <div>
                         <h2 className="text-xl font-bold mb-4">Customer Reviews</h2>
