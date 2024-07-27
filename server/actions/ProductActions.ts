@@ -62,6 +62,10 @@ const getVariantsAndQuantitiesFromPackId = async (packId: string) => {
   return response.data;
 };
 
+const fetchHeroImages = async() => {
+  const response = await axios.post(`${API_BASE_URL}/hero`);
+  return response.data
+}
 export {
   fetchProducts,
   fetchPacks,
@@ -75,4 +79,5 @@ export {
   addReviewToProductOrPack,
   incrementSoldCount,
   getVariantsAndQuantitiesFromPackId,
+  fetchHeroImages,
 };
