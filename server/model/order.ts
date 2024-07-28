@@ -7,8 +7,8 @@ const createOrder = async (order: any) => {
   return response.data;
 };
 
-const updateOrder = async (transactionId: string, updateFields: any) => {
-  const response = await axios.post(`${API_BASE_URL}/order/update`, { transactionId, updateFields });
+const updateOrder = async (id: string, updateField: any) => {
+  const response = await axios.post(`${API_BASE_URL}/order/update`, { id, updateField });
   return response.data;
 };
 
@@ -16,10 +16,14 @@ const findOrdersByUserId = async (userId: string) => {
   const response = await axios.post(`${API_BASE_URL}/order/user`, { userId });
   return response.data;
 };
-
+const findOrderByOrderId = async(orderId:number) =>{
+  const response = await axios.post(`${API_BASE_URL}/order/id`,{orderId})
+  return response.data
+}
 
 export {
   createOrder,
   updateOrder,
-  findOrdersByUserId
+  findOrdersByUserId,
+  findOrderByOrderId
 };

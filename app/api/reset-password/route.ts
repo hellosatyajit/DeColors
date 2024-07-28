@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
     brevoClient.setApiKey(TransactionalEmailsApiApiKeys.apiKey, apiKey);
 
     const emailParams = {
-      sender: { email: "santanujuvekar@gmail.com" }, 
+      sender: { email: "decoloreslifestyle@gmail.com" }, 
       to: [{ email }],
       subject: "Reset Your Password",
       htmlContent: emailBody,

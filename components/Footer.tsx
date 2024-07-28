@@ -1,6 +1,7 @@
 'use client';
 import Link from "next/link";
 import { useState } from "react";
+import axios from "axios";
 import toast from "react-hot-toast";
 
 const SendIcon = () => (
@@ -34,18 +35,23 @@ export default function Footer() {
     const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
-            const formBody = `email=${encodeURIComponent(formData.email)}&&name=${encodeURIComponent(formData.name)}&&message=${encodeURIComponent(formData.message)}`;
-            const response = await fetch('https://app.loops.so/api/newsletter-form/clrovl21z00cat4onnwr44bus', {
-                method: 'POST',
-                body: formBody,
-                headers: {
-                    "Content-Type": "application/x-www-form-urlencoded",
-                },
-            });
+            const time = new Date();
+            const timestamp = time.valueOf();
+            const previousTimestamp = localStorage.getItem('contactUs-time-check');
+            if(previousTimestamp && Number(previousTimestamp) + 60 * 1000 > timestamp){
+                toast.error('Too many contactUs request sended,please try again after while')
+                return;
+            }
 
-            if (response.ok) {
+            const response = await axios.post('/api/contactUs',formData)
+
+            if (response.status == 200) {
                 toast.success("Form submitted successfully!");
-                setFormData({ name: "", email: "", message: "" }); // Reset form
+                setFormData({ name: "", email: "", message: "" });
+                localStorage.setItem(
+                    'contactUs-time-check',
+                    new Date().valueOf().toString(),
+                );
             } else {
                 throw new Error('Form submission failed');
             }
