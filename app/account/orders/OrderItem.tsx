@@ -7,7 +7,11 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion"
 import { SquareArrowOutUpRight } from 'lucide-react';
+import { useSession } from 'next-auth/react';
 import Image from 'next/image';
+import { ReturnDialog } from '@/components/ReturnDialog'; 
+import toast from 'react-hot-toast';
+import { Button } from '@/components/ui/button';
 
 interface ShipmentTrackActivity {
   date: string;
@@ -17,6 +21,7 @@ interface ShipmentTrackActivity {
   "sr-status": string;
   "sr-status-label": string;
 }
+
 interface TrackingDetails {
   tracking_data: {
     track_status: number;
@@ -28,23 +33,54 @@ interface TrackingDetails {
     shipment_track_activities: ShipmentTrackActivity[];
   };
 }
+
 export function OrderItem({ order }: { order: any }) {
   const [trackingDetails, setTrackingDetails] = useState<TrackingDetails | null>(null);
+  const [showReturnPopup, setShowReturnPopup] = useState(false);
+  const { data: session } = useSession();
+  const userinfo = session?.user;
+
+  const fetchTrackingDetails = async () => {
+    try {
+      const shipment_id = order.trackingInfo.shipment_id;
+      const response = await axios.post(`/api/tracking`, { shipment_id });
+      console.log(response.data.data)
+      setTrackingDetails(response.data.data);
+    } catch (error) {
+      console.error('Error fetching tracking details:', error);
+    }
+  };
 
   useEffect(() => {
-    const fetchTrackingDetails = async () => {
-      try {
-        const shipment_id = order.trackingInfo.shipment_id
-        const response = await axios.post(`/api/tracking`, { shipment_id });
-        console.log(response.data.data)
-        setTrackingDetails(response.data.data);
-      } catch (error) {
-        console.error('Error fetching tracking details:', error);
-      }
-    };
-
     fetchTrackingDetails();
   }, [order.trackingInfo.shipment_id]);
+
+  const handleReturnClick = () => {
+    setShowReturnPopup(true);
+  };
+
+  const handleReturnClose = () => {
+    setShowReturnPopup(false);
+  };
+
+  const handleReturnSubmit = async (reason: string, otherReason?: string) => {
+    const returnDetails = {
+      reason,
+      otherReason,
+      email: userinfo?.email,
+      orderId: order.orderId,
+    }
+    const response = await axios.post('/api/return-order', returnDetails);
+
+    setShowReturnPopup(false);
+    if (response.status == 200){
+      toast.success("Return Request Sended ")
+    }
+    else {
+      toast.error('Return Request failed')
+    }
+    };
+
 
   return (
     <AccordionItem value={order.orderId} className=''>
@@ -72,7 +108,6 @@ export function OrderItem({ order }: { order: any }) {
                           className="h-full w-full object-cover"
                           width={64}
                           height={64}
-
                           alt={item.name}
                           src={item.image}
                         />
@@ -81,11 +116,9 @@ export function OrderItem({ order }: { order: any }) {
                         <span className="leading-tight font-medium text-rose-600">
                           {item.name}
                         </span>
-                        {
-                          item.sku && <span className="leading-tight text-black/50">
-                            Variant: {item.sku}
-                          </span>
-                        }
+                        {item.sku && <span className="leading-tight text-black/50">
+                          Variant: {item.sku}
+                        </span>}
                       </div>
                     </div>
                     <div className="flex h-16 flex-col justify-between">
@@ -100,10 +133,9 @@ export function OrderItem({ order }: { order: any }) {
           </ul>
           {trackingDetails && (
             <>
-              {
-                <Link href={order.trackingInfo.tracking_url} rel="noopener noreferrer" target='_blank' className='flex items-center gap-1'>
-                  Track Order <SquareArrowOutUpRight size={16} />
-                </Link>}
+              <Link href={order.trackingInfo.tracking_url} rel="noopener noreferrer" target='_blank' className='flex items-center gap-1'>
+                Track Order <SquareArrowOutUpRight size={16} />
+              </Link>
               {trackingDetails.tracking_data?.shipment_track_activities && <p>Tracking Details:</p>}
               <ul>
                 {trackingDetails.tracking_data?.shipment_track_activities?.map((activity, index) => (
@@ -115,11 +147,24 @@ export function OrderItem({ order }: { order: any }) {
                   </li>
                 ))}
               </ul>
+              {trackingDetails.tracking_data?.shipment_track[0].current_status === "Delivered" && (
+	              <Button 
+	                  variant={'link'}
+	                  className='font-normal'
+	                  disabled={order.isReturned}
+	              >
+		            {order.isReturned ? 'Return Requested' : 'Request Return'}
+	              </Button>
+)}
             </>
           )}
         </AccordionContent>
-
       </div>
+      <ReturnDialog
+        isOpen={showReturnPopup}
+        onClose={handleReturnClose}
+        onSubmit={handleReturnSubmit}
+      />
     </AccordionItem>
   );
-};
+}

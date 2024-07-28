@@ -12,7 +12,6 @@ import { FaStar } from "react-icons/fa";
 import { addReviewToProductOrPack, fetchSuggestedProducts, CheckReview } from "@/server/actions/ProductActions";
 import { format } from 'date-fns';
 import ProductsSlider from "@/components/home/ProductsSlider";
-import { ObjectId } from 'mongodb';
 
 const ProductDetailsClient = ({ product }: { product: IProduct }) => {
     const router = useRouter();
@@ -97,6 +96,7 @@ const ProductDetailsClient = ({ product }: { product: IProduct }) => {
         setFeedbacks([...feedbacks, newReview]);
         setReviewText("");
         setReviewRating(5);
+        setReviewStatus('Yes')
 
         await addReviewToProductOrPack(product._id, newReview);
     };
