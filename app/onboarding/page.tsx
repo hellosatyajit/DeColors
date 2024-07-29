@@ -1,3 +1,4 @@
+
 'use client';
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -50,8 +51,17 @@ export default function RegisterDetails() {
         setLoading(false);
         return;
       }
+      const trimmedDetails = {
+        address: address.trim(),
+        state: state.trim(),
+        city: city.trim(),
+        pinCode: pinCode.trim(),
+        phoneNumber: phoneNumber.trim(),
+        email: email.trim(),
+        country: country.trim()
+      };
 
-      const response = await axios.post('/api/updatedetails', details);
+      const response = await axios.post('/api/updatedetails', trimmedDetails);
 
       if (response.data.error) {
         setError(response.data.error);
