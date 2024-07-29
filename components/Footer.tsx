@@ -104,8 +104,8 @@ export default function Footer() {
                             <p className="text-xl font-semibold">Pages</p>
                             <div className="flex flex-col gap-2">
                                 <Link href="/" className="text-black opacity-90 hover:opacity-100 text-sm font-normal">Home</Link>
-                                <Link href="/" className="text-black opacity-90 hover:opacity-100 text-sm font-normal">Our Story</Link>
-                                <Link href="/" className="text-black opacity-90 hover:opacity-100 text-sm font-normal">FAQs</Link>
+                                <Link href="/our-story" className="text-black opacity-90 hover:opacity-100 text-sm font-normal">Our Story</Link>
+                                <Link href="/faq" className="text-black opacity-90 hover:opacity-100 text-sm font-normal">FAQs</Link>
                                 <Link href="https://www.shiprocket.in/shipment-tracking/" target="_blank" className="text-black opacity-90 hover:opacity-100 text-sm font-normal">Order Tracking</Link>
                             </div>
                         </div>

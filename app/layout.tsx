@@ -27,6 +27,7 @@ export default function RootLayout({
     <html lang="en" className={GeistSans.className}>
       <Head>
         <MetaPixels />
+        <meta name="google-site-verification" content="CJlT5WbSvD3vI6dvZacFTVzH41xndM6kIGCZuLpzk0E" />
       </Head>
       <body>
         <AuthProvider>
