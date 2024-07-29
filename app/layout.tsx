@@ -1,12 +1,14 @@
+import { Analytics } from "@vercel/analytics/react"
 import { GeistSans } from "geist/font/sans";
-import "./globals.css";
+import Head from "next/head";
 import Script from 'next/script';
 import { Toaster } from "react-hot-toast";
 import Header from "@/components/header";
 import Footer from "@/components/Footer";
 import AuthProvider from "@/components/Provider";
 import MetaPixels from "@/lib/metapixels";
-import Head from "next/head";
+
+import "./globals.css";
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
@@ -43,6 +45,7 @@ export default function RootLayout({
             src="https://checkout.razorpay.com/v1/checkout.js"
           />
         </AuthProvider>
+        <Analytics mode={'production'} />
       </body>
     </html>
   );

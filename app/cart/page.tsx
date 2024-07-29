@@ -28,7 +28,7 @@ export default function CartPage() {
     const totalCost = items.reduce((acc, item: CartItem) => acc + item.price.mrp * item.quantity, 0);
     const totalDiscount = items.reduce((acc, item: CartItem) => acc + item.price.discount * item.quantity, 0);
     const shippingCharges = (totalCost - totalDiscount) > 149 ? 0 : 50;
-    const subTotal = (totalCost - totalDiscount) + shippingCharges;
+    const subTotal = totalCost - totalDiscount;
     const { data: session } = useSession();
     const router = useRouter();
     const userinfo = session?.user;
@@ -49,7 +49,7 @@ export default function CartPage() {
 
     const handleCheckout = async () => {
         setIsLoading(true);
-        const loadingToastId = toast.loading('Processing payment...');  
+        const loadingToastId = toast.loading('Processing payment...');
         try {
 
             const order = await createOrder(subTotal);
@@ -141,7 +141,7 @@ export default function CartPage() {
                     toast.error('Payment verification failed. Please try again.');
                     console.log(error);
                 }
-                
+
             },
             prefill: {
                 name: Userdata.name,
@@ -232,13 +232,15 @@ export default function CartPage() {
                     <div className="w-full md:w-80 h-min p-4 flex flex-col gap-4 sticky md:top-0">
                         <p className="font-bold text-lg sm:text-3xl">Summary</p>
                         <div>
-                            <p className="flex justify-between">Total: <strong>{totalCost} ₹</strong></p>
-                            <p className="flex justify-between">Shipping Charges: <strong>{shippingCharges} ₹</strong></p>
+                            <p className="flex justify-between">Total: <strong>{subTotal} ₹</strong></p>
+                            <p className="flex justify-between">
+                                Shipping Charges:
+                                <strong>{shippingCharges ? `${shippingCharges} ₹` : 'Free Shipping'}</strong>
+                            </p>
                             {shippingCharges > 0 && <p className="text-xs opacity-70">Free shipping on orders over 149.</p>}
-                            <p className="flex justify-between">Discount: <strong>{totalDiscount} ₹</strong></p>
                         </div>
                         <hr />
-                        <p className="flex justify-between">Subtotal: <strong>{subTotal} ₹</strong></p>
+                        <p className="flex justify-between">Grand Total: <strong>{subTotal + shippingCharges} ₹</strong></p>
                         {user ? (
                             <Button
                                 variant={'secondary'}
@@ -254,6 +256,9 @@ export default function CartPage() {
                                 Login first to proceed to checkout
                             </Link>
                         )}
+                        <Link href='/' className="hover:underline ml-auto md:m-auto">
+                            Continue Shopping
+                        </Link>
                     </div>
                 )}
             </div>

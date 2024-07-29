@@ -2,6 +2,7 @@ import Link from "next/link";
 import AuthButton from "../AuthButton";
 import Hamburger from "./Hamburger";
 import SearchModal from "./SearchModal";
+// import CartBadge from "./CartBadge";
 
 const links = [
   { href: "/products", label: "Best Sellers" },
@@ -36,7 +37,7 @@ export default function Header() {
         <div className="flex gap-4 sm:gap-2">
           <SearchModal />
           <Link href={'/cart'}>
-            <div className="w-5 h-5 sm:w-10 sm:h-10 flex justify-center items-center text-white sm:text-black bg-transparent sm:bg-white rounded-xl cursor-pointer">
+            <div className="w-5 h-5 sm:w-10 sm:h-10 flex justify-center items-center text-white sm:text-black bg-transparent sm:bg-white rounded-xl cursor-pointer relative">
               <svg width="18" height="14" viewBox="0 0 18 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path
                   fillRule="evenodd"
@@ -45,6 +46,7 @@ export default function Header() {
                   fill="currentColor"
                 />
               </svg>
+              {/* <CartBadge /> */}
             </div>
           </Link>
           <div className="w-5 h-5 sm:w-10 sm:h-10 flex justify-center items-center text-white sm:text-black bg-transparent sm:bg-white rounded-xl cursor-pointer relative group">
