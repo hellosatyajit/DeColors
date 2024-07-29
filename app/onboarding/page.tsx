@@ -1,3 +1,4 @@
+
 'use client';
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -5,6 +6,7 @@ import GoBack from "@/components/GoBack";
 import toast from "react-hot-toast";
 import axios from "axios";
 import { useSession } from "next-auth/react";
+import { Button } from "@/components/ui/button";
 
 export default function RegisterDetails() {
   const router = useRouter();
@@ -71,7 +73,7 @@ export default function RegisterDetails() {
     } catch (error) {
       console.error('Update error:', error);
       setError("Same details or error occurred during update");
-     
+
       setLoading(false);
     }
   };
@@ -106,20 +108,19 @@ export default function RegisterDetails() {
             />
           </div>
           <div>
-            <label htmlFor="country" hidden>Country</label>
+            <label htmlFor="city" hidden>City</label>
             <input
               type="text"
-              placeholder="Country"
-              name="country"
-              id="country"
-              value={details.country}
-              disabled={true}
+              placeholder="City"
+              name="city"
+              id="city"
+              value={details.city}
               onChange={handleInputChange}
               required
               minLength={2}
               pattern="[A-Za-z]{2,}"
-              title="Please enter a valid country name"
-              className="bg-gray-100 p-4 rounded-lg transition-all w-full outline-none ring-0 border hover:border-gray-400 focus:border-rose-600 cursor-not-allowed"
+              title="Please enter a valid city name"
+              className="bg-white p-4 rounded-lg transition-all w-full outline-none ring-0 border hover:border-gray-400 focus:border-rose-600"
             />
           </div>
           <div>
@@ -133,22 +134,8 @@ export default function RegisterDetails() {
               onChange={handleInputChange}
               required
               minLength={2}
+              pattern="[A-Za-z]{2,}"
               title="Please enter a valid state name"
-              className="bg-white p-4 rounded-lg transition-all w-full outline-none ring-0 border hover:border-gray-400 focus:border-rose-600"
-            />
-          </div>
-          <div>
-            <label htmlFor="city" hidden>City</label>
-            <input
-              type="text"
-              placeholder="City"
-              name="city"
-              id="city"
-              value={details.city}
-              onChange={handleInputChange}
-              required
-              minLength={2}
-              title="Please enter a valid city name"
               className="bg-white p-4 rounded-lg transition-all w-full outline-none ring-0 border hover:border-gray-400 focus:border-rose-600"
             />
           </div>
@@ -166,6 +153,23 @@ export default function RegisterDetails() {
               pattern="[0-9]{6}"
               title="Please enter a valid 6-digit pin code"
               className="bg-white p-4 rounded-lg transition-all w-full outline-none ring-0 border hover:border-gray-400 focus:border-rose-600"
+            />
+          </div>
+          <div>
+            <label htmlFor="country" hidden>Country</label>
+            <input
+              type="text"
+              placeholder="Country"
+              name="country"
+              id="country"
+              value={details.country}
+              disabled={true}
+              onChange={handleInputChange}
+              required
+              minLength={2}
+              pattern="[A-Za-z]{2,}"
+              title="Please enter a valid country name"
+              className="bg-gray-100 p-4 rounded-lg transition-all w-full outline-none ring-0 border hover:border-gray-400 focus:border-rose-600 cursor-not-allowed"
             />
           </div>
           <div className="sm:col-span-2">
@@ -190,9 +194,9 @@ export default function RegisterDetails() {
         <button type="submit" className="bg-rose-600 hover:bg-rose-700 text-white p-4 rounded-lg flex justify-center items-center gap-2 transition-all active:scale-95 group" disabled={loading || !details.email}>
           {loading ? "Processing" : "Submit"}
         </button>
-        <button type="button" onClick={handleSkip} className="mt-4 text-gray p-4 rounded-lg flex justify-left items-center gap-2 transition-all active:scale-95 group">
+        <Button variant={'link'} type="button" onClick={handleSkip} className=" mx-auto text-gray rounded-lg flex justify-center items-center gap-2 transition-all active:scale-95">
           Skip
-        </button>
+        </Button>
       </form>
     </div>
   );
