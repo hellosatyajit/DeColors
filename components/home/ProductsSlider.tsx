@@ -1,59 +1,28 @@
 "use client";
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { useKeenSlider } from "keen-slider/react";
-import "keen-slider/keen-slider.min.css";
+import { Swiper, SwiperSlide, SwiperProps } from 'swiper/react';
+import { Navigation, Pagination, Scrollbar } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
 import ProductCard from "@/components/ProductCard";
 
 export default function ProductsSlider({ title, viewAll, products = [] }: { title: string, viewAll: string, products: any[] }) {
-    const [currentSlide, setCurrentSlide] = useState(0);
-    const [loaded, setLoaded] = useState(false);
-    const [sliderConfig, setSliderConfig] = useState({
-        perView: 2,
-        spacing: 20,
+    const [swiperConfig, setSwiperConfig] = useState<SwiperProps>({
+        slidesPerView: 2,
+        spaceBetween: 20,
         breakpoints: {
-            '(min-width: 726px)': {
-                perView: 3,
-                spacing: 20,
+            726: {
+                slidesPerView: 3,
+                spaceBetween: 20,
             },
-            '(min-width: 1024px)': {
-                perView: 4,
-                spacing: 20,
+            1024: {
+                slidesPerView: 4,
+                spaceBetween: 20,
             },
         },
     });
-
-    const [sliderRef, instanceRef] = useKeenSlider<HTMLDivElement>({
-        initial: 0,
-        slideChanged(slider) {
-            setCurrentSlide(slider.track.details.rel);
-        },
-        created() {
-            setLoaded(true);
-        },
-        slides: sliderConfig,
-    });
-
-    // Force re-render on window resize
-    useEffect(() => {
-        const handleResize = () => {
-            if (typeof window !== "undefined") {
-                const perView = window.outerWidth > 1024 ? 4 : window.outerWidth > 726 ? 3 : 2;
-                setSliderConfig((prevConfig) => ({
-                    ...prevConfig,
-                    perView,
-                }));
-                if (instanceRef.current) {
-                    instanceRef.current.update({ slides: { perView, spacing: 20 } });
-                }
-            }
-        };
-
-        window.addEventListener("resize", handleResize);
-        handleResize(); // Initialize on mount
-
-        return () => window.removeEventListener("resize", handleResize);
-    }, [instanceRef]);
 
     return (
         <div className="w-full">
@@ -70,30 +39,37 @@ export default function ProductsSlider({ title, viewAll, products = [] }: { titl
                                 <Link href={viewAll} className="px-4 py-2 hover:underline bg-rose-50 hover:bg-rose-100 rounded-full text-xs xs:text-sm transition-all block">View All</Link>
                             )}
                         </div>
-                        {loaded && instanceRef.current && (
-                            <div className="space-x-2 hidden md:block">
-                                <button
-                                    className="px-6 py-2 bg-slate-900 hover:bg-black transition-all text-white rounded-full text-xs xs:text-sm"
-                                    onClick={(e: any) => e.stopPropagation() || instanceRef.current?.prev()}
+                        <div className="space-x-2 hidden md:flex">
+                            <button
+                                className="px-6 py-2 bg-slate-900 hover:bg-black transition-all text-white rounded-full text-xs xs:text-sm"
+                                // @ts-ignore
+                                onClick={() => swiperConfig.swiper?.slidePrev()}
                                 >
-                                    {'<'}
-                                </button>
-                                <button
-                                    className="px-6 py-2 bg-slate-900 hover:bg-black transition-all text-white rounded-full text-xs xs:text-sm"
-                                    onClick={(e: any) => e.stopPropagation() || instanceRef.current?.next()}
-                                >
-                                    {'>'}
-                                </button>
-                            </div>
-                        )}
+                                {'<'}
+                            </button>
+                            <button
+                                className="px-6 py-2 bg-slate-900 hover:bg-black transition-all text-white rounded-full text-xs xs:text-sm"
+                                // @ts-ignore
+                                onClick={() => swiperConfig.swiper?.slideNext()}
+                            >
+                                {'>'}
+                            </button>
+                        </div>
                     </div>
-                    <div ref={sliderRef} className="keen-slider !mt-5 pb-5">
+                    <Swiper
+                        modules={[Navigation, Pagination, Scrollbar]}
+                        slidesPerView={swiperConfig.slidesPerView}
+                        spaceBetween={swiperConfig.spaceBetween}
+                        breakpoints={swiperConfig.breakpoints}
+                        onSwiper={(swiper) => setSwiperConfig((prevConfig) => ({ ...prevConfig, swiper }))}
+                        className="!px-2 !pb-2"
+                    >
                         {products.map((product, index) => (
-                            <div key={index} className="keen-slider__slide shadow-md rounded-lg border border-gray-100">
+                            <SwiperSlide key={index} className="!h-auto shadow-md rounded-lg border border-gray-100">
                                 <ProductCard product={product} />
-                            </div>
+                            </SwiperSlide>
                         ))}
-                    </div>
+                    </Swiper>
                 </div>
             </div>
         </div>

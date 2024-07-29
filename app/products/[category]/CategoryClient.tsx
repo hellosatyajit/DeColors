@@ -28,10 +28,10 @@ const CategoryClient = ({ products, category }: { products: (IProduct | IPacks)[
       if (category === 'De Colores' || category === 'Chelsy' || category === 'Herbonica') {
         field = "brand"
       }
-      else{
+      else {
         field = "category"
       }
-      const response = await fetchSortedProducts(newValue, category,field);
+      const response = await fetchSortedProducts(newValue, category, field);
       const sortedProducts = response.data;
       setCurrentProducts(sortedProducts);
     } catch (error) {
@@ -44,15 +44,19 @@ const CategoryClient = ({ products, category }: { products: (IProduct | IPacks)[
   return (
     <section className="w-full">
       {(category === 'De Colores' || category === 'Chelsy' || category === 'Herbonica') ? (
-        <div className="relative">
-          <Image
-            src="https://juewdrvuynzvupklbxme.supabase.co/storage/v1/object/public/home/1.png"
-            alt=""
-            width={100}
-            height={100}
-            className="w-full h-full aspect-square xs:aspect-auto"
-          />
-          <p className="absolute left-5 xl:left-10 bottom-5 xl:bottom-10 font-bold text-lg sm:text-3xl text-white">{category}</p>
+        // <div className="relative">
+        //   <Image
+        //     src="https://juewdrvuynzvupklbxme.supabase.co/storage/v1/object/public/home/1.png"
+        //     alt=""
+        //     width={100}
+        //     height={100}
+        //     className="w-full h-full aspect-square xs:aspect-auto"
+        //   />
+        //   <p className="absolute left-5 xl:left-10 bottom-5 xl:bottom-10 font-bold text-lg sm:text-3xl text-white">{category}</p>
+        // </div>
+        <div className="max-w-7xl m-auto p-5 space-y-2">
+          <Breadcrumb links={breadcrumb} />
+          <p className="font-bold text-lg sm:text-3xl">{category}</p>
         </div>
       ) : (
         <div className="max-w-7xl m-auto p-5 space-y-2">
