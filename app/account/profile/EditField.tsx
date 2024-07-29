@@ -73,6 +73,8 @@ export function PhoneEdit({ user }: any) {
     const handleSave = async () => {
         setLoading(true);
         try {
+          const numberinput = Number(inputPhoneNumber);
+          if( typeof numberinput == "number" && inputPhoneNumber.toString().length == 10){
             const response = await axios.post('/api/updatedetails', { email: user.email, phoneNumber: inputPhoneNumber });
             if (response.data.success) {
                 toast.success("Phone number updated successfully");
@@ -81,6 +83,10 @@ export function PhoneEdit({ user }: any) {
             } else {
                 toast.error("Failed to update phone number");
             }
+          }
+          else {
+            toast.error("Please enter vaild number");
+          }
         } catch (error) {
             toast.error("Failed to update phone number");
         } finally {
