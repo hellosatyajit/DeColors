@@ -69,6 +69,7 @@ const ProductDetailsClient = ({ product }: { product: IPacks }) => {
 
         setReviewText("");
         setReviewRating(5);
+        setReviewPermission('Yes')
 
         await addReviewToProductOrPack(product._id, newReview, false);
     };
