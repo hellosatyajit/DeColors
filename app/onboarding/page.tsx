@@ -49,7 +49,6 @@ export default function RegisterDetails() {
         setLoading(false);
         return;
       }
-
       const trimmedDetails = {
         address: address.trim(),
         state: state.trim(),
@@ -72,6 +71,7 @@ export default function RegisterDetails() {
     } catch (error) {
       console.error('Update error:', error);
       setError("Same details or error occurred during update");
+     
       setLoading(false);
     }
   };
