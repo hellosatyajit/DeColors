@@ -14,6 +14,18 @@ export async function POST(request: NextRequest) {
     } = body
     const user = await findUserByEmail(email);
     const order = await findOrderByOrderId(orderId)
+    if (!order) {
+      return NextResponse.json({ error: "Order not found" }, { status: 400 });
+    }
+
+    const orderDate = new Date(order.createdAt);
+    const currentDate = new Date();
+    const timeDifference = currentDate.getTime() - orderDate.getTime();
+    const dayDifference = timeDifference / (1000 * 3600 * 24);
+
+    if (dayDifference > 7) {
+      return NextResponse.json({ error: "No return after seven days" }, { status: 400 });
+    }
     const updateField = {isReturned:true}
     await updateOrder(order._id,updateField)
 
