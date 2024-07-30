@@ -1,4 +1,5 @@
 import { Analytics } from "@vercel/analytics/react"
+import { GoogleAnalytics, GoogleTagManager } from "@next/third-parties/google";
 import { GeistSans } from "geist/font/sans";
 import Head from "next/head";
 import Script from 'next/script';
@@ -31,6 +32,7 @@ export default function RootLayout({
         <MetaPixels />
         <meta name="google-site-verification" content="CJlT5WbSvD3vI6dvZacFTVzH41xndM6kIGCZuLpzk0E" />
       </Head>
+      <GoogleTagManager gtmId="GTM-5SCTLK2H" />
       <body>
         <AuthProvider>
           <Header />
@@ -47,6 +49,7 @@ export default function RootLayout({
         </AuthProvider>
         <Analytics mode={'production'} />
       </body>
+      <GoogleAnalytics gaId="G-Z28Q2W929Y" />
     </html>
   );
 }
