@@ -5,7 +5,7 @@ export default function ProductCard({ product, style = '', space = true }: { pro
     const url = product?.isIndividual ? `/product/${product.slug}` : `/packs/${product.slug}`;
     let rating: number = 0;
     if (!product.rating?.reviews?.length) {
-        rating = 0
+        rating =  4
     } else {
         rating = product.rating?.reviews?.reduce((acc: any, review: any) => acc + review.rating, 0)
         rating = parseFloat((rating / product.rating.reviews.length).toFixed(1));
