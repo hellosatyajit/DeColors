@@ -130,9 +130,9 @@ const ProductDetailsClient = ({ product }: { product: IProduct }) => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-10 lg:gap-20">
                     <ProductDetailsCarousel images={images} />
                     <div className="flex-[1] py-3">
-                        <div className="text-[34px] font-semibold mb-2 leading-tight">
+                        <h1 className="text-[34px] font-semibold mb-2 leading-tight">
                             {productname}
-                        </div>
+                        </h1>
 
                         <div className="text-lg font-semibold mb-5">{product?.subheading}</div>
 

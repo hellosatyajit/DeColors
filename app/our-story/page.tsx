@@ -1,6 +1,17 @@
+import { Metadata } from "next";
+import { WEBSITE_URL } from "@/lib/utils";
+
+export const metadata: Metadata = {
+    title: "Our Story - De Colores Lifestyle",
+    alternates: {
+        canonical: `${WEBSITE_URL}/out-story`,
+    }
+};
+
 export default function OurStoryPage() {
     return (
         <div className="max-w-5xl m-auto px-5 py-10 md:py-20 space-y-8">
+            <h1 hidden>Our Story</h1>
             <div className="space-y-2">
                 <h2 className="font-medium  text-lg sm:text-2xl text-rose-600">Beauty with a Purpose</h2>
                 <p className="text-lg opacity-80">In the fast-moving world of cosmetics, where trends change quickly and quality matters most, De Colores Lifestyle Private Limited stands out for its innovation and excellence. Founded on November 2, 2020, by Maulik Doshi and Monica Doshi, the company brings over 20 years of experience in the beauty industry.</p>

@@ -10,15 +10,17 @@ import AuthProvider from "@/components/Provider";
 import MetaPixels from "@/lib/metapixels";
 
 import "./globals.css";
+import { Metadata } from "next";
+import { WEBSITE_URL } from "@/lib/utils";
 
-const defaultUrl = process.env.VERCEL_URL
-  ? `https://${process.env.VERCEL_URL}`
-  : "http://localhost:3000";
-
-export const metadata = {
-  metadataBase: new URL(defaultUrl),
-  title: "DeColors Lifestyle",
-  description: "Cosmetics brand",
+export const metadata: Metadata = {
+  title: "De Colores Lifestyle",
+  description: "Discover our wide range of skincare, makeup, and wellness products designed to enhance your natural beauty.",
+  keywords: "cosmetics, beauty products, skincare, makeup, wellness, nail polish, body wax, wax powder, De Colores Lifestyle, Chelsy, Herbonica",
+  // authors: add about our comapny
+  alternates: {
+    canonical: WEBSITE_URL,
+  }
 };
 
 export default function RootLayout({

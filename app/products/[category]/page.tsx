@@ -1,6 +1,22 @@
 import { Suspense } from 'react';
+import { Metadata, ResolvingMetadata } from 'next';
 import { fetchProductsByBrand, fetchProductsByCategory, fetchSortedProducts } from '@/server/actions/ProductActions';
 import CategoryClient from './CategoryClient';
+import { WEBSITE_URL } from '@/lib/utils';
+
+export async function generateMetadata(
+  { params }: { params: { category: string } },
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  const category = params.category.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+
+  return {
+    title: `${category} - De Colores Lifestyle`,
+    alternates: {
+      canonical: `${WEBSITE_URL}/products/${params.category}`,
+    }
+  }
+}
 
 export default async function CategoryPage({ params }: { params: { category: string } }) {
   const rawCategory = params.category;

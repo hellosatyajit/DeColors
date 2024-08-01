@@ -1,9 +1,19 @@
+import { Metadata } from "next";
+import { WEBSITE_URL } from "@/lib/utils";
 import {
     Accordion,
     AccordionContent,
     AccordionItem,
     AccordionTrigger,
 } from "@/components/ui/accordion";
+
+
+export const metadata: Metadata = {
+    title: "FAQ - De Colores Lifestyle",
+    alternates: {
+        canonical: `${WEBSITE_URL}/faq`,
+    }
+};
 
 const faqs: Array<{ question: string; answer: string }> = [
     {
