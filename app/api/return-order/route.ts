@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
     if (dayDifference > 7) {
       return NextResponse.json({ error: "No return after seven days" }, { status: 400 });
     }
-    const updateField = {isReturned:true}
+    const updateField = {isReturned:true, reason:reason,otherReason:otherReason || null}
     await updateOrder(order._id,updateField)
 
         // Prepare email content
