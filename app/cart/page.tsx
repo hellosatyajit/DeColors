@@ -49,10 +49,11 @@ export default function CartPage() {
 
     const handleCheckout = async () => {
         setIsLoading(true);
+        const totalAmount = subTotal + shippingCharges;
         const loadingToastId = toast.loading('Processing payment...');
         try {
 
-            const order = await createOrder(subTotal);
+            const order = await createOrder(totalAmount);
 
             if (!userinfo) {
                 toast.error('Please Signup First');
@@ -71,13 +72,14 @@ export default function CartPage() {
                 return;
             }
 
-            await displayRazorpay(subTotal * 100, order.id, Userdata);
+            await displayRazorpay(totalAmount * 100, order.id, Userdata);
             toast.dismiss(loadingToastId);
         } catch (error) {
             toast.error('Something went wrong. Please try again.');
             console.error(error);
-            setIsLoading(false);
             toast.dismiss(loadingToastId);
+        } finally {
+            setIsLoading(false);
         }
     }
 
@@ -139,7 +141,7 @@ export default function CartPage() {
                     }
                 } catch (error: any) {
                     toast.error('Payment verification failed. Please try again.');
-                    console.log(error);
+                    console.error(error);
                 }
 
             },

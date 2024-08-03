@@ -14,7 +14,7 @@ export default function SignUp({
   searchParams: { message: string };
 }) {
   const [passwordShow, setPasswordShow] = useState(false);
-  const {data:session,status} = useSession();
+  const { data: session, status } = useSession();
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const [error, setError] = useState("");
@@ -32,7 +32,7 @@ export default function SignUp({
     e.preventDefault();
     setLoading(true);
     try {
-      await signIn("google",{callbackUrl:'/auth'});
+      await signIn("google", { callbackUrl: '/auth' });
     } catch (error: any) {
       console.error("Google sign-in failed:", error);
       setLoading(false);
@@ -59,10 +59,8 @@ export default function SignUp({
       }
 
       const res = await axios.post("/api/register", user);
-      console.log(res.data);
       if (res.status == 200 || res.status == 201) {
-        console.log("User added successfully");
-        setError(""); 
+        setError("");
         const signInRes = await signIn("credentials", {
           redirect: false,
           email: user.email,
@@ -75,8 +73,7 @@ export default function SignUp({
           setError("Sign in after registration failed");
         }
       }
-    } catch (error:any) {
-      console.log(error);
+    } catch (error: any) {
       if (error.response && error.response.status === 400) {
         setError("User email already in use");
       } else {
@@ -166,7 +163,7 @@ export default function SignUp({
         </div>
         {error && <p className="py-6 text-lg">{error}</p>}
         <button type="submit" className="bg-rose-600  hover:bg-rose-700 text-white p-4 rounded-lg flex justify-center items-center gap-2 transition-all active:scale-95 group">
-        {loading ? "Processing" : " Register"}
+          {loading ? "Processing" : " Register"}
         </button>
         <p className="text-center text- mt-2">
           Already have an account?{" "}

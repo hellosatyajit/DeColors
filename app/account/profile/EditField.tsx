@@ -27,7 +27,6 @@ export function NameEdit({ user }: any) {
                   };
               
                   await update(newSession);
-                  console.log(session)
                   setName("")
             toast.success("Name updated successfully");
             setShow(false);

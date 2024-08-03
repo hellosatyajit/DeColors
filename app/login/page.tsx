@@ -53,10 +53,8 @@ export default function Login({
         password: user.password,
         redirect: false,
       });
-      console.log(res)
 
       if (res?.error) {
-        console.log(res)
         toast.error(res.error);
         setLoading(false);
         return;

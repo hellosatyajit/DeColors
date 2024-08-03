@@ -16,13 +16,13 @@ export async function POST(request: NextRequest) {
     });
 
     if (!user) {
-      console.log("Error updating password");
+      console.error("Error updating password");
       return NextResponse.json({ error: "Error updating password" }, { status: 400 });
     }
 
     return NextResponse.json({ message: "Password updated successfully" });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return NextResponse.json({ error: "Error updating password" }, { status: 500 });
   }
 }

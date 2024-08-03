@@ -18,7 +18,6 @@ function OrderList() {
         const email = session?.user?.email
         if (email) {
           const response = await axios.post('/api/orders', { email });
-          console.log(response)
           setOrders(response.data.orders);
           setLoading(false);
         }

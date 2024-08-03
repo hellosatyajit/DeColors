@@ -5,9 +5,15 @@ import { createTransaction } from "@/server/model/transaction";
 import { findUserByEmail } from "@/server/model/User";
 import axios from "axios";
 import { format } from "date-fns";
-import { TransactionalEmailsApi, TransactionalEmailsApiApiKeys } from "@sendinblue/client";
+import {
+  TransactionalEmailsApi,
+  TransactionalEmailsApiApiKeys,
+} from "@sendinblue/client";
 import { createOrder } from "@/server/model/order";
-import { getVariantsAndQuantitiesFromPackId, incrementSoldCount } from "@/server/actions/ProductActions";
+import {
+  getVariantsAndQuantitiesFromPackId,
+  incrementSoldCount,
+} from "@/server/actions/ProductActions";
 
 export async function POST(request: NextRequest) {
   try {
@@ -63,8 +69,7 @@ export async function POST(request: NextRequest) {
       };
 
       const transactionDb = await createTransaction(transaction);
-      console.log(transactionDb)
-      const trans_id:string = transactionDb?._id.toString()
+      const trans_id: string = transactionDb?._id.toString();
       // Shiprocket API credentials
       const shiprocketAuthResponse = await axios.post(
         "https://apiv2.shiprocket.in/v1/external/auth/login",
@@ -80,13 +85,16 @@ export async function POST(request: NextRequest) {
         cartdetails.map(async (item: any) => {
           if (item.isPack) {
             const variants = await getVariantsAndQuantitiesFromPackId(item.id);
-            const variantSkus = variants.map((variant: any) => variant.sku).join(',');
+            const variantSkus = variants
+              .map((variant: any) => variant.sku)
+              .join(",");
             return {
               name: `${item.brand} ${item.name}`,
               sku: `${item.sku}(${variantSkus})`,
               units: item.quantity,
               selling_price: item.price.mrp.toString(),
               discount: item.price.discount.toString(),
+              tax: 18,
               hsn: 3304,
             };
           } else {
@@ -96,12 +104,12 @@ export async function POST(request: NextRequest) {
               units: item.quantity,
               selling_price: item.price.mrp.toString(),
               discount: item.price.discount.toString(),
+              tax: 18,
               hsn: 3304,
             };
           }
         })
       );
-      
 
       const createShipmentResponse = await axios.post(
         "https://apiv2.shiprocket.in/v1/external/orders/create/adhoc",
@@ -169,10 +177,8 @@ export async function POST(request: NextRequest) {
         createdAt: new Date().toISOString(),
       };
 
-      
       await createOrder(order);
-      await incrementSoldCount(cartdetails)
-
+      await incrementSoldCount(cartdetails);
 
       const emailBody = await generateEmailBody({
         user,
@@ -189,13 +195,12 @@ export async function POST(request: NextRequest) {
         console.error("BREVO_API_KEY is not defined");
         return NextResponse.json({ error: "Server configuration error" });
       }
-  
-      
+
       const brevoClient = new TransactionalEmailsApi();
       brevoClient.setApiKey(TransactionalEmailsApiApiKeys.apiKey, apiKey);
       const emailParams = {
-        sender: { email: "decoloreslifestyle@gmail.com" }, 
-        to: [{email:"Chelsycosmeticss@gmail.com"}],
+        sender: { email: "decoloreslifestyle@gmail.com" },
+        to: [{ email: "Chelsycosmeticss@gmail.com" }],
         subject: "New Order",
         htmlContent: emailBody,
       };
@@ -264,7 +269,7 @@ async function generateEmailBody({
         </tr>
       `;
     } else {
-      const variant = item.id.includes('-') ? item.id.split('-').pop() : '';
+      const variant = item.id.includes("-") ? item.id.split("-").pop() : "";
       cartItemsHtml += `
         <tr style="border-bottom: 1px solid #ddd;">
           <td style="border: 1px solid #ddd; padding: 8px;">${item.name}</td>

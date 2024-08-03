@@ -13,7 +13,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ valid: true });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return NextResponse.json({ valid: false, error: "Error validating token" }, { status: 500 });
   }
 }

@@ -8,7 +8,6 @@ const AuthCallback = () => {
   const { data: session, status } = useSession();
 
   useEffect(() => {
-    console.log(status)
     if (status === "authenticated") {
         
       if (session.user.isFirstTimeUser) {

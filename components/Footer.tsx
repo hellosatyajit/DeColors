@@ -38,12 +38,12 @@ export default function Footer() {
             const time = new Date();
             const timestamp = time.valueOf();
             const previousTimestamp = localStorage.getItem('contactUs-time-check');
-            if(previousTimestamp && Number(previousTimestamp) + 60 * 1000 > timestamp){
+            if (previousTimestamp && Number(previousTimestamp) + 60 * 1000 > timestamp) {
                 toast.error('Too many contactUs request sended,please try again after while')
                 return;
             }
 
-            const response = await axios.post('/api/contactUs',formData)
+            const response = await axios.post('/api/contactUs', formData)
 
             if (response.status == 200) {
                 toast.success("Form submitted successfully!");
@@ -67,7 +67,7 @@ export default function Footer() {
                 <div className="self-stretch h-9 justify-between items-center inline-flex">
                     <Link href="/" className="text-black text-2xl font-bold">De Colores Lifestyle</Link>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-10 sm:gap-20">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 lg:gap-20">
                     <form onSubmit={handleFormSubmit} className="flex flex-col gap-3 col-span-1">
                         <p className="text-xl font-semibold">Contact Us</p>
                         <input
@@ -99,7 +99,7 @@ export default function Footer() {
                         </button>
                     </form>
 
-                    <div className="flex flex-col sm:flex-row gap-5 sm:gap-10 md:gap-20">
+                    <div className="flex flex-col sm:flex-row gap-5 sm:gap-10 md:gap-16 lg:gap-20">
                         <div className="space-y-3">
                             <p className="text-xl font-semibold">Pages</p>
                             <div className="flex flex-col gap-2">
@@ -109,7 +109,7 @@ export default function Footer() {
                                 <Link href="https://www.shiprocket.in/shipment-tracking/" target="_blank" className="text-black opacity-90 hover:opacity-100 text-sm font-normal">Order Tracking</Link>
                             </div>
                         </div>
-                        <div className="flex-col justify-start items-start gap-5 inline-flex">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 gap-5">
                             <div className="space-y-3">
                                 <p className="text-xl font-semibold">Phone</p>
                                 <div className="text-black text-sm font-normal">+91 9104143145</div>
@@ -130,6 +130,12 @@ export default function Footer() {
                                         Ahmedabad, Gujarat,<br />
                                         Pincode: 380007
                                     </p></div>
+                            </div>
+                            <div className="space-y-3">
+                                <p className="text-xl font-semibold">GSTIN No.</p>
+                                <p className="text-black text-sm font-normal">
+                                    24AAICD1094L1ZI
+                                </p>
                             </div>
                         </div>
                     </div>

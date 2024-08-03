@@ -9,7 +9,7 @@ import {
 import { SquareArrowOutUpRight } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import Image from 'next/image';
-import { ReturnDialog } from '@/components/ReturnDialog'; 
+import { ReturnDialog } from '@/components/ReturnDialog';
 import toast from 'react-hot-toast';
 import { Button } from '@/components/ui/button';
 
@@ -36,6 +36,7 @@ interface TrackingDetails {
 
 export function OrderItem({ order }: { order: any }) {
   const [trackingDetails, setTrackingDetails] = useState<TrackingDetails | null>(null);
+  const [invoiceLink, setInvoiceLink] = useState<string>('');
   const [showReturnPopup, setShowReturnPopup] = useState(false);
   const { data: session } = useSession();
   const userinfo = session?.user;
@@ -44,8 +45,17 @@ export function OrderItem({ order }: { order: any }) {
     try {
       const shipment_id = order.trackingInfo.shipment_id;
       const response = await axios.post(`/api/tracking`, { shipment_id });
-      console.log(response.data.data)
       setTrackingDetails(response.data.data);
+    } catch (error) {
+      console.error('Error fetching tracking details:', error);
+    }
+  };
+
+  const fetchInvoiceLink = async () => {
+    try {
+      const shipment_id = order.orderId;
+      const response = await axios.post(`/api/invoice`, { shipment_id });
+      setInvoiceLink(response.data.invoice_url);
     } catch (error) {
       console.error('Error fetching tracking details:', error);
     }
@@ -53,6 +63,7 @@ export function OrderItem({ order }: { order: any }) {
 
   useEffect(() => {
     fetchTrackingDetails();
+    fetchInvoiceLink();
   }, [order.trackingInfo.shipment_id]);
 
   const handleReturnClick = () => {
@@ -73,13 +84,13 @@ export function OrderItem({ order }: { order: any }) {
     const response = await axios.post('/api/return-order', returnDetails);
 
     setShowReturnPopup(false);
-    if (response.status == 200){
+    if (response.status == 200) {
       toast.success("Return Request Sended ")
     }
     else {
       toast.error('Return Request failed')
     }
-    };
+  };
 
 
   return (
@@ -148,14 +159,15 @@ export function OrderItem({ order }: { order: any }) {
                 ))}
               </ul>
               {trackingDetails.tracking_data?.shipment_track[0].current_status === "Delivered" && (
-	              <Button 
-	                  variant={'link'}
-	                  className='font-normal'
-	                  disabled={order.isReturned}
-	              >
-		            {order.isReturned ? 'Return Requested' : 'Request Return'}
-	              </Button>
-)}
+                <Button
+                  variant={'link'}
+                  className='font-normal'
+                  disabled={order.isReturned}
+                >
+                  {order.isReturned ? 'Return Requested' : 'Request Return'}
+                </Button>
+              )}
+              <Link href={invoiceLink} className='mt-2'>Download Invoice</Link>
             </>
           )}
         </AccordionContent>
