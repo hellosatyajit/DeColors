@@ -23,7 +23,6 @@ export async function POST(request: NextRequest) {
       }
     );
     const data = response.data;
-    console.log(data);
     return NextResponse.json({ data }, { status: 200 });
   } catch (error) {
     console.error("Error fetching orders:", error);

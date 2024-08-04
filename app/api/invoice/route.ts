@@ -3,8 +3,6 @@ import axios from "axios";
 
 export async function POST(request: NextRequest) {
   try {
-    console.log({email: process.env.SHIPROCKET_EMAIL,
-      password: process.env.SHIPROCKET_PASSWORD});
     
     const { shipment_id } = await request.json();
     const shiprocketAuthResponse = await axios.post(
@@ -19,12 +17,12 @@ export async function POST(request: NextRequest) {
     const response = await axios.post(
       `https://apiv2.shiprocket.in/v1/external/orders/print/invoice`,
       {
+          ids: [shipment_id.toString()],
+      },
+      {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
-        },
-        body: {
-          ids: [shipment_id.toString()],
         },
       }
     );
