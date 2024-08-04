@@ -55,7 +55,7 @@ export function OrderItem({ order }: { order: any }) {
     try {
       const shipment_id = order.orderId;
       const response = await axios.post(`/api/invoice`, { shipment_id });
-      setInvoiceLink(response.data.invoice_url);
+      setInvoiceLink(response.data.data.invoice_url);
     } catch (error) {
       console.error('Error fetching tracking details:', error);
     }
