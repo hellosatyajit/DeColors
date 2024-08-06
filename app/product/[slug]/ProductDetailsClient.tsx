@@ -230,7 +230,7 @@ const ProductDetailsClient = ({ product }: { product: IProduct }) => {
                             )}
                         </div>
 
-                        {inventory >= 0 ? (
+                        {inventory <= 0 ? (
                             <div className="fixed left-0 right-0 sm:static bottom-0 flex justify-center items-center w-full py-4 sm:rounded-full bg-black text-white font-medium text-lg sm:mb-10 z-20">
                                 Out of Stock
                             </div>
