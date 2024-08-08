@@ -149,7 +149,14 @@ const ProductDetailsClient = ({ product }: { product: IProduct }) => {
   const variantType = product?.variants[0]?.attribute?.color
     ? "color"
     : "flavor";
-
+    useEffect(() => {
+      if (product?.variants.length === 1) {
+        const variant = product.variants[0];
+        if (selectedVariant !== variant.sku) {
+          handleVariantSelection(variant);
+        }
+      }
+    }, [product?.variants, selectedVariant]);
   const shareOnFacebook = () => {
     const url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
       currentUrl

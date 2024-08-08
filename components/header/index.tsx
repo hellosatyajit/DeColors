@@ -9,7 +9,7 @@ const links = [
   { href: "/#category", label: "Categories" },
   // { href: "/#hot-deals", label: "Hot Deals" }, 
   { href: "/products/chelsy", label: "Chelsy" },
-  { href: "/products/de-colores", label: "De Colors" },
+  { href: "/products/de-colores", label: "De Colores" },
   { href: "/products/herbonica", label: "Herbonica" },
 ];
 
