@@ -112,13 +112,11 @@ export default function Footer() {
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 gap-5">
                             <div className="space-y-3">
                                 <p className="text-xl font-semibold">Phone</p>
-                                <div className="text-black text-sm font-normal">+91 9104143145</div>
+                                <Link href={'https://wa.me/919104143145'} className="text-black text-sm font-normal">+91 9104143145</Link>
                             </div>
                             <div className="space-y-3">
                                 <p className="text-xl font-semibold">Email</p>
-                                <div className="w-28 h-5 relative">
-                                    <div className="text-black text-sm font-normal">decoloreslifestyle@gmail.com</div>
-                                </div>
+                                <p className="text-black text-sm font-normal">decoloreslifestyle@gmail.com</p>
                             </div>
                             <div className="space-y-3">
                                 <p className="text-xl font-semibold">Address</p>
@@ -129,7 +127,8 @@ export default function Footer() {
                                         South Vasna,<br />
                                         Ahmedabad, Gujarat,<br />
                                         Pincode: 380007
-                                    </p></div>
+                                    </p>
+                                </div>
                             </div>
                             <div className="space-y-3">
                                 <p className="text-xl font-semibold">GSTIN No.</p>

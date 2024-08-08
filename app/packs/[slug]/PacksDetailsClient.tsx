@@ -116,7 +116,7 @@ const ProductDetailsClient = ({ product }: { product: IPacks }) => {
                             </div>
                         ) : (
                             <button
-                                className="fixed left-0 right-0 sm:static bottom-0 w-full py-4 sm:rounded-full bg-black text-white text-lg font-medium transition-transform active:scale-95 sm:mb-10 hover:bg-gray-900 z-20"
+                                className="fixed left-0 right-0 sm:static bottom-0 w-full py-4 sm:rounded-full bg-black text-white text-lg font-medium transition-transform sm:active:scale-95 sm:mb-10 hover:bg-gray-900 z-20"
                                 onClick={doAddToCart}
                             >
                                 Add to Cart

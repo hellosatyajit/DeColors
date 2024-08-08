@@ -188,10 +188,10 @@ export default function CartPage() {
                                     className="flex w-full max-w-full flex-col border-b border-neutral-300"
                                 >
                                     <div className="relative flex w-full flex-row justify-between px-1 py-4">
-                                        <div className="absolute z-40 -mt-2 ml-[55px]">
+                                        <div className="absolute z-10 -mt-2 ml-[55px]">
                                             <DeleteItemButton item={item} fetchCart={fetchCart} />
                                         </div>
-                                        <div className="z-30 flex flex-row space-x-4">
+                                        <div className="flex flex-row space-x-4">
                                             <div className="relative h-16 w-16 cursor-pointer overflow-hidden rounded-md border border-neutral-300 bg-neutral-300">
                                                 <Image
                                                     className="h-full w-full object-cover"

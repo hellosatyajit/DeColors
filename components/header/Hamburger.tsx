@@ -16,7 +16,7 @@ export default function Hamburger({ links = [] }: { links: any[] }) {
                 <path d="M17.3077 10H0.692308C0.313846 10 0 9.54667 0 9C0 8.45333 0.313846 8 0.692308 8H17.3077C17.6862 8 18 8.45333 18 9C18 9.54667 17.6862 10 17.3077 10Z" fill="currentColor" />
                 <path d="M17.3077 18H0.692308C0.313846 18 0 17.5467 0 17C0 16.4533 0.313846 16 0.692308 16H17.3077C17.6862 16 18 16.4533 18 17C18 17.5467 17.6862 18 17.3077 18Z" fill="currentColor" />
             </svg>
-            <div className={`fixed top-16 left-0 right-0 bottom-0 ${isMenuOpen ? 'w-full' : 'w-0'} transition-all bg-white z-50`}>
+            <div className={`fixed top-16 sm:top-20 left-0 right-0 bottom-0 ${isMenuOpen ? 'w-full' : 'w-0'} transition-all bg-white z-40`}>
                 <ul className={`${isMenuOpen ? 'flex' : 'hidden'} flex-col p-5 gap-5 transition-all`}>
                     {links.map(({ href, label }, index) => (
                         <li key={index} className="border-l-2 border-gray-900 p-2">
