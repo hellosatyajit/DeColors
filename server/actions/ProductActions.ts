@@ -38,10 +38,18 @@ const fetchProductsByBrand = async (
   brandName: string,
   pageNumber: number = 1
 ) => {
-  const response = await axios.post(`${API_BASE_URL}/products/brand`, {
+  const response = await axios.post(`${API_BASE_URL}/products/brand`,  {
     brandName,
     pageNumber,
-  });
+  },
+  {
+    headers: {
+      'Cache-Control': 'no-store', 
+      'Pragma': 'no-cache', 
+      'Expires': '0', 
+    },
+  }
+);
   return response.data;
 };
 
@@ -67,6 +75,13 @@ const fetchSortedProducts = async (
     categoryOrBrand,
     field,
     pageNumber,
+  },
+  {
+    headers: {
+      'Cache-Control': 'no-store', 
+      'Pragma': 'no-cache', 
+      'Expires': '0', 
+    },
   });
   return response.data;
 };
@@ -80,6 +95,13 @@ const fetchSuggestedProducts = async (
     brand,
     category,
     pageNumber,
+  },
+  {
+    headers: {
+      'Cache-Control': 'no-store', 
+      'Pragma': 'no-cache', 
+      'Expires': '0', 
+    },
   });
   return response.data;
 };
