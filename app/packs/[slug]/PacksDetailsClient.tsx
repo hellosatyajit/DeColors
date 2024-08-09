@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import ProductDetailsCarousel from "@/components/ProductDetailsCarousel";
 import { getDiscountedPricePercentage, ShareLinks } from "@/utils/helper";
 import toast from "react-hot-toast";
@@ -21,7 +21,7 @@ const ProductDetailsClient = ({ product }: { product: IPacks }) => {
     const [feedbacks, setFeedbacks] = useState(product.rating.reviews || []);
     const [suggestedProducts, setSuggestedProducts] = useState<(IPacks | IProduct)[]>([]);
     const [reviewPermission, setReviewPermission] = useState<"Yes" | "No" | "NotBuyed">("No");
-    const currentUrl = location.href;
+    const currentUrl = `https://www.chelsycosmetics.com/${usePathname()}`;
 
     useEffect(() => {
         const fetchProducts = async () => {

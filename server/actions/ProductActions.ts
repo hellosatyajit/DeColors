@@ -38,18 +38,20 @@ const fetchProductsByBrand = async (
   brandName: string,
   pageNumber: number = 1
 ) => {
-  const response = await axios.post(`${API_BASE_URL}/products/brand`,  {
-    brandName,
-    pageNumber,
-  },
-  {
-    headers: {
-      'Cache-Control': 'no-store', 
-      'Pragma': 'no-cache', 
-      'Expires': '0', 
+  const response = await axios.post(
+    `${API_BASE_URL}/products/brand`,
+    {
+      brandName,
+      pageNumber,
     },
-  }
-);
+    {
+      headers: {
+        "Cache-Control": "no-store",
+        Pragma: "no-cache",
+        Expires: "0",
+      },
+    }
+  );
   return response.data;
 };
 
@@ -70,19 +72,22 @@ const fetchSortedProducts = async (
   field: string = "None",
   pageNumber: number = 1
 ) => {
-  const response = await axios.post(`${API_BASE_URL}/products/sorted`, {
-    sortingOption,
-    categoryOrBrand,
-    field,
-    pageNumber,
-  },
-  {
-    headers: {
-      'Cache-Control': 'no-store', 
-      'Pragma': 'no-cache', 
-      'Expires': '0', 
+  const response = await axios.post(
+    `${API_BASE_URL}/products/sorted`,
+    {
+      sortingOption,
+      categoryOrBrand,
+      field,
+      pageNumber,
     },
-  });
+    {
+      headers: {
+        "Cache-Control": "no-store",
+        Pragma: "no-cache",
+        Expires: "0",
+      },
+    }
+  );
   return response.data;
 };
 
@@ -91,18 +96,21 @@ const fetchSuggestedProducts = async (
   category: string | null = null,
   pageNumber: number = 1
 ) => {
-  const response = await axios.post(`${API_BASE_URL}/products/suggested`, {
-    brand,
-    category,
-    pageNumber,
-  },
-  {
-    headers: {
-      'Cache-Control': 'no-store', 
-      'Pragma': 'no-cache', 
-      'Expires': '0', 
+  const response = await axios.post(
+    `${API_BASE_URL}/products/suggested`,
+    {
+      brand,
+      category,
+      pageNumber,
     },
-  });
+    {
+      headers: {
+        "Cache-Control": "no-store",
+        Pragma: "no-cache",
+        Expires: "0",
+      },
+    }
+  );
   return response.data;
 };
 
@@ -165,5 +173,5 @@ export {
   getVariantsAndQuantitiesFromPackId,
   fetchHeroImages,
   CheckReview,
-  fetchProductForSitemap
+  fetchProductForSitemap,
 };

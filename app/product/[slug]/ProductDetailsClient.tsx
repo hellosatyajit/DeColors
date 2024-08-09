@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { FaWhatsapp, FaFacebook, FaShareAlt } from "react-icons/fa";
 import ProductDetailsCarousel from "@/components/ProductDetailsCarousel";
 import { getDiscountedPricePercentage, ShareLinks } from "@/utils/helper";
@@ -73,7 +73,7 @@ const ProductDetailsClient = ({ product }: { product: IProduct }) => {
   const productname = selectedVariant
     ? `${product?.name} - ${selectedVariant}`
     : `${product?.name} - ${product.brand}`;
-  const currentUrl = location.href;
+  const currentUrl = `https://www.chelsycosmetics.com/${usePathname()}`;
 
   const doAddToCart = () => {
     if (selectedVariant === "") {
@@ -149,14 +149,14 @@ const ProductDetailsClient = ({ product }: { product: IProduct }) => {
   const variantType = product?.variants[0]?.attribute?.color
     ? "color"
     : "flavor";
-    useEffect(() => {
-      if (product?.variants.length === 1) {
-        const variant = product.variants[0];
-        if (selectedVariant !== variant.sku) {
-          handleVariantSelection(variant);
-        }
+  useEffect(() => {
+    if (product?.variants.length === 1) {
+      const variant = product.variants[0];
+      if (selectedVariant !== variant.sku) {
+        handleVariantSelection(variant);
       }
-    }, [product?.variants, selectedVariant]);
+    }
+  }, [product?.variants, selectedVariant]);
   const shareOnFacebook = () => {
     const url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
       currentUrl
@@ -225,9 +225,8 @@ const ProductDetailsClient = ({ product }: { product: IProduct }) => {
                   {product?.variants.map((item: any, index: number) => (
                     <button
                       key={index}
-                      className={`border rounded-full text-center py-3 font-medium w-10 h-10 cursor-pointer ${
-                        selectedVariant === item.sku ? "border-black" : ""
-                      }`}
+                      className={`border rounded-full text-center py-3 font-medium w-10 h-10 cursor-pointer ${selectedVariant === item.sku ? "border-black" : ""
+                        }`}
                       style={{
                         backgroundColor: isURL(item.attribute.color)
                           ? ""
@@ -242,24 +241,22 @@ const ProductDetailsClient = ({ product }: { product: IProduct }) => {
                   ))}
                 </div>
               ) : (
-                product?.variants.length > 1 && (
-                  <select
-                    name="flavor"
-                    id="flavor"
-                    value={selectedVariant}
-                    onChange={handleSelectChange}
-                    className="px-4 py-1 rounded-full bg-rose-50 sm:bg-transparent hover:bg-rose-50 transition-all text-sm sm:text-base"
-                  >
-                    <option value="" disabled>
-                      Select Flavor
+                <select
+                  name="flavor"
+                  id="flavor"
+                  value={selectedVariant}
+                  onChange={handleSelectChange}
+                  className="px-4 py-1 rounded-full bg-rose-50 sm:bg-transparent hover:bg-rose-50 transition-all text-sm sm:text-base"
+                >
+                  <option value="" disabled>
+                    Select Flavor
+                  </option>
+                  {product?.variants.map((item: any, index: number) => (
+                    <option key={index} value={item.sku}>
+                      {item.attribute.flavor}
                     </option>
-                    {product?.variants.map((item: any, index: number) => (
-                      <option key={index} value={item.sku}>
-                        {item.attribute.flavor}
-                      </option>
-                    ))}
-                  </select>
-                )
+                  ))}
+                </select>
               )}
 
               {showError && (
@@ -381,11 +378,10 @@ const ProductDetailsClient = ({ product }: { product: IProduct }) => {
                           <FaStar
                             key={rating}
                             size={24}
-                            className={`cursor-pointer ${
-                              reviewRating >= rating
+                            className={`cursor-pointer ${reviewRating >= rating
                                 ? "text-yellow-500"
                                 : "text-gray-300"
-                            }`}
+                              }`}
                             onClick={() => setReviewRating(rating)}
                           />
                         ))}
@@ -436,9 +432,8 @@ const ProductDetailsClient = ({ product }: { product: IProduct }) => {
                 feedbacks.map((feedback, index) => (
                   <div
                     key={index}
-                    className={`p-4 ${
-                      feedbacks.length - 1 !== index ? "border-b" : ""
-                    }`}
+                    className={`p-4 ${feedbacks.length - 1 !== index ? "border-b" : ""
+                      }`}
                   >
                     <div className="flex items-center mb-1">
                       <div className="font-semibold">{feedback.name}</div>

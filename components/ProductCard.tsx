@@ -4,9 +4,7 @@ import Link from "next/link";
 export default function ProductCard({ product, style = '', space = true }: { product: any, style?: string, space?: boolean }) {
     const url = product?.isIndividual ? `/product/${product.slug}` : `/packs/${product.slug}`;
     let rating: number = 0;
-    if (!product.rating?.reviews?.length) {
-        rating =  4
-    } else {
+    if (product.rating?.reviews?.length) {
         rating = product.rating?.reviews?.reduce((acc: any, review: any) => acc + review.rating, 0)
         rating = parseFloat((rating / product.rating.reviews.length).toFixed(1));
     }
@@ -21,7 +19,11 @@ export default function ProductCard({ product, style = '', space = true }: { pro
                         src={product?.images ? product.images[0] : product.variants[0].image[0]}
                         alt={product.name + " Image"}
                     />
-                    {rating && <span className="absolute left-2 top-2 text-[10px] sm:text-xs bg-white rounded-full p-1 sm:px-2">⭐ {rating}</span>}
+                    {
+                        rating !== 0 && <span className="absolute left-2 top-2 text-[10px] sm:text-xs bg-white rounded-full p-1 sm:px-2">
+                            ⭐ {rating}
+                        </span>
+                    }
                 </Link>
             </div>
             <div className="p-3 pt-0 mt-2 flex flex-col gap-2 md:gap-4 justify-between flex-1">
