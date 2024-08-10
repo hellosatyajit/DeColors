@@ -118,7 +118,7 @@ export default function RegisterDetails() {
               onChange={handleInputChange}
               required
               minLength={2}
-              pattern="[A-Za-z]{2,}"
+              pattern="[A-Za-z\s]{2,}"
               title="Please enter a valid city name"
               className="bg-white p-4 rounded-lg transition-all w-full outline-none ring-0 border hover:border-gray-400 focus:border-rose-600"
             />
@@ -134,7 +134,7 @@ export default function RegisterDetails() {
               onChange={handleInputChange}
               required
               minLength={2}
-              pattern="[A-Za-z]{2,}"
+              pattern="[A-Za-z\s]{2,}"
               title="Please enter a valid state name"
               className="bg-white p-4 rounded-lg transition-all w-full outline-none ring-0 border hover:border-gray-400 focus:border-rose-600"
             />
