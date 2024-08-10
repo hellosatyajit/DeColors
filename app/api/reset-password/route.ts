@@ -21,7 +21,7 @@ export async function POST(request: NextRequest) {
 
     await updateUser(email, {
       resetToken: resetToken,
-      resetTokenExpiry: new Date(Date.now() + 36000000), // Token expires in 1 hour
+      resetTokenExpiry: new Date(Date.now() + 3600000).toISOString(),
     });
 
     const apiKey = process.env.BREVO_API_KEY;

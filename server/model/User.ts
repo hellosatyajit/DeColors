@@ -1,54 +1,32 @@
 "use server";
+import axios from 'axios';
 
-import { ObjectId } from "mongodb";
-import clientPromise from "../../lib/mongodb";
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:5000/api';
 
-export interface UserDocument {
-  _id?: ObjectId;
-  name: string;
-  email: string;
-  password?: string;
-  resetToken?: string | null;
-  resetTokenExpiry?: Date | null;
-  address?: {
-    address?: string |null;
-    city?: string | null;
-    state?: string | null;
-    country?: string | null;
-    pinCode?: number | null ;
-  };
-  phoneNumber?: number | null;
+const createUser = async (user: any) => {
+  const response = await axios.post(`${API_BASE_URL}/user/create`, { user });
+  return response.data;
+};
+const findUserByEmail= async(email:string)=>{
+  const response = await axios.post(`${API_BASE_URL}/user/find/email`,{email});
+  return response.data; 
 }
-
-async function getUserCollection() {
-  const client = await clientPromise;
-  return client.db().collection<UserDocument>("users");
+const updateUser = async(email:string,updateFields:any) =>{
+  const response = await axios.post(`${API_BASE_URL}/user/update`,{email,updateFields});
+  return response.data;
 }
-
-export async function findUserByEmail(email: string) {
-  const users = await getUserCollection();
-  return users.findOne({ email });
+const findUserByResetToken = async(resetToken: string) =>{
+  const response = await axios.post(`${API_BASE_URL}/user/find/resettoken`,{resetToken});
+  return response.data;
 }
-
-export async function createUser(user: UserDocument) {
-  const users = await getUserCollection();
-  return users.insertOne(user);
+const updateUserByResetToken = async(resetToken: string, updateFields: any)=>{
+  const response = await axios.post(`${API_BASE_URL}/user/update/resettoken`,{resetToken,updateFields});
+  return response.data;
 }
-
-export async function updateUser(email: string, updateFields: Partial<UserDocument>) {
-  const users = await getUserCollection();
-  return users.updateOne({ email }, { $set: updateFields });
-}
-
-export async function findUserByResetToken(resetToken: string) {
-  const users = await getUserCollection();
-  return users.findOne({
-    resetToken,
-    resetTokenExpiry: { $gte: new Date() },
-  });
-}
-
-export async function updateUserByResetToken(resetToken: string, updateFields: Partial<UserDocument>) {
-  const users = await getUserCollection();
-  return users.updateOne({ resetToken }, { $set: updateFields });
+export{
+  createUser,
+  findUserByEmail,
+  updateUser,
+  findUserByResetToken,
+  updateUserByResetToken
 }
