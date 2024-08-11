@@ -7,6 +7,11 @@ const createTransaction = async (transaction: any) => {
     const response = await axios.post(`${API_BASE_URL}/transaction/create`, { transaction });
     return response.data;
   };
+const findTransaction = async(id:string) =>{
+  const response = await axios.post(`${API_BASE_URL}/transaction/id`,{id});
+  return response.data;
+}
 export {
-    createTransaction
+    createTransaction,
+    findTransaction
 };

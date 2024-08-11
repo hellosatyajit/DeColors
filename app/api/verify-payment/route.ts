@@ -63,8 +63,7 @@ export async function POST(request: NextRequest) {
         razorpaySignature,
         amount: subTotal,
         discount: totalDiscount,
-        cart: cartdetails,
-        status: "success",
+        status: "success",  
         createdAt: new Date(),
       };
 
