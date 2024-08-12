@@ -16,7 +16,6 @@ export async function POST(request: NextRequest) {
         const transactionid = order.transactionId.toString();
         // Fetch the transaction details
         const transaction = await findTransaction(transactionid);
-        console.log(transaction)
         if (!transaction) {
             return NextResponse.json({ error: 'Transaction not found' }, { status: 404 });
         }
@@ -42,7 +41,6 @@ export async function POST(request: NextRequest) {
                     },
                 }
             );
-            console.log("id:",response)
         }
         else{
             const awbs = [awb_code]
@@ -56,13 +54,11 @@ export async function POST(request: NextRequest) {
                     },
                 }
             );
-            console.log("awb",response)
         }
         // Proceed with refund
         const refund = await razorpay.payments.refund(transaction.razorpayPaymentId, {
             speed: "normal", 
         });
-        console.log(refund);
         const updateField = {isCanceled:true}
         await updateOrder(order._id,updateField)
     

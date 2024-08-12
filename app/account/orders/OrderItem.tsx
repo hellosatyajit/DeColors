@@ -12,6 +12,7 @@ import Image from 'next/image';
 import { ReturnDialog } from '@/components/ReturnDialog';
 import toast from 'react-hot-toast';
 import { Button } from '@/components/ui/button';
+import { CancelOrderDialog } from '@/components/CancelOrderDialog';
 
 interface ShipmentTrackActivity {
   date: string;
@@ -22,30 +23,31 @@ interface ShipmentTrackActivity {
   "sr-status-label": string;
 }
 
+// 'CANCELED' | 'OUT FOR PICKUP' | 'PICKUP SCHEDULED' | 'DELIVERED'
 interface TrackingDetails {
-  tracking_data: {
-    track_status: number;
-    shipment_status: number;
-    shipment_track: {
-      current_status: string;
-    }[];
-    track_url: string;
-    shipment_track_activities: ShipmentTrackActivity[];
-  };
+  status: string
 }
 
 export function OrderItem({ order }: { order: any }) {
   const [trackingDetails, setTrackingDetails] = useState<TrackingDetails | null>(null);
   const [invoiceLink, setInvoiceLink] = useState<string>('');
   const [showReturnPopup, setShowReturnPopup] = useState(false);
+  const [showCancellationPopup, setShowCancellationPopup] = useState(false);
   const { data: session } = useSession();
   const userinfo = session?.user;
 
   const fetchTrackingDetails = async () => {
     try {
-      const shipment_id = order.trackingInfo.shipment_id;
-      const response = await axios.post(`/api/tracking`, { shipment_id });
-      setTrackingDetails(response.data.data);
+      const { orderId } = order;
+      const response = await axios.post(`/api/tracking`, { orderId }, {
+        headers: {
+          "Cache-Control": "no-store",
+          Pragma: "no-cache",
+          Expires: "0",
+        },
+      });
+
+      setTrackingDetails(response.data);
     } catch (error) {
       console.error('Error fetching tracking details:', error);
     }
@@ -64,7 +66,7 @@ export function OrderItem({ order }: { order: any }) {
   useEffect(() => {
     fetchTrackingDetails();
     fetchInvoiceLink();
-  }, [order.trackingInfo.shipment_id]);
+  }, [order.orderId]);
 
   const handleReturnClick = () => {
     setShowReturnPopup(true);
@@ -85,10 +87,29 @@ export function OrderItem({ order }: { order: any }) {
 
     setShowReturnPopup(false);
     if (response.status == 200) {
-      toast.success("Return Request Sended ")
+      toast.success("Return request sended!");
+      fetchTrackingDetails();
     }
     else {
-      toast.error('Return Request failed')
+      toast.error(response.data.error || 'Return request failed')
+    }
+  };
+
+  const handleCancellationClose = () => {
+    setShowCancellationPopup(false);
+  };
+
+  const handleCancellationSubmit = async () => {
+    const response = await axios.post('/api/cancel-order', {
+      order
+    });
+
+    if (response.status == 200) {
+      toast.success("Ordered Cancelled!");
+      fetchTrackingDetails();
+    }
+    else {
+      toast.error('Order cancellation failed!')
     }
   };
 
@@ -100,7 +121,7 @@ export function OrderItem({ order }: { order: any }) {
           <div className='text-left'>
             <p>Order ID: {order.orderId}</p>
             <p>Amount: {order.amount.total} ₹</p>
-            <p>Status: {trackingDetails ? trackingDetails.tracking_data?.shipment_track[0].current_status || 'Pending' : 'Fetching status...'}</p>
+            <p>Status: {trackingDetails ? trackingDetails.status || 'PENDING' : ''}</p>
           </div>
         </AccordionTrigger>
         <AccordionContent>
@@ -144,30 +165,31 @@ export function OrderItem({ order }: { order: any }) {
           </ul>
           {trackingDetails && (
             <>
-              <Link href={order.trackingInfo.tracking_url} rel="noopener noreferrer" target='_blank' className='flex items-center gap-1'>
+              <Link href={order.trackingInfo.tracking_url} rel="noopener noreferrer" target='_blank' className='flex items-center gap-1 hover:underline'>
                 Track Order <SquareArrowOutUpRight size={16} />
               </Link>
-              {trackingDetails.tracking_data?.shipment_track_activities && <p>Tracking Details:</p>}
-              <ul>
-                {trackingDetails.tracking_data?.shipment_track_activities?.map((activity, index) => (
-                  <li key={index}>
-                    <strong>Date:</strong> {activity.date}<br />
-                    <strong>Status:</strong> {activity.status} ({activity["sr-status-label"]})<br />
-                    <strong>Activity:</strong> {activity.activity}<br />
-                    <strong>Location:</strong> {activity.location}<br />
-                  </li>
-                ))}
-              </ul>
-              {trackingDetails.tracking_data?.shipment_track[0].current_status === "Delivered" && (
-                <Button
-                  variant={'link'}
-                  className='font-normal'
-                  disabled={order.isReturned}
-                >
-                  {order.isReturned ? 'Return Requested' : 'Request Return'}
-                </Button>
-              )}
-              <Link href={invoiceLink} className='mt-2'>Download Invoice</Link>
+              <div className='space-y-1 mt-1'>
+                {trackingDetails.status !== "CANCELED" && trackingDetails.status !== "DELIVERED" && (
+                  <Button
+                    variant={'link'}
+                    className='font-normal block p-0 h-fit'
+                    onClick={() => setShowCancellationPopup(true)}
+                  >
+                    Cancel the Order
+                  </Button>
+                )}
+                {trackingDetails.status === "DELIVERED" && (
+                  <Button
+                    variant={'link'}
+                    className='font-normal block p-0 h-fit'
+                    disabled={order.isReturned}
+                    onClick={handleReturnClick}
+                  >
+                    {order.isReturned ? 'Return Requested' : 'Request Return'}
+                  </Button>
+                )}
+                <Link href={invoiceLink} className='block hover:underline'>Download Invoice</Link>
+              </div>
             </>
           )}
         </AccordionContent>
@@ -176,6 +198,12 @@ export function OrderItem({ order }: { order: any }) {
         isOpen={showReturnPopup}
         onClose={handleReturnClose}
         onSubmit={handleReturnSubmit}
+      />
+
+      <CancelOrderDialog
+        isOpen={showCancellationPopup}
+        onClose={handleCancellationClose}
+        onSubmit={handleCancellationSubmit}
       />
     </AccordionItem>
   );

@@ -3,7 +3,7 @@ import axios from "axios";
 
 export async function POST(request: NextRequest) {
   try {
-    const { shipment_id } = await request.json();
+    const { orderId } = await request.json();
     const shiprocketAuthResponse = await axios.post(
       "https://apiv2.shiprocket.in/v1/external/auth/login",
       {
@@ -14,7 +14,7 @@ export async function POST(request: NextRequest) {
 
     const { token } = shiprocketAuthResponse.data;
     const response = await axios.get(
-      `https://apiv2.shiprocket.in/v1/external/courier/track/shipment/${shipment_id}`,
+      `https://apiv2.shiprocket.in/v1/external/orders/show/${orderId}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -22,8 +22,9 @@ export async function POST(request: NextRequest) {
         },
       }
     );
-    const data = response.data;
-    return NextResponse.json({ data }, { status: 200 });
+
+    const { shipments } = response.data.data;
+    return NextResponse.json({ status: shipments.status }, { status: 200 });
   } catch (error) {
     console.error("Error fetching orders:", error);
     return NextResponse.json(
