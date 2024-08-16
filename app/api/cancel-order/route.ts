@@ -56,9 +56,9 @@ export async function POST(request: NextRequest) {
             );
         }
         // Proceed with refund
-        const refund = await razorpay.payments.refund(transaction.razorpayPaymentId, {
-            speed: "normal", 
-        });
+        const refund = order.paymentMethod !== 'COD' 
+        ? await razorpay.payments.refund(transaction.razorpayPaymentId, { speed: "normal" }) 
+        : null;
         const updateField = {isCanceled:true}
         await updateOrder(order._id,updateField)
     

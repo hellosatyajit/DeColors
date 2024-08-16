@@ -98,7 +98,7 @@ export default function CartPage() {
     }
 
     async function displayRazorpay(amount: number, order_id: string, Userdata: any) {
-        const res = await loadScript("https://checkout.razorpay.com/v1/checkout.js");
+        const res = await loadScript("https://checkout.razorpay.com/v1/magic-checkout.js");
 
         if (!res) {
             alert("Razorpay SDK failed to load. Are you online?");
@@ -108,6 +108,7 @@ export default function CartPage() {
 
         const options = {
             key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID!,
+            one_click_checkout: true,
             amount: amount.toString(),
             currency: "INR",
             name: "Decolores Lifestyle",
