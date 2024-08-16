@@ -14,6 +14,7 @@ import {
   getVariantsAndQuantitiesFromPackId,
   incrementSoldCount,
 } from "@/server/actions/ProductActions";
+import { fetchOrder } from "@/server/actions/checkout";
 
 export async function POST(request: NextRequest) {
   try {
@@ -109,7 +110,8 @@ export async function POST(request: NextRequest) {
           }
         })
       );
-
+      const orderstatus = await fetchOrder(razorpayOrderId);
+      const paymentMethod = orderstatus.status == 'paid' ? 'Prepaid' : 'COD';
       const createShipmentResponse = await axios.post(
         "https://apiv2.shiprocket.in/v1/external/orders/create/adhoc",
         {
@@ -140,7 +142,7 @@ export async function POST(request: NextRequest) {
           shipping_email: user?.email,
           shipping_phone: user?.phoneNumber,
           order_items: orderItems,
-          payment_method: "Prepaid",
+          payment_method: paymentMethod,
           shipping_charges: shippingCharges,
           giftwrap_charges: 0,
           transaction_charges: 0,
@@ -163,6 +165,7 @@ export async function POST(request: NextRequest) {
         userId: id,
         orderId: order_id,
         transactionId: trans_id,
+        paymentMethod: paymentMethod,
         amount: {
           total: subTotal,
           discount: totalDiscount,

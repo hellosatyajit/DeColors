@@ -18,5 +18,9 @@ export async function createOrder(amount: number) {
     amount: amount * 100,
     currency: "INR",
     receipt,
+    line_items_total: amount * 100
   });
+}
+export async function fetchOrder(orderId: any){
+    return instance.orders.fetch(orderId)
 }

@@ -108,6 +108,10 @@ export function OrderItem({ order }: { order: any }) {
       toast.success("Ordered Cancelled!");
       fetchTrackingDetails();
     }
+    else if(response.status == 500){
+      toast.error('Order cancellation failed!');
+      fetchTrackingDetails();
+    }
     else {
       toast.error('Order cancellation failed!')
     }
@@ -165,18 +169,21 @@ export function OrderItem({ order }: { order: any }) {
           </ul>
           {trackingDetails && (
             <>
-              <Link href={order.trackingInfo.tracking_url} rel="noopener noreferrer" target='_blank' className='flex items-center gap-1 hover:underline'>
-                Track Order <SquareArrowOutUpRight size={16} />
-              </Link>
+
               <div className='space-y-1 mt-1'>
                 {trackingDetails.status !== "CANCELED" && trackingDetails.status !== "DELIVERED" && (
-                  <Button
+                    <><Link href={order.trackingInfo.tracking_url} rel="noopener noreferrer" target='_blank' className='flex items-center gap-1 hover:underline'>
+                    Track Order <SquareArrowOutUpRight size={16} />
+                  </Link><Button
                     variant={'link'}
                     className='font-normal block p-0 h-fit'
                     onClick={() => setShowCancellationPopup(true)}
                   >
-                    Cancel the Order
-                  </Button>
+                      Cancel the Order
+                    </Button></>
+                )}
+                {trackingDetails.status !== "CANCELED" && (
+                  <Link href={invoiceLink} className='block hover:underline'>Download Invoice</Link>
                 )}
                 {trackingDetails.status === "DELIVERED" && (
                   <Button
@@ -188,7 +195,7 @@ export function OrderItem({ order }: { order: any }) {
                     {order.isReturned ? 'Return Requested' : 'Request Return'}
                   </Button>
                 )}
-                <Link href={invoiceLink} className='block hover:underline'>Download Invoice</Link>
+                
               </div>
             </>
           )}
