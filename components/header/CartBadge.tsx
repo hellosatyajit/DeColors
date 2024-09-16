@@ -1,8 +1,28 @@
 'use client';
-import { getCartLength } from "@/utils/cart";
+import { useEffect, useState } from 'react';
+import { getCartLength, subscribeToCartChanges } from '@/utils/cart';
 
 export default function CartBadge() {
-    const cartCount = getCartLength();
+    const [cartCount, setCartCount] = useState(getCartLength());
+
+    useEffect(() => {
+        const updateCartCount = () => {
+            setCartCount(getCartLength());
+        };
+
+        const handleStorageChange = () => {
+            updateCartCount();
+        };
+
+        const unsubscribe = subscribeToCartChanges(updateCartCount);
+
+        window.addEventListener('storage', handleStorageChange);
+
+        return () => {
+            window.removeEventListener('storage', handleStorageChange);
+            unsubscribe();
+        };
+    }, []);
 
     if (!cartCount) {
         return null;

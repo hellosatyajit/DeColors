@@ -20,6 +20,9 @@ interface CartData {
   items: CartItem[];
 }
 
+type CartChangeListener = () => void;
+let listeners: CartChangeListener[] = [];
+
 export const getCartData = (): CartData => {
   const cartDataStr = localStorage.getItem("cart");
   if (cartDataStr) {
@@ -31,6 +34,7 @@ export const getCartData = (): CartData => {
 
 const updateCartData = (cartData: CartData) => {
   localStorage.setItem("cart", JSON.stringify(cartData));
+  notifyCartChange();
 };
 const getItemImage = (item: any, sku: string): string => {
   if (item.images && item.images.length > 0) {
@@ -109,3 +113,14 @@ export const emptyCart = () => {
 export const getCartLength = (): number => {
   return getCartData().items.length;
 };
+
+export function subscribeToCartChanges(listener: CartChangeListener) {
+  listeners.push(listener);
+  return () => {
+    listeners = listeners.filter((l) => l !== listener);
+  };
+}
+
+function notifyCartChange() {
+  listeners.forEach(listener => listener());
+}
