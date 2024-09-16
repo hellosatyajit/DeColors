@@ -4,7 +4,6 @@ import axios from "axios";
 import { NextResponse, NextRequest } from "next/server";
 import Razorpay from 'razorpay';
 
-// Initialize Razorpay client with your API key and secret
 const razorpay = new Razorpay({
     key_id: process.env.RAZORPAY_KEY_ID!,
     key_secret: process.env.RAZORPAY_SECRET!,

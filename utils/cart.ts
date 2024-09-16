@@ -24,6 +24,10 @@ type CartChangeListener = () => void;
 let listeners: CartChangeListener[] = [];
 
 export const getCartData = (): CartData => {
+  if (typeof window === "undefined") {
+    return { items: [] };
+  }
+  
   const cartDataStr = localStorage.getItem("cart");
   if (cartDataStr) {
     return JSON.parse(cartDataStr);
@@ -33,9 +37,12 @@ export const getCartData = (): CartData => {
 };
 
 const updateCartData = (cartData: CartData) => {
-  localStorage.setItem("cart", JSON.stringify(cartData));
-  notifyCartChange();
+  if (typeof window !== "undefined") {
+    localStorage.setItem("cart", JSON.stringify(cartData));
+    notifyCartChange();
+  }
 };
+
 const getItemImage = (item: any, sku: string): string => {
   if (item.images && item.images.length > 0) {
     return item.images[0];
