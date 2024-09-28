@@ -73,7 +73,7 @@ const ProductDetailsClient = ({ product }: { product: IProduct }) => {
   const productname = selectedVariant
     ? `${product?.name} - ${selectedVariant}`
     : `${product?.name} - ${product.brand}`;
-  const currentUrl = `https://www.chelsycosmetics.com/${usePathname()}`;
+  const currentUrl = `https://www.chelsycosmetics.com/${usePathname()}?variant=${selectedVariant}`;
 
   const doAddToCart = () => {
     if (selectedVariant === "") {
@@ -253,7 +253,7 @@ const ProductDetailsClient = ({ product }: { product: IProduct }) => {
                   </option>
                   {product?.variants.map((item: any, index: number) => (
                     <option key={index} value={item.sku}>
-                      {item.attribute.flavor}
+                      {item.name}
                     </option>
                   ))}
                 </select>

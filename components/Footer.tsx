@@ -65,7 +65,7 @@ export default function Footer() {
         <footer className="w-full bg-pink-50">
             <div className="max-w-5xl w-full m-auto p-5 py-10 flex flex-col gap-10">
                 <div className="self-stretch h-9 justify-between items-center inline-flex">
-                    <Link href="/" className="text-black text-2xl font-bold">De Colores Lifestyle</Link>
+                    <Link href="/" className="text-black text-2xl font-bold">De Colores Lifestyle Private Limited</Link>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 lg:gap-20">
                     <form onSubmit={handleFormSubmit} className="flex flex-col gap-3 col-span-1">
@@ -117,16 +117,17 @@ export default function Footer() {
                             <div className="space-y-3">
                                 <p className="text-xl font-semibold">Email</p>
                                 <p className="text-black text-sm font-normal">decoloreslifestyle@gmail.com</p>
+                                <Link href={'mailto:decoloreslifestyle@gmail.com'} className="text-black text-sm font-normal">decoloreslifestyle@gmail.com</Link>
                             </div>
                             <div className="space-y-3">
                                 <p className="text-xl font-semibold">Address</p>
                                 <div className="text-black text-sm font-normal">
                                     <p>
-                                        A-702 Rajyash Riverium,<br />
-                                        B/H G.B.Shah College,<br />
-                                        South Vasna,<br />
-                                        Ahmedabad, Gujarat,<br />
-                                        Pincode: 380007
+                                        15, Vraj Complex,<br />
+                                        Nr Prernartirth Jain Derasar,<br />
+                                        Satellite,<br />
+                                        Ahmedabad, Gujarat<br />
+                                        Pincode: 380015
                                     </p>
                                 </div>
                             </div>

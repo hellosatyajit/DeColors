@@ -20,6 +20,8 @@ const breadcrumb = [
     { label: 'Cart', link: '/cart' },
 ];
 
+const KAJAL_ID = '66f317d4fc56671574d587b2';
+
 export default function CartPage() {
     const [items, setItems] = useState<CartItem[]>([]);
     const [user, setUser] = useState<{ id: string; email: string; name: string; } | undefined>(undefined);
@@ -27,6 +29,8 @@ export default function CartPage() {
 
     const totalCost = items.reduce((acc, item: CartItem) => acc + item.price.mrp * item.quantity, 0);
     const totalDiscount = items.reduce((acc, item: CartItem) => acc + item.price.discount * item.quantity, 0);
+    const isB2G1Offer = items.some((item: CartItem) => item.id.includes(KAJAL_ID) && item.quantity >= 2);
+
     const shippingCharges = (totalCost - totalDiscount) > 149 ? 0 : 50;
     const subTotal = totalCost - totalDiscount;
     const { data: session } = useSession();
@@ -212,6 +216,7 @@ export default function CartPage() {
                                                         Variant: {item.sku}
                                                     </span>
                                                 }
+                                                {item.id.includes(KAJAL_ID) && isB2G1Offer && <p className="text-right font-medium">Congratulations, You'll get one kajal free!</p>}
                                             </div>
                                         </div>
                                         <div className="flex h-16 flex-col justify-between">
@@ -241,9 +246,11 @@ export default function CartPage() {
                                 <strong>{shippingCharges ? `${shippingCharges} ₹` : 'Free Shipping'}</strong>
                             </p>
                             {shippingCharges > 0 && <p className="text-xs opacity-70">Free shipping on orders over 149.</p>}
+                            {subTotal > 500 && <p className="text-right font-bold">You'll get beautiful surprise</p>}
                         </div>
                         <hr />
                         <p className="flex justify-between">Grand Total: <strong>{subTotal + shippingCharges} ₹</strong></p>
+
                         {user ? (
                             <Button
                                 variant={'secondary'}
