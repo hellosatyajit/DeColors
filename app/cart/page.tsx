@@ -31,7 +31,7 @@ export default function CartPage() {
     const totalDiscount = items.reduce((acc, item: CartItem) => acc + item.price.discount * item.quantity, 0);
     const isB2G1Offer = items.some((item: CartItem) => item.id.includes(KAJAL_ID) && item.quantity >= 2);
 
-    const shippingCharges = (totalCost - totalDiscount) > 149 ? 0 : 50;
+    const shippingCharges = (totalCost - totalDiscount) >= 149 ? 0 : 50;
     const subTotal = totalCost - totalDiscount;
     const { data: session } = useSession();
     const router = useRouter();
