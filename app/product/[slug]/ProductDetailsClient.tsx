@@ -208,15 +208,15 @@ const ProductDetailsClient = ({ product }: { product: IProduct }) => {
               )}
             </div>
 
-            <div className="text-md font-medium text-black/[0.5]">
+            <div className="text-sm font-medium text-black/[0.5]">
               incl. of taxes
             </div>
-            <div className="text-md font-medium text-black/[0.5] mb-20">
+            <div className="text-sm font-medium text-black/[0.5] mb-10 md:mb-20">
               {`(Also includes all applicable duties)`}
             </div>
 
             <div className="mb-10">
-              <div className="flex justify-between mb-2 text-md font-semibold">
+              <div className="flex justify-between mb-2 text-base font-semibold">
                 {variantType === "color" && "Select Color"}
               </div>
 
@@ -282,7 +282,7 @@ const ProductDetailsClient = ({ product }: { product: IProduct }) => {
 
             <div>
               <div className="text-lg font-bold mb-1">Product Details</div>
-              <div className="markdown text-md mb-5">
+              <div className="markdown text-sm mb-5 space-y-1">
                 {product?.description.map((item: any, index: number) => (
                   <p key={index}>{item}</p>
                 ))}

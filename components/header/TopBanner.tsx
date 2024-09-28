@@ -19,12 +19,7 @@ const offers = [
 ];
 
 export default function TopBanner() {
-  const [isVisible, setIsVisible] = useState(true);
   const [currentOfferIndex, setCurrentOfferIndex] = useState(0);
-
-  const handleClose = () => {
-    setIsVisible(false);
-  };
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -34,23 +29,16 @@ export default function TopBanner() {
     return () => clearInterval(interval);
   }, []);
 
-  if (!isVisible) return null;
-
   const currentOffer = offers[currentOfferIndex];
-
 
   return (
     <div className="bg-white text-rose-500 p-4 text-center transition-opacity duration-500 opacity-100 fade-out">
-      <div className="flex justify-between items-center">
-        <div></div>
+      <div className="flex justify-center items-center">
         <div className="flex flex-col">
           <Link href={currentOffer.link || "#"} className="hover:underline mb-1">
             {currentOffer.text}
           </Link>
         </div>
-        <button onClick={handleClose} className="ml-4 focus:outline-none">
-          <X className="w-6 h-6 text-rose-500" />
-        </button>
       </div>
     </div>
   );

@@ -103,10 +103,10 @@ const ProductDetailsClient = ({ product }: { product: IPacks }) => {
                             )}
                         </div>
 
-                        <div className="text-md font-medium text-black/[0.5]">
+                        <div className="text-sm font-medium text-black/[0.5]">
                             incl. of taxes
                         </div>
-                        <div className="text-md font-medium text-black/[0.5] mb-20">
+                        <div className="text-sm font-medium text-black/[0.5] mb-20">
                             {`(Also includes all applicable duties)`}
                         </div>
 
@@ -125,7 +125,7 @@ const ProductDetailsClient = ({ product }: { product: IPacks }) => {
 
                         <div>
                             <div className="text-lg font-bold mb-1">Product Details</div>
-                            <div className="markdown text-md mb-5">
+                            <div className="markdown text-sm mb-5 space-y-1">
                                 {product?.description.map((item: string, index: number) => (
                                     <p key={index}>{item}</p>
                                 ))}

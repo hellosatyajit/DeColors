@@ -116,7 +116,6 @@ export default function Footer() {
                             </div>
                             <div className="space-y-3">
                                 <p className="text-xl font-semibold">Email</p>
-                                <p className="text-black text-sm font-normal">decoloreslifestyle@gmail.com</p>
                                 <Link href={'mailto:decoloreslifestyle@gmail.com'} className="text-black text-sm font-normal">decoloreslifestyle@gmail.com</Link>
                             </div>
                             <div className="space-y-3">
