@@ -52,6 +52,7 @@ export default function RootLayout({
         <Analytics mode={'production'} />
       </body>
       <GoogleAnalytics gaId="G-Z28Q2W929Y" />
+      <script defer data-website-id="66faed924de2c5dcac38edd7" data-domain="chelsycosmetics.com" src="https://datafa.st/js/script.js"></script>
     </html>
   );
 }
