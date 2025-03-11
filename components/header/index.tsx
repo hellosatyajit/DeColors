@@ -23,7 +23,7 @@ export default function Header() {
           <div className="flex items-center gap-5 md:gap-10">
             <div>
               <Link href="/" className="text-white text-lg sm:text-2xl font-bold leading-3">
-                De Colores Lifestyle
+                Beauty Secret
               </Link>
             </div>
             <ul className="hidden lg:flex flex-1 gap-5">

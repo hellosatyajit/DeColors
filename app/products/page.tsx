@@ -7,7 +7,7 @@ import { IProduct, IPacks } from "@/types/product";
 import { WEBSITE_URL } from "@/lib/utils";
 
 export const metadata: Metadata = {
-    title: "Products - De Colores Lifestyle",
+    title: "Products - Beauty Secret",
     alternates: {
         canonical: `${WEBSITE_URL}/products`,
     }

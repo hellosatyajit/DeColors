@@ -9,7 +9,7 @@ import {
 
 
 export const metadata: Metadata = {
-    title: "FAQ - De Colores Lifestyle",
+    title: "FAQ - Beauty Secret",
     alternates: {
         canonical: `${WEBSITE_URL}/faq`,
     }
@@ -118,7 +118,7 @@ const faqs: Array<{ question: string; answer: string }> = [
     },
     {
         question: "What is the history of your company?",
-        answer: "Founded on November 2, 2020, by Maulik and Monica Doshi, De Colores Lifestyle Private Limited brings over 20 years of expertise in the color cosmetics industry."
+        answer: "Founded on November 2, 2020, by Maulik and Monica Doshi, Beauty Secret Private Limited brings over 20 years of expertise in the color cosmetics industry."
     },
     {
         question: "What is your mission and values?",

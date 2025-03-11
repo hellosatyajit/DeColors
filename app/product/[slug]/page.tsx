@@ -13,7 +13,7 @@ export async function generateMetadata(
   const product: IProduct = await fetchProductBySlug(params.slug);
 
   return {
-    title: `${product.name} - De Colores Lifestyle`,
+    title: `${product.name} - Beauty Secret`,
     alternates: {
       canonical: `${WEBSITE_URL}/product/${params.slug}`,
     }

@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import { WEBSITE_URL } from "@/lib/utils";
 
 export const metadata: Metadata = {
-    title: "Our Story - De Colores Lifestyle",
+    title: "Our Story - Beauty Secret",
     alternates: {
         canonical: `${WEBSITE_URL}/out-story`,
     }
@@ -14,13 +14,13 @@ export default function OurStoryPage() {
             <h1 hidden>Our Story</h1>
             <div className="space-y-2">
                 <h2 className="font-medium text-lg sm:text-2xl text-rose-600">Beauty with a Purpose</h2>
-                <p className="text-base md:text-lg opacity-80">In the fast-moving world of cosmetics, where trends change quickly and quality matters most, De Colores Lifestyle Private Limited stands out for its innovation and excellence. Founded on November 2, 2020, by Maulik Doshi and Monica Doshi, the company brings over 20 years of experience in the beauty industry.</p>
+                <p className="text-base md:text-lg opacity-80">In the fast-moving world of cosmetics, where trends change quickly and quality matters most, Beauty Secret Private Limited stands out for its innovation and excellence. Founded on November 2, 2020, by Maulik Doshi and Monica Doshi, the company brings over 20 years of experience in the beauty industry.</p>
             </div>
 
             <div className="space-y-2">
                 <h2 className="font-medium  text-lg sm:text-2xl text-rose-600">Our Story: From Idea to Reality</h2>
 
-                <p className="text-base md:text-lg opacity-80">De Colores Lifestyle Private Limited started when Maulik and Monica saw a gap in the market during the COVID-19 pandemic. With their extensive experience in cosmetics, they realized that high-quality products were hard to find. This insight led them to start their own brand, aiming to set new standards for quality.</p>
+                <p className="text-base md:text-lg opacity-80">Beauty Secret Private Limited started when Maulik and Monica saw a gap in the market during the COVID-19 pandemic. With their extensive experience in cosmetics, they realized that high-quality products were hard to find. This insight led them to start their own brand, aiming to set new standards for quality.</p>
             </div>
 
             <div className="space-y-2">
