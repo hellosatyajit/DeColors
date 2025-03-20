@@ -67,7 +67,7 @@ export default function Footer() {
         <footer className="w-full bg-pink-50">
             <div className="max-w-5xl w-full m-auto p-5 py-10 flex flex-col gap-10">
                 <div className="self-stretch h-9 justify-between items-center inline-flex">
-                    <Link href="/" className="text-black text-2xl font-bold">Beauty Secret Private Limited</Link>
+                    <Link href="/" className="text-black text-2xl font-bold">De Colores Lifestyle Private Limited</Link>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 lg:gap-20">
                     <form onSubmit={handleFormSubmit} className="flex flex-col gap-3 col-span-1">
@@ -154,7 +154,7 @@ export default function Footer() {
                         ))}
                     </ul>
                     <div className="text-black text-opacity-50 text-sm font-normal">
-                        @{year} Beauty Secret Private Limited <span className="hidden sm:inline-block">&nbsp; | &nbsp;</span> <br className="sm:hidden" />  All rights Reserved
+                        @{year} De Colores Lifestyle Private Limited <span className="hidden sm:inline-block">&nbsp; | &nbsp;</span> <br className="sm:hidden" />  All rights Reserved
                     </div>
                 </div>
             </div>

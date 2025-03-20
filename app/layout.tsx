@@ -14,9 +14,9 @@ import { Metadata } from "next";
 import { WEBSITE_URL } from "@/lib/utils";
 
 export const metadata: Metadata = {
-  title: "Beauty Secret",
+  title: "De Colores Lifestyle",
   description: "Discover our wide range of skincare, makeup, and wellness products designed to enhance your natural beauty.",
-  keywords: "cosmetics, beauty products, skincare, makeup, wellness, nail polish, body wax, wax powder, Beauty Secret, De Colores Lifestyle, Chelsy, Herbonica",
+  keywords: "cosmetics, beauty products, skincare, makeup, wellness, nail polish, body wax, wax powder, De Colores Lifestyle, De Colores Lifestyle, Chelsy, Herbonica",
   // authors: add about our comapny
   alternates: {
     canonical: WEBSITE_URL,

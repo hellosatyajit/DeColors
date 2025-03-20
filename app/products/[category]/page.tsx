@@ -11,7 +11,7 @@ export async function generateMetadata(
   const category = params.category.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
 
   return {
-    title: `${category} - Beauty Secret`,
+    title: `${category} - De Colores Lifestyle`,
     alternates: {
       canonical: `${WEBSITE_URL}/products/${params.category}`,
     }
